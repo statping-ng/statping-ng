@@ -47,7 +47,7 @@ Statping-ng aims to be an updated drop-in replacement of statping after developm
 <p>
   <a href="https://labs.play-with-docker.com/?stack=https://raw.githubusercontent.com/statping-ng/statping-ng/stable/dev/pwd-stack.yml"><img alt="Try Statping-ng via Play with Docker" src="https://statping-ng.github.io/assets/external/docker-pwd.png" height="25px" style="height:25px" /></a> - Login is <kbd>admin</kbd>, password <kbd>admin</kbd>.
 </p>
-<div style="clear:both;"><br/><br/><br/><br/></div>
+<div style="clear:both;"><br/><br/><br/></div>
 
 
 <h3>No Requirements - Run on Any Server</h3>
@@ -63,7 +63,7 @@ Statping-ng is built in Go Language so all you need is the pre-compiled binary b
 <a href="https://itunes.apple.com/us/app/apple-store/id1445513219"><img alt="Apple Apps Store" src="https://statping-ng.github.io/assets/external/appstore.png" style="width:5%;margin-right:5px;" width=5% /></a>
 </p>
 <br/>
-<div style="clear:both;"><br/><br/><br/><br/></div>
+<div style="clear:both;"><br/><br/><br/></div>
 
 
 <img style="margin-left:10px;float:right;width:320px;height:235px;" align="right" width="320" height="235" src="https://statping-ng.github.io/assets/external/slack-notifer.png" />
@@ -79,7 +79,7 @@ The Status binary for all other OS's is ~17Mb at most.
 <p>
 No Worries, we provide docker containers for many different system architectures, with multiple docker-compose files to suit your needs, you can even bring your own SSL Certificate or automatically leverage <a href="https://letsencrypt.org/">Lets Encrypt</a> to keep things secure. But it's can be as simple as a docker run!
 </p>
-<div style="clear:both;"><br/><br/><br/><br/></div>
+<div style="clear:both;"><br/><br/><br/></div>
 
 
 <img style="margin-left:10px;float:right;width:320px;height:235px;" align="right" width="320" height="235" src="https://statping-ng.github.io/assets/external/statping_theme.gif" />
@@ -116,7 +116,7 @@ Having a straight forward dashboard makes Statping-ng that much better. Quickly 
 
 
 
-<h2>Quick Start</h2>
+<h2 align="center" style="text-align:center">Quick Start</h2>
 <p>Here's a few quick start guides to get you going, fast.</p>
 
 <h3>Docker</h3>
