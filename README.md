@@ -1,6 +1,6 @@
 <center>
 
-![Statping-ng](https://raw.githubusercontent.com/statping-ng/statping-ng/dev/frontend/public/img/banner.png =60%)
+![Statping-ng](https://raw.githubusercontent.com/statping-ng/statping-ng/dev/frontend/public/img/banner.png)
 
 **Statping-ng** - *Web and App Status Monitoring for Any Type of Project*
 
