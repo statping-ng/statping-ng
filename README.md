@@ -47,7 +47,7 @@ Statping-ng aims to be an updated drop-in replacement of statping after developm
 <p>
   <a href="https://labs.play-with-docker.com/?stack=https://raw.githubusercontent.com/statping-ng/statping-ng/stable/dev/pwd-stack.yml"><img alt="Try Statping-ng via Play with Docker" src="https://statping-ng.github.io/assets/external/docker-pwd.png" height="25px" style="height:25px" /></a> - Login is <kbd>admin</kbd>, password <kbd>admin</kbd>.
 </p>
-<div style="clear:both;"><br/><br/><br/></div>
+<div style="clear:both;"><br/><br/></div>
 
 
 <h3>No Requirements - Run on Any Server</h3>
@@ -72,20 +72,20 @@ Statping-ng is built in Go Language so all you need is the pre-compiled binary b
 Statping-ng is a very lightweight application and is available for Linux, Mac, and Windows. The Docker image is only ~20Mb so you know that this application won't be filling up your hard drive space.
 The Status binary for all other OS's is ~17Mb at most.
 </p>
-<div style="clear:both;"><br/><br/><br/><br/></div>
+<div style="clear:both;"><br/><br/><br/></div>
 
 
 <h3>Want easy containers?</h3>
 <p>
 No Worries, we provide docker containers for many different system architectures, with multiple docker-compose files to suit your needs, you can even bring your own SSL Certificate or automatically leverage <a href="https://letsencrypt.org/">Lets Encrypt</a> to keep things secure. But it's can be as simple as a docker run!
 </p>
-<div style="clear:both;"><br/><br/><br/></div>
+<div style="clear:both;"><br/><br/></div>
 
 
 <img style="margin-left:10px;float:right;width:320px;height:235px;" align="right" width="320" height="235" src="https://statping-ng.github.io/assets/external/statping_theme.gif" />
 <h3>Custom SASS Styling</h3>
 Statping-ng will allow you to completely customize your Status Page using SASS styling with easy to use variables. The container image actually contains a pre-built SASS binary so you won't even need to setup anything!
-<div style="clear:both;"><br/><br/><br/><br/></div>
+<div style="clear:both;"><br/><br/><br/></div>
 
 
 <img style="margin-right:10px;float:left;width:320px;height:235px;" align="left" width="320" height="235" src="https://statping-ng.github.io/assets/external/statping_iphone_bk.png" />
@@ -97,12 +97,12 @@ Statping-ng is 100% compatible with the statping app which is available on the A
 <a href="https://itunes.apple.com/us/app/apple-store/id1445513219"><img src="https://statping-ng.github.io/assets/external/app-store-badge.svg"></a>
 </p>
 <p align="center" style="text-align:center"><small>The mobile app is not maintained by statping-ng and includes in-app purchases to the developer of statping.</small></p>
-<div style="clear:both;"><br/><br/><br/><br/></div>
+<div style="clear:both;"><br/><br/></div>
 
 <h3>Notifications - Slack, Email, Twilio and more</h3>
 <p>Statping-ng includes email notification via SMTP and Slack integration using <a href="https://api.slack.com/incoming-webhooks">Incoming Webhook</a>. Insert the webhook URL into the Settings page in Statping-ng and enable the Slack integration. Anytime a service fails, the channel that you specified on Slack will receive a message.</p>
 <p>View the <a href="https://github.com/statping-ng/statping-ng/wiki/Statping-Plugins">Plugin Wiki</a> to see detailed information about Golang Plugins. Statping-ng isn't just another Status Page for your applications, it's a framework that allows you to create your own plugins to interact with every element of your status page. <a href="https://github.com/statping-ng/statping-ng/wiki/Notifiers">Notifier's</a> can also be create with only 1 golang file.</p>
-<div style="clear:both;"><br/><br/><br/><br/></div>
+<div style="clear:both;"><br/><br/><br/></div>
 
 
 <img style="margin-left:10px;float:right;width:320px;height:235px;" width="320" height="235" align="right" src="https://statping-ng.github.io/assets/external/statping_settings.gif" />
