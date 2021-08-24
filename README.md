@@ -63,7 +63,7 @@ Statping-ng is built in Go Language so all you need is the pre-compiled binary b
 <a href="https://itunes.apple.com/us/app/apple-store/id1445513219"><img alt="Apple Apps Store" src="https://statping-ng.github.io/assets/external/appstore.png" style="width:5%;margin-right:5px;" width=5% /></a>
 </p>
 <br/>
-<div style="clear:both;"><br/><br/><br/></div>
+<div style="clear:both;"><br/><br/></div>
 
 
 <img style="margin-left:10px;float:right;width:320px;height:235px;" align="right" width="320" height="235" src="https://statping-ng.github.io/assets/external/slack-notifer.png" />
