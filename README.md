@@ -1,12 +1,12 @@
-<p align="center">
-<img width="60%" src="https://raw.githubusercontent.com/statping-ng/statping-ng/dev/frontend/public/img/banner.png">
-</p>
-<p align="center">
-  <b>Statping-ng - Web and App Status Monitoring for Any Type of Project</b><br>
-  <a href="https://statping-ng.github.io">Website</a> | <a href="https://github.com/statping-ng/statping-ng/wiki">View Wiki</a> | <a href="http://docs.statping.com">API</a>
-  <br/>
-  <a href="https://github.com/statping-ng/statping-ng/wiki/Docker">Docker</a> | <a href="https://github.com/statping-ng/statping-ng/wiki/Linux">Linux</a> | <a href="https://github.com/statping-ng/statping-ng/wiki/Mac">Mac</a> | <a href="https://github.com/statping-ng/statping-ng/wiki/Windows">Windows</a>
-</p>
+<center>
+![Statping-ng](https://raw.githubusercontent.com/statping-ng/statping-ng/dev/frontend/public/img/banner.png =60)
+
+**Statping-ng** - *Web and App Status Monitoring for Any Type of Project*
+
+[Website](https://statping-ng.github.io) | [Wiki](https://github.com/statping-ng/statping-ng/wiki)
+
+[Linux](https://github.com/statping-ng/statping-ng/wiki/Linux) | [Windows](https://github.com/statping-ng/statping-ng/wiki/Windows) | [Mac](https://github.com/statping-ng/statping-ng/wiki/Mac) | [Docker](https://github.com/statping-ng/statping-ng/wiki/Docker)
+</center>
 
 # Statping-ng - Status Page & Monitoring Server
 
@@ -14,27 +14,33 @@ An easy to use Status Page for your websites and applications. Statping will aut
 
 Statping-ng aims to be an updated drop-in replacement of statping after development stopped on the original fork.
 
-![GitHub license](https://img.shields.io/github/license/statping-ng/statping-ng?color=green&style=for-the-badge) ![GitHub last commit](https://img.shields.io/github/last-commit/statping-ng/statping-ng?style=for-the-badge) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/statping-ng/statping-ng/2.%20Unstable%20Build,%20Test%20and%20Deploy?label=Dev%20Build&style=for-the-badge) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/statping-ng/statping-ng/3.%20Stable%20Build,%20Test%20and%20Deploy?label=Stable%20Build&style=for-the-badge) ![Docker Pulls](https://img.shields.io/docker/pulls/adamboutcher/statping-ng?style=for-the-badge) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/adamboutcher/statping-ng/latest?style=for-the-badge)
 
-<br><br>
-<img align="left" width="320" height="235" src="https://img.cjx.io/statupsiterun.gif">
-<h2>A Future-Proof Status Page</h2>
-Statping-ng strives to remain future-proof and remain intact if a failure is created. Your Statping service should not be running on the same instance you're trying to monitor. If your server crashes your Status Page should still remaining online to notify your users of downtime.
+[![License](https://img.shields.io/github/license/statping-ng/statping-ng?color=success&style=for-the-badge&logo)](https://github.com/statping-ng/statping-ng/blob/stable/LICENSE)
 
-<br><a href="https://labs.play-with-docker.com/?stack=https://raw.githubusercontent.com/statping-ng/statping-ng/stable/dev/pwd-stack.yml"><img height=25 src="https://assets.statping.com/docker-pwd.png"></a> (dashboard login is `admin`, password `admin`)
-<br><br><br>
+![GitHub last commit](https://img.shields.io/github/last-commit/statping-ng/statping-ng?style=for-the-badge&logo=github) ![Unstable Build](https://img.shields.io/github/workflow/status/statping-ng/statping-ng/1.%20Development%20Build%20and%20Testing?label=Dev&style=for-the-badge&logo=github) ![Unstable Build](https://img.shields.io/github/workflow/status/statping-ng/statping-ng/2.%20Unstable%20Build,%20Test%20and%20Deploy?label=Unstable&style=for-the-badge&logo=github) ![Stable Build](https://img.shields.io/github/workflow/status/statping-ng/statping-ng/3.%20Stable%20Build,%20Test%20and%20Deploy?label=Stable&style=for-the-badge&logo=github)
 
-<h2>No Requirements</h2>
-Statping-ng is built in Go Language so all you need is the precompile binary based on your operating system. You won't need to install anything extra once you have the Statping binary installed. You can even run Statping on a Raspberry Pi.
-<br><br>
-<p align="center">
-    <a href="https://github.com/statping-ng/statping-ng/wiki/Linux"><img width="5%" src="https://img.cjx.io/linux.png"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="https://github.com/statping-ng/statping-ng/wiki/Mac"><img width="5%" src="https://img.cjx.io/apple.png"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="https://github.com/statping-ng/statping-ng/wiki/Windows"><img width="5%" src="https://img.cjx.io/windows.png"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="https://play.google.com/store/apps/details?id=com.statping"><img width="5%" src="https://img.cjx.io/android.png"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="https://itunes.apple.com/us/app/apple-store/id1445513219"><img width="5%" src="https://img.cjx.io/appstore.png"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="https://hub.docker.com/r/adamboutcher/statping-ng"><img width="5%" src="https://img.cjx.io/dockericon.png"></a>
-<br><br></p>
+[![Docker Pulls](https://img.shields.io/docker/pulls/adamboutcher/statping-ng?style=for-the-badge&logo=docker)](https://hub.docker.com/r/adamboutcher/statping-ng) [![Docker Image Size](https://img.shields.io/docker/image-size/adamboutcher/statping-ng/latest?style=for-the-badge&logo=docker)](https://hub.docker.com/r/adamboutcher/statping-ng)
+
+ ![Go Version](https://img.shields.io/github/go-mod/go-version/statping-ng/statping-ng?style=for-the-badge) [![Go Report Card](https://goreportcard.com/badge/github.com/statping-ng/statping-ng?style=for-the-badge)](https://goreportcard.com/badge/github.com/statping-ng/statping-ng)
+
+---
+# About Statping-ng
+
+![Statping-ng example](https://statping-ng.github.io/assets/external/statupsiterun.gif =320x235)
+
+## A Future-Proof Status Page
+Statping-ng strives to remain future-proof and remain intact if a failure is created. Your Statping-ng service should not be running on the same instance you're trying to monitor. If your server crashes your Status Page should still remaining online to notify your users of downtime.
+
+[![Play with Docker](https://statping-ng.github.io/assets/external/docker-pwd.png)](https://labs.play-with-docker.com/?stack=https://raw.githubusercontent.com/statping-ng/statping-ng/stable/dev/pwd-stack.yml) - Login is `admin`, password `admin`.
+
+## No Requirements
+Statping-ng is built in Go Language so all you need is the pre-compiled binary based on your operating system. You won't need to install anything extra once you have the Statping binary installed. You can even run Statping-ng on a Raspberry Pi.
+
+<center>
+
+[![Linux](https://statping-ng.github.io/assets/external/linux.png)](https://github.com/statping-ng/statping-ng/wiki/Linux) [![Windows](https://statping-ng.github.io/assets/external/windows.png)](https://github.com/statping-ng/statping-ng/wiki/Windows) [![Mac](https://statping-ng.github.io/assets/external/apple.png)](https://github.com/statping-ng/statping-ng/wiki/Mac) [![Docker](https://statping-ng.github.io/assets/external/Docker.png)](https://hub.docker.com/r/adamboutcher/statping-ng) [![Android](https://statping-ng.github.io/assets/external/android.png)](https://play.google.com/store/apps/details?id=com.statping) [![iOS](https://statping-ng.github.io/assets/external/appstore.png)](https://itunes.apple.com/us/app/apple-store/id1445513219)
+
+</center>
 
 
 <img align="right" width="320" height="235" src="https://gitimgs.s3-us-west-2.amazonaws.com/slack-notifer.png">
@@ -118,5 +124,3 @@ scrape_configs:
 
 ## Contributing
 Statping-ng accepts Push Requests to the `dev` branch! Feel free to add your own features and notifiers. You probably want to checkout the [Notifier Wiki](https://github.com/statping-ng/statping-ng/wiki/Notifiers) to get a better understanding on how to create your own notification methods for failing/successful services. Testing on Statping-ng will test each function on MySQL, Postgres, and SQLite. I recommend running MySQL and Postgres Docker containers for testing. You can find multiple docker-compose files in the dev directory.
-
-[![Go Report Card](https://goreportcard.com/badge/github.com/statping-ng/statping-ng)](https://goreportcard.com/report/github.com/statping-ng/statping-ng)
