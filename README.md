@@ -40,7 +40,7 @@ Statping-ng aims to be an updated drop-in replacement of statping after developm
 <hr/>
 <h2 align="center" style="text-align:center">About Statping-ng</h2>
 
-<img style="margin-right:10px;float:left;width:320px;height:235px;" src="https://statping-ng.github.io/assets/external/statupsiterun.gif" />
+<img style="margin-right:10px;float:left;width:320px;height:235px;" align="left" src="https://statping-ng.github.io/assets/external/statupsiterun.gif" />
 <h3>A Future-Proof Status Page</h3>
 <p>
   Statping-ng strives to remain future-proof and remain intact if a failure is created. Your Statping-ng service should not be running on the same instance you're trying to monitor. If your server crashes your Status Page should still remaining online to notify your users of downtime.
@@ -79,7 +79,7 @@ No Worries, we provide docker containers for many different system architectures
 </p>
 <div style="clear:both;"></div>
 
-<img style="margin-left:10px;float:right;width:320px;height:235px;" src="https://statping-ng.github.io/assets/external/statping_theme.gif" />
+<img style="margin-left:10px;float:right;width:320px;height:235px;" align="left" src="https://statping-ng.github.io/assets/external/statping_theme.gif" />
 <h3>Custom SASS Styling</h3>
 Statping-ng will allow you to completely customize your Status Page using SASS styling with easy to use variables. The container image actually contains a pre-built SASS binary so you won't even need to setup anything!
 <div style="clear:both;"></div>
@@ -100,7 +100,7 @@ Statping-ng is 100% compatible with the statping app which is available on the A
 <p>View the <a href="https://github.com/statping-ng/statping-ng/wiki/Statping-Plugins">Plugin Wiki</a> to see detailed information about Golang Plugins. Statping-ng isn't just another Status Page for your applications, it's a framework that allows you to create your own plugins to interact with every element of your status page. <a href="https://github.com/statping-ng/statping-ng/wiki/Notifiers">Notifier's</a> can also be create with only 1 golang file.</p>
 <div style="clear:both;"></div>
 
-<img style="margin-left:10px;float:right;width:320px;height:235px;" src="https://statping-ng.github.io/assets/external/statping_settings.gif" />
+<img style="margin-left:10px;float:right;width:320px;height:235px;" align="right" src="https://statping-ng.github.io/assets/external/statping_settings.gif" />
 <h2>Easy to use Dashboard</h2>
 <p>
 Having a straight forward dashboard makes Statping-ng that much better. Quickly and Easy view statuses. Monitor your websites and applications with a basic HTTP GET request, or add a POST request with your own JSON to post to the endpoint.</p>
