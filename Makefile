@@ -25,27 +25,22 @@ build: clean
 
 dev-compose-up-mariadb:
 	docker-compose -f dev/docker-compose.full.yml down statping_mariadb
-	docker-compose -f dev/docker-compose.full.yml build statping_mariadb
 	docker-compose -f dev/docker-compose.full.yml up statping_mariadb --remove-orphans
 
 dev-compose-up-mysql:
 	docker-compose -f dev/docker-compose.full.yml down statping_mysql
-	docker-compose -f dev/docker-compose.full.yml build statping_mysql
 	docker-compose -f dev/docker-compose.full.yml up statping_mysql --remove-orphans
 
 dev-compose-up-sqlite:
 	docker-compose -f dev/docker-compose.full.yml down statping_sqlite
-	docker-compose -f dev/docker-compose.full.yml build statping_sqlite
 	docker-compose -f dev/docker-compose.full.yml up statping_sqlite --remove-orphans
 
 dev-compose-up-postgres:
 	docker-compose -f dev/docker-compose.full.yml down statping_postgres
-	docker-compose -f dev/docker-compose.full.yml build statping_postgres
 	docker-compose -f dev/docker-compose.full.yml up statping_postgres --remove-orphans
 
 dev-compose-up-full:
 	docker-compose -f dev/docker-compose.full.yml down
-	docker-compose -f dev/docker-compose.full.yml build
 	docker-compose -f dev/docker-compose.full.yml up --remove-orphans
 
 go-build: clean
