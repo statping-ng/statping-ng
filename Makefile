@@ -23,6 +23,31 @@ test: clean compile
 build: clean
 	CGO_ENABLED=1 go build -a -ldflags "-s -w -X main.VERSION=${VERSION} -X main.COMMIT=${COMMIT}" -o statping --tags "netgo osusergo" ./cmd
 
+dev-compose-up-mariadb:
+	docker-compose -f dev/docker-compose.full.yml down statping_mariadb
+	docker-compose -f dev/docker-compose.full.yml build statping_mariadb
+	docker-compose -f dev/docker-compose.full.yml up statping_mariadb --remove-orphans
+
+dev-compose-up-mysql:
+	docker-compose -f dev/docker-compose.full.yml down statping_mysql
+	docker-compose -f dev/docker-compose.full.yml build statping_mysql
+	docker-compose -f dev/docker-compose.full.yml up statping_mysql --remove-orphans
+
+dev-compose-up-sqlite:
+	docker-compose -f dev/docker-compose.full.yml down statping_sqlite
+	docker-compose -f dev/docker-compose.full.yml build statping_sqlite
+	docker-compose -f dev/docker-compose.full.yml up statping_sqlite --remove-orphans
+
+dev-compose-up-postgres:
+	docker-compose -f dev/docker-compose.full.yml down statping_postgres
+	docker-compose -f dev/docker-compose.full.yml build statping_postgres
+	docker-compose -f dev/docker-compose.full.yml up statping_postgres --remove-orphans
+
+dev-compose-up-full:
+	docker-compose -f dev/docker-compose.full.yml down
+	docker-compose -f dev/docker-compose.full.yml build
+	docker-compose -f dev/docker-compose.full.yml up --remove-orphans
+
 go-build: clean
 	rm -rf source/dist
 	rm -rf source/rice-box.go
@@ -110,9 +135,6 @@ db-down:
 
 console:
 	docker exec -t -i statping /bin/sh
-
-compose-build-full: 
-	docker-compose -f docker-compose.yml -f dev/docker-compose.full.yml build --parallel --build-arg VERSION=${VERSION}
 
 docker-latest: 
 	docker build -t statping-ng/statping-ng:latest --build-arg VERSION=${VERSION} .
