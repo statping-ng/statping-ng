@@ -43,6 +43,10 @@ var Command = &commandLine{&notifications.Notification{
 func runCommand(cmd string) (string, string, error) {
 	
 	utils.Log.Infof("Command notifier sending: %s", cmd)
+	
+	if len(cmd) == 0 {
+		return "", "", errors.New("you need at least 1 command")
+	}
 
         file, errt := ioutil.TempFile(os.TempDir(), "statping-exec.*.sh")
 
