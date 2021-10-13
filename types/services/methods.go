@@ -6,6 +6,7 @@ import (
 	"crypto/x509"
 	"encoding/hex"
 	"fmt"
+	"net/url"
 	"github.com/statping-ng/statping-ng/types"
 	"github.com/statping-ng/statping-ng/types/errors"
 	"github.com/statping-ng/statping-ng/types/failures"
@@ -199,6 +200,18 @@ func humanMicro(val int64) string {
 	}
 	return fmt.Sprintf("%0.0f ms", float64(val)*0.001)
 }
+//returns just the host of the service, used in templating command notifier
+func (s Service) Host() (string) {
+
+     u, err := url.Parse(s.Domain)
+
+     if (err!=nil) {
+      return s.Domain
+     }
+
+     return u.Host
+}
+
 
 // IsRunning returns true if the service go routine is running
 func (s *Service) IsRunning() bool {
