@@ -41,17 +41,28 @@ var Command = &commandLine{&notifications.Notification{
 }}
 
 func runCommand(cmd string) (string, string, error) {
-	utils.Log.Infof("Command notifier sending: %s", cmd)
-	cmdApp := strings.Split(cmd, " ")
-	if len(cmd) == 0 {
-		return "", "", errors.New("you need at least 1 command")
-	}
-	var cmdArgs []string
-	if len(cmd) > 1 {
-		cmdArgs = append(cmdArgs, cmd[1:])
-	}
-	outStr, errStr, err := utils.Command(cmdApp[0], cmdArgs...)
-	return outStr, errStr, err
+        utils.Log.Infof("Command notifier sending: %s", cmd)
+        cmdApp := strings.Fields(cmd)
+
+        if len(cmd) == 0 {
+               	return "", "", errors.New("you need at least 1 command")
+        }
+
+        var cmdArgs []string
+
+        if len(cmdApp) > 1 {
+               	cmdArgs = cmdApp[1:]
+        }
+
+        outStr, errStr, err := utils.Command(cmdApp[0], cmdArgs...)
+
+        if(err!=nil){
+
+        utils.Log.Errorf("Run Error %s",err)
+
+        }
+
+        return outStr, errStr, err
 }
 
 // OnSuccess for commandLine will trigger successful service
