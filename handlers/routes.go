@@ -108,7 +108,7 @@ func Router() *mux.Router {
 	api.Handle("/api/theme", authenticated(apiThemeRemoveHandler, false)).Methods("DELETE")
 
 	// API GROUPS Routes
-	api.Handle("/api/groups", scoped(apiAllGroupHandler)).Methods("GET")
+	api.Handle("/api/groups", readOnly(http.HandlerFunc(apiAllGroupHandler), false).Methods("GET")
 	api.Handle("/api/groups", authenticated(apiCreateGroupHandler, false)).Methods("POST")
 	api.Handle("/api/groups/{id}", readOnly(http.HandlerFunc(apiGroupHandler), false)).Methods("GET")
 	api.Handle("/api/groups/{id}", authenticated(apiGroupUpdateHandler, false)).Methods("POST")
