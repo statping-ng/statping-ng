@@ -3,6 +3,7 @@
       <div v-if="modal" class="modal-backdrop"></div>
       <Modal/>
         <TopNav :admin="admin"/>
+        <AutoReload />
         <router-view :admin="admin"/>
     </div>
 </template>
@@ -10,12 +11,14 @@
 <script>
   import Modal from "@/components/Elements/Modal";
   const TopNav = () => import(/* webpackChunkName: "dashboard" */ '@/components/Dashboard/TopNav')
+  const AutoReload = () => import(/* webpackChunkName: "dashboard" */ "@/components/Elements/AutoReload");
 
   export default {
   name: 'Dashboard',
   components: {
     Modal,
     TopNav,
+    AutoReload
   },
   data () {
       return {
