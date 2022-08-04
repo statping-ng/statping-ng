@@ -18,9 +18,6 @@ class Api {
 
   async core() {
     const core = axios.get('api').then(response => (response.data))
-    if (core.allow_reports) {
-      await this.sentry_init()
-    }
     return core
   }
 
