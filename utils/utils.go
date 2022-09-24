@@ -142,7 +142,7 @@ func copyAndCapture(w io.Writer, r io.Reader) ([]byte, error) {
 	}
 }
 
-// DurationReadable will return a time.Duration into a human readable string
+// DurationReadable will turn a time.Duration into a human readable string
 // // t := time.Duration(5 * time.Minute)
 // // DurationReadable(t)
 // // returns: 5 minutes
@@ -155,6 +155,21 @@ func DurationReadable(d time.Duration) string {
 		return fmt.Sprintf("%0.0f seconds", d.Seconds())
 	}
 	return d.String()
+}
+
+// HumanMicro will turn a microsecond duration value into a human readable string
+// // t := 42
+// // HumanMicro(t)
+// // returns: 42 μs
+//
+// // t := 45619
+// // HumanMicro(t)
+// // returns: 45 ms
+func HumanMicro(val int64) string {
+	if (val > 0 && val < 10000) || (val < 0 && val > -10000) {
+		return fmt.Sprintf("%d μs", val)
+	}
+	return fmt.Sprintf("%0.0f ms", float64(val)*0.001)
 }
 
 // HttpRequest is a global function to send a HTTP request
