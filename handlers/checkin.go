@@ -3,6 +3,7 @@ package handlers
 import (
 	"net"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/statping-ng/statping-ng/types/checkins"
@@ -93,7 +94,7 @@ func checkinHitHandler(w http.ResponseWriter, r *http.Request) {
 	var latency int64 = 0
 	if lastHit != nil {
 		latency = hit.CreatedAt.Sub(lastHit.CreatedAt.Add(checkin.Period())).Microseconds()
-		if latency > checkin.Period().Microseconds() {
+		if latency > (checkin.Period() + (time.Duration(latency) * time.Second)).Microseconds() {
 			latency = 0
 		}
 	}
