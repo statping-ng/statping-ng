@@ -278,7 +278,7 @@ func (s Service) OnlineDaysPercent(days int) float32 {
 func (s *Service) OnlineSince(ago time.Time) float32 {
 	failsCount := s.FailuresSince(ago).Count()
 	hitsCount := s.HitsSince(ago).Count()
-	checkinHitsCount := s.CheckinHitsSince(ago).Count()
+	checkinHitsCount := s.AllCheckinHits().Since(ago).Count()
 
 	if failsCount == 0 {
 		s.Online24Hours = 100.00

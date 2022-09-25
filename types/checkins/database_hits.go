@@ -26,6 +26,11 @@ func (h CheckinHitters) Count() int {
 	return count
 }
 
+func (h CheckinHitters) Since(t time.Time) CheckinHitters {
+	timestamp := db.FormatTime(t)
+	return CheckinHitters{h.db.Where("checkin_hits.created_at > ?", timestamp)}
+}
+
 func (c *Checkin) LastHit() *CheckinHit {
 	var hit CheckinHit
 	dbHits.Where("checkin = ?", c.Id).Last(&hit)
@@ -56,9 +61,4 @@ func (c *CheckinHit) Delete() error {
 
 func AllCheckinHits(serviceId int64) CheckinHitters {
 	return CheckinHitters{dbHits.Joins("JOIN checkins ON checkins.id = checkin").Where("checkins.service = ?", serviceId).Order("checkin_hits.id DESC")}
-}
-
-func CheckinHitsSince(serviceId int64, t time.Time) CheckinHitters {
-	timestamp := db.FormatTime(t)
-	return CheckinHitters{AllCheckinHits(serviceId).db.Where("checkin_hits.created_at > ?", timestamp)}
 }
