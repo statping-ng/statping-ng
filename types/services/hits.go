@@ -34,7 +34,3 @@ func (s *Service) FirstCheckinHit() *checkins.CheckinHit {
 func (s *Service) HitsSince(t time.Time) hits.Hitters {
 	return hits.Since(t, s)
 }
-
-func (s *Service) CheckinHitsSince(t time.Time) checkins.CheckinHitters {
-	return checkins.CheckinHitsSince(s.Id, t)
-}
