@@ -165,11 +165,7 @@ func (e *emailer) dialSend(email *emailOutgoing) error {
 
 	m.SetAddressHeader("From", email.From, "Statping")
 	//For sending emails to multiple recipients that are comma separated
-	tempSplit := strings.Split(email.To, ",")
-	addresses := make([]string, len(tempSplit))
-	for i := range addresses {
-		addresses[i] = m.FormatAddress(tempSplit[i], "")
-	}
+	addresses := strings.Split(email.To, ",")
 	m.SetHeader("To", addresses...)
 	m.SetHeader("Subject", email.Subject)
 	m.SetBody("text/html", email.Template)

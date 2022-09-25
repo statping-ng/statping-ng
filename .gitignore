@@ -40,4 +40,4 @@ tmp
 /frontend/cypress/videos/
 services.yml
 statping.wiki
-statup
+statup/
