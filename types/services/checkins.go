@@ -4,7 +4,7 @@ package services
 func CheckinProcess(s *Service) {
 	for _, c := range s.Checkins {
 		if last := c.LastHit(); last != nil {
-			c.Start(s.Timeout)
+			c.Start(&s.Timeout)
 		}
 	}
 }

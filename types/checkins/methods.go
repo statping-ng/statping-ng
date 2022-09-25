@@ -18,7 +18,7 @@ func (c *Checkin) Period() time.Duration {
 }
 
 // Start will create a channel for the checkin checking go routine
-func (c *Checkin) Start(serviceTimeout int) {
+func (c *Checkin) Start(serviceTimeout *int) {
 	log.Infoln(fmt.Sprintf("Starting checkin routine: %s", c.Name))
 	c.Running = make(chan bool)
 	go c.checkinRoutine(serviceTimeout)

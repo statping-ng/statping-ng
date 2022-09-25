@@ -72,7 +72,7 @@ func checkinHitHandler(w http.ResponseWriter, r *http.Request) {
 
 	lastHit := checkin.LastHit()
 	if lastHit == nil {
-		checkin.Start(service.Timeout)
+		checkin.Start(&service.Timeout)
 	}
 
 	hit := &checkins.CheckinHit{
