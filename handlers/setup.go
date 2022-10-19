@@ -79,17 +79,19 @@ func processSetupHandler(w http.ResponseWriter, r *http.Request) {
 	notifiers.InitNotifiers()
 
 	c := &core.Core{
-		Name:         project,
-		Description:  description,
-		ApiSecret:    utils.Params.GetString("API_SECRET"),
-		Domain:       domain,
-		Version:      core.App.Version,
-		Started:      utils.Now(),
-		CreatedAt:    utils.Now(),
-		UseCdn:       null.NewNullBool(false),
-		Footer:       null.NewNullString(""),
-		Language:     confgs.Language,
-		AllowReports: null.NewNullBool(sendReports),
+		Name:                   project,
+		Description:            description,
+		ApiSecret:              utils.Params.GetString("API_SECRET"),
+		Domain:                 domain,
+		Version:                core.App.Version,
+		Started:                utils.Now(),
+		CreatedAt:              utils.Now(),
+		UseCdn:                 null.NewNullBool(false),
+		Footer:                 null.NewNullString(""),
+		Language:               confgs.Language,
+		AllowReports:           null.NewNullBool(sendReports),
+		NumberOfDaysForService: null.NewNullInt64(90),
+		DisableGraphs:          null.NewNullBool(false),
 	}
 
 	log.Infoln("Creating new Core")

@@ -15,7 +15,7 @@
         <div class="row mt-2">
           <div class="col-12 no-select">
             <p class="divided">
-              <span class="font-2 text-muted">90 {{$t('days_ago')}}</span>
+              <span class="font-2 text-muted">{{core.number_of_days_for_service}} {{$t('days_ago')}}</span>
               <span class="divider"></span>
               <span class="text-center font-2" :class="{'text-muted': service.online, 'text-danger': !service.online}">{{service_txt}}</span>
               <span class="divider"></span>
@@ -54,6 +54,9 @@ export default {
   computed: {
     service_txt() {
       return this.smallText(this.service)
+    },
+    core() {
+      return this.$store.getters.core
     }
   },
   mounted () {
@@ -77,7 +80,8 @@ export default {
       this.hover_text = `${e.date.toLocaleDateString()} - ${txt}`
     },
       async lastDaysFailures() {
-        const start = this.beginningOf('day', this.nowSubtract(86400 * 90))
+        const days = this.$store.getters.core.number_of_days_for_service;
+        const start = this.beginningOf('day', this.nowSubtract(86400 * days))
         const end = this.endOf('tomorrow')
         const data = await Api.service_failures_data(this.service.id, this.toUnix(start), this.toUnix(end), "24h", true)
         data.forEach((d) => {
