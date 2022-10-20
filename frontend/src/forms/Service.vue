@@ -53,6 +53,16 @@
                 </div>
             </div>
 
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">{{ $t('show_graph') }}</label>
+                <div class="col-12 col-md-8 mt-1 mb-2">
+                    <span @click="service.show_graph = !!service.show_graph" class="switch float-left">
+                        <input v-model="service.show_graph" type="checkbox" name="show_graph-option" class="switch" id="switch-show_graph" v-bind:checked="service.show_graph">
+                        <label for="switch-show_graph"></label>
+                    </span>
+                </div>
+            </div>
+
             <div v-if="service.type !== 'static'" class="form-group row">
                 <label for="service_interval" class="col-sm-4 col-form-label">{{ $t('check_interval') }}</label>
                 <div class="col-sm-6">
@@ -309,6 +319,7 @@
                   notify_all_changes: true,
                   notify_after: 2,
                   public: true,
+                  show_graph: true,
                   tls_cert: "",
                   tls_cert_key: "",
                   tls_cert_root: "",

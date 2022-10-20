@@ -57,15 +57,15 @@
                 </div>
 
                 <div class="form-group row mt-3">
-                    <label class="col-sm-10 col-form-label">{{ $t('disable_graphs') }}</label>
+                    <label class="col-sm-10 col-form-label">{{ $t('show_graphs') }}</label>
                     <div class="col-sm-2 float-right">
-                        <span @click="core.disable_graphs = !!core.disable_graphs" class="switch" id="disable_graphs">
-                        <input v-model="core.disable_graphs" type="checkbox" name="disable_graphs" class="switch" id="switch_disable_graphs" :checked="core.disable_graphs">
-                        <label for="switch_disable_graphs"></label>
+                        <span @click="core.show_graphs = !!core.show_graphs" class="switch" id="show_graphs">
+                        <input v-model="core.show_graphs" type="checkbox" name="show_graphs" class="switch" id="switch_show_graphs" :checked="core.show_graphs">
+                        <label for="switch_show_graphs"></label>
                       </span>
                     </div>
                     <div class="col-12">
-                        <small>{{ $t('disable_graphs_desc') }}</small>
+                        <small>{{ $t('show_graphs_desc') }}</small>
                     </div>
                 </div>
 

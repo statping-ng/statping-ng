@@ -48,7 +48,7 @@ type DbConfig struct {
 	DisableColors bool `yaml:"disable_colors" json:"disable_colors"`
 
 	NumberOfDaysForService int  `yaml:"number_of_days_for_service" json:"number_of_days_for_service"`
-	DisableGraphs          bool `yaml:"disable_graphs" json:"disable_graphs"`
+	ShowGraphs             bool `yaml:"show_graphs" json:"show_graphs"`
 
 	PostgresSSLMode string `yaml:"postgres_ssl,omitempty" json:"postgres_ssl"`
 

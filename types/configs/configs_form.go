@@ -28,7 +28,7 @@ func LoadConfigForm(r *http.Request) (*DbConfig, error) {
 	language := g("language")
 	reports, _ := strconv.ParseBool(g("send_reports"))
 	numberOfDaysForService := utils.ToInt(g("number_of_days_for_service"))
-	disableGraphs, _ := strconv.ParseBool(g("disable_graphs"))
+	showGraphs, _ := strconv.ParseBool(g("show_graphs"))
 
 	if project == "" || username == "" || password == "" {
 		err := errors.New("Missing required elements on setup form")
@@ -50,7 +50,7 @@ func LoadConfigForm(r *http.Request) (*DbConfig, error) {
 	p.Set("ADMIN_PASSWORD", password)
 	p.Set("ADMIN_EMAIL", email)
 	p.Set("NUMBER_OF_DAYS_FOR_SERVICE", numberOfDaysForService)
-	p.Set("DISABLE_GRAPHS", disableGraphs)
+	p.Set("SHOW_GRAPHS", showGraphs)
 
 	confg := &DbConfig{
 		DbConn:                 dbConn,
@@ -69,7 +69,7 @@ func LoadConfigForm(r *http.Request) (*DbConfig, error) {
 		Language:               language,
 		AllowReports:           reports,
 		NumberOfDaysForService: int(numberOfDaysForService),
-		DisableGraphs:          disableGraphs,
+		ShowGraphs:             showGraphs,
 	}
 
 	return confg, nil

@@ -36,7 +36,7 @@ func Save() error {
 		MaxIdleConnections:     p.GetInt("MAX_IDLE_CONN"),
 		MaxLifeConnections:     int(p.GetDuration("MAX_LIFE_CONN").Seconds()),
 		NumberOfDaysForService: p.GetInt("NUMBER_OF_DAYS_FOR_SERVICE"),
-		DisableGraphs:          p.GetBool("DISABLE_GRAPHS"),
+		ShowGraphs:             p.GetBool("SHOW_GRAPHS"),
 	}
 	return configs.Save(utils.Directory)
 }
@@ -108,8 +108,8 @@ func LoadConfigs(cfgFile string) (*DbConfig, error) {
 	if db.NumberOfDaysForService > 0 {
 		p.Set("NUMBER_OF_DAYS_FOR_SERVICE", db.NumberOfDaysForService)
 	}
-	if db.DisableGraphs {
-		p.Set("DISABLE_GRAPHS", db.DisableGraphs)
+	if db.ShowGraphs {
+		p.Set("SHOW_GRAPHS", db.ShowGraphs)
 	}
 
 	configs := &DbConfig{
@@ -135,7 +135,7 @@ func LoadConfigs(cfgFile string) (*DbConfig, error) {
 		ApiSecret:              p.GetString("API_SECRET"),
 		SampleData:             p.GetBool("SAMPLE_DATA"),
 		NumberOfDaysForService: p.GetInt("NUMBER_OF_DAYS_FOR_SERVICE"),
-		DisableGraphs:          p.GetBool("DISABLE_GRAPHS"),
+		ShowGraphs:             p.GetBool("SHOW_GRAPHS"),
 	}
 	log.WithFields(utils.ToFields(configs)).Debugln("read config file: " + cfgFile)
 

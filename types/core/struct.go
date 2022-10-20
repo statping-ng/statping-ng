@@ -1,9 +1,10 @@
 package core
 
 import (
+	"time"
+
 	"github.com/statping-ng/statping-ng/types/null"
 	"github.com/statping-ng/statping-ng/utils"
-	"time"
 )
 
 var (
@@ -36,7 +37,7 @@ type Core struct {
 	UseCdn                 null.NullBool   `gorm:"column:use_cdn;default:false" json:"using_cdn,omitempty"`
 	AllowReports           null.NullBool   `gorm:"column:allow_reports;default:false" json:"allow_reports,omitempty"`
 	NumberOfDaysForService null.NullInt64  `gorm:"column:number_of_days_for_service;default:90" json:"number_of_days_for_service,omitempty"`
-	DisableGraphs          null.NullBool   `gorm:"column:disable_graphs;default:false" json:"disable_graphs,omitempty"`
+	ShowGraphs             null.NullBool   `gorm:"column:show_graphs;default:true" json:"show_graphs,omitempty"`
 	CreatedAt              time.Time       `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt              time.Time       `gorm:"column:updated_at" json:"updated_at"`
 	Started                time.Time       `gorm:"-" json:"started_on"`

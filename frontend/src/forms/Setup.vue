@@ -67,12 +67,12 @@
                         <div class="form-group mt-3">
                             <div class="row">
                                 <div class="col-9">
-                                    <span class="text-left text-capitalize">{{ $t('disable_graphs') }}</span>
+                                    <span class="text-left text-capitalize">{{ $t('show_graphs') }}</span>
                                 </div>
                                 <div class="col-3 text-right">
-                                    <span @click="setup.disable_graphs = !!setup.disable_graphs" class="switch">
-                                      <input v-model="setup.disable_graphs" type="checkbox" name="disable_graphs" class="switch" id="disable_graphs" :checked="setup.disable_graphs">
-                                      <label for="disable_graphs"></label>
+                                    <span @click="setup.show_graphs = !!setup.show_graphs" class="switch">
+                                      <input v-model="setup.show_graphs" type="checkbox" name="show_graphs" class="switch" id="show_graphs" :checked="setup.show_graphs">
+                                      <label for="show_graphs"></label>
                                     </span>
                                 </div>
                             </div>
@@ -191,7 +191,7 @@
         send_reports: true,
         email: "",
         number_of_days_for_service: 90,
-        disable_graphs: false,
+        show_graphs: true,
       }
     }
   },

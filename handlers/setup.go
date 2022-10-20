@@ -2,15 +2,16 @@ package handlers
 
 import (
 	"errors"
+	"net/http"
+	"net/url"
+	"strconv"
+
 	"github.com/statping-ng/statping-ng/notifiers"
 	"github.com/statping-ng/statping-ng/types/configs"
 	"github.com/statping-ng/statping-ng/types/core"
 	"github.com/statping-ng/statping-ng/types/null"
 	"github.com/statping-ng/statping-ng/types/services"
 	"github.com/statping-ng/statping-ng/utils"
-	"net/http"
-	"net/url"
-	"strconv"
 )
 
 func processSetupHandler(w http.ResponseWriter, r *http.Request) {
@@ -91,7 +92,7 @@ func processSetupHandler(w http.ResponseWriter, r *http.Request) {
 		Language:               confgs.Language,
 		AllowReports:           null.NewNullBool(sendReports),
 		NumberOfDaysForService: null.NewNullInt64(90),
-		DisableGraphs:          null.NewNullBool(false),
+		ShowGraphs:             null.NewNullBool(true),
 	}
 
 	log.Infoln("Creating new Core")

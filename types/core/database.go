@@ -60,8 +60,8 @@ func Select() (*Core, error) {
 	if utils.Params.GetInt64("NUMBER_OF_DAYS_FOR_SERVICE") != 90 {
 		App.NumberOfDaysForService = null.NewNullInt64(utils.Params.GetInt64("NUMBER_OF_DAYS_FOR_SERVICE"))
 	}
-	if utils.Params.GetBool("DISABLE_GRAPHS") {
-		App.DisableGraphs = null.NewNullBool(true)
+	if utils.Params.GetBool("SHOW_GRAPHS") {
+		App.ShowGraphs = null.NewNullBool(true)
 	}
 	App.Version = utils.Params.GetString("VERSION")
 	App.Commit = utils.Params.GetString("COMMIT")

@@ -99,9 +99,9 @@ func apiCoreHandler(w http.ResponseWriter, r *http.Request) {
 	app.UseCdn = null.NewNullBool(c.UseCdn.Bool)
 	app.AllowReports = null.NewNullBool(c.AllowReports.Bool)
 	app.NumberOfDaysForService = null.NewNullInt64(c.NumberOfDaysForService.Int64)
-	app.DisableGraphs = null.NewNullBool(c.DisableGraphs.Bool)
+	app.ShowGraphs = null.NewNullBool(c.ShowGraphs.Bool)
 	utils.Params.Set("NUMBER_OF_DAYS_FOR_SERVICE", app.NumberOfDaysForService.Int64)
-	utils.Params.Set("DISABLE_GRAPHS", app.DisableGraphs.Bool)
+	utils.Params.Set("SHOW_GRAPHS", app.ShowGraphs.Bool)
 
 	if err := app.Update(); err != nil {
 		sendErrorJson(err, w, r)

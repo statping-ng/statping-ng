@@ -28,9 +28,9 @@
             <MessageBlock v-for="message in messages" v-bind:key="message.id" :message="message" />
         </div>
 
-        <div v-if="!core.disable_graphs" class="col-12 full-col-12">
+        <div v-if="core.show_graphs" class="col-12 full-col-12">
             <div v-for="service in services" :ref="service.id" v-bind:key="service.id">
-                <ServiceBlock :service="service" />
+                <ServiceBlock v-if="service.show_graph" :service="service" />
             </div>
         </div>
 
