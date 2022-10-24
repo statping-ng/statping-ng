@@ -10,7 +10,7 @@ import (
 var log = utils.Log.WithField("type", "checkin")
 
 // checkinRoutine for checking if the last Checkin was within its interval
-func (c *Checkin) checkinRoutine() {
+func (c *Checkin) checkinRoutine(serviceTimeout *int) {
 	reCheck := c.Period()
 
 CheckinLoop:
@@ -26,7 +26,7 @@ CheckinLoop:
 
 			log.Infoln(fmt.Sprintf("Checkin '%s' expects a request every %s last request was %s ago", c.Name, c.Period(), utils.DurationReadable(ago)))
 
-			if ago.Seconds() > c.Period().Seconds() {
+			if ago.Seconds() > c.Period().Seconds()+float64(*serviceTimeout) {
 				issue := fmt.Sprintf("Checkin expects a request every %d minutes", c.Interval)
 				log.Warnln(issue)
 
@@ -41,7 +41,7 @@ CheckinLoop:
 					log.Errorln(err)
 				}
 			}
-			reCheck = c.Period()
+			reCheck = c.Period() + time.Duration(*serviceTimeout*int(time.Second))
 		}
 	}
 }

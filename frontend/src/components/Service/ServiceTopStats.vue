@@ -1,14 +1,14 @@
 <template>
     <div class="row stats_area mt-5 mb-4">
-        <div class="col-4">
+        <div class="col-4" v-if="showResponseTime">
             <span class="font-5 d-block font-weight-bold">{{humanTime(service.avg_response)}}</span>
             <span class="font-1 subtitle">{{$t('average_response')}}</span>
         </div>
-        <div class="col-4">
+        <div :class="showResponseTime ? 'col-4' : 'col-6'">
             <span class="font-5 d-block font-weight-bold">{{service.online_24_hours}} %</span>
             <span class="font-1 subtitle">{{$t('last_uptime')}} 24 {{$tc('hour', 24)}}</span>
         </div>
-        <div class="col-4">
+        <div :class="showResponseTime ? 'col-4' : 'col-6'">
             <span class="font-5 d-block font-weight-bold">{{service.online_7_days}} %</span>
             <span class="font-1 subtitle">{{$t('last_uptime')}} 7 {{$tc('day', 7)}}</span>
         </div>
@@ -23,7 +23,12 @@
                 type: Object,
                 required: true
             },
-        }
+        },
+        computed: {
+            showResponseTime() {
+                return this.service.avg_response !== 0 || this.service.type !== 'static'
+            },
+        },
     }
 </script>
 

@@ -1,8 +1,10 @@
 package services
 
 import (
-	"github.com/statping-ng/statping-ng/types/hits"
 	"time"
+
+	"github.com/statping-ng/statping-ng/types/checkins"
+	"github.com/statping-ng/statping-ng/types/hits"
 )
 
 func (s *Service) HitsColumnID() (string, int64) {
@@ -19,6 +21,14 @@ func (s *Service) LastHit() *hits.Hit {
 
 func (s *Service) AllHits() hits.Hitters {
 	return hits.AllHits(s)
+}
+
+func (s *Service) AllCheckinHits() checkins.CheckinHitters {
+	return checkins.AllCheckinHits(s.Id)
+}
+
+func (s *Service) FirstCheckinHit() *checkins.CheckinHit {
+	return checkins.AllCheckinHits(s.Id).First()
 }
 
 func (s *Service) HitsSince(t time.Time) hits.Hitters {
