@@ -1,9 +1,9 @@
 package messages
 
 import (
-	"github.com/statping-ng/statping-ng/database"
-	"github.com/statping-ng/statping-ng/types/errors"
-	"github.com/statping-ng/statping-ng/utils"
+	"github.com/handelsblattgroup/statping/database"
+	"github.com/handelsblattgroup/statping/types/errors"
+	"github.com/handelsblattgroup/statping/utils"
 )
 
 var (

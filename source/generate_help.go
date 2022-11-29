@@ -1,3 +1,4 @@
+//go:build ignore
 // +build ignore
 
 package main
@@ -16,7 +17,7 @@ import (
 	"time"
 )
 
-const wikiUrl = "https://github.com/statping-ng/statping-ng.wiki"
+const wikiUrl = "https://github.com/handelsblattgroup/statping.wiki"
 
 var vue = `<template>
 <div class="col-12">

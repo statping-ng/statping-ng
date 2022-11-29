@@ -3,10 +3,10 @@ package handlers
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/statping-ng/statping-ng/types/core"
-	"github.com/statping-ng/statping-ng/types/errors"
-	"github.com/statping-ng/statping-ng/types/null"
-	"github.com/statping-ng/statping-ng/types/users"
+	"github.com/handelsblattgroup/statping/types/core"
+	"github.com/handelsblattgroup/statping/types/errors"
+	"github.com/handelsblattgroup/statping/types/null"
+	"github.com/handelsblattgroup/statping/types/users"
 	"golang.org/x/oauth2"
 	"net/http"
 )

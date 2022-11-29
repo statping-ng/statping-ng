@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/statping-ng/statping-ng/types/errors"
-	"github.com/statping-ng/statping-ng/types/groups"
-	"github.com/statping-ng/statping-ng/utils"
+	"github.com/handelsblattgroup/statping/types/errors"
+	"github.com/handelsblattgroup/statping/types/groups"
+	"github.com/handelsblattgroup/statping/utils"
 	"net/http"
 )
 

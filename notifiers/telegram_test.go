@@ -1,13 +1,13 @@
 package notifiers
 
 import (
-	"github.com/statping-ng/statping-ng/database"
-	"github.com/statping-ng/statping-ng/types/core"
-	"github.com/statping-ng/statping-ng/types/failures"
-	"github.com/statping-ng/statping-ng/types/notifications"
-	"github.com/statping-ng/statping-ng/types/null"
-	"github.com/statping-ng/statping-ng/types/services"
-	"github.com/statping-ng/statping-ng/utils"
+	"github.com/handelsblattgroup/statping/database"
+	"github.com/handelsblattgroup/statping/types/core"
+	"github.com/handelsblattgroup/statping/types/failures"
+	"github.com/handelsblattgroup/statping/types/notifications"
+	"github.com/handelsblattgroup/statping/types/null"
+	"github.com/handelsblattgroup/statping/types/services"
+	"github.com/handelsblattgroup/statping/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"

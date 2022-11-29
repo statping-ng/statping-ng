@@ -1,11 +1,11 @@
 package core
 
 import (
+	"github.com/handelsblattgroup/statping/database"
+	"github.com/handelsblattgroup/statping/types/metrics"
+	"github.com/handelsblattgroup/statping/types/null"
+	"github.com/handelsblattgroup/statping/utils"
 	"github.com/pkg/errors"
-	"github.com/statping-ng/statping-ng/database"
-	"github.com/statping-ng/statping-ng/types/metrics"
-	"github.com/statping-ng/statping-ng/types/null"
-	"github.com/statping-ng/statping-ng/utils"
 )
 
 var db database.Database

@@ -2,7 +2,7 @@ package database
 
 import (
 	"fmt"
-	"github.com/statping-ng/statping-ng/utils"
+	"github.com/handelsblattgroup/statping/utils"
 	"time"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"

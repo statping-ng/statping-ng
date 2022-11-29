@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"github.com/dgrijalva/jwt-go"
+	"github.com/handelsblattgroup/statping/types/users"
 	"github.com/pkg/errors"
-	"github.com/statping-ng/statping-ng/types/users"
 	"net/http"
 	"time"
 )

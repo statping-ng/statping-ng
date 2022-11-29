@@ -3,8 +3,8 @@ package notifiers
 import (
 	"testing"
 
-	"github.com/statping-ng/statping-ng/types/failures"
-	"github.com/statping-ng/statping-ng/types/services"
+	"github.com/handelsblattgroup/statping/types/failures"
+	"github.com/handelsblattgroup/statping/types/services"
 	"github.com/stretchr/testify/assert"
 )
 

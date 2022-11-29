@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/handelsblattgroup/statping/utils"
 	"github.com/spf13/cobra"
-	"github.com/statping-ng/statping-ng/utils"
 )
 
 var (

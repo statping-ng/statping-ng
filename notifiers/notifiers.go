@@ -5,10 +5,10 @@ import (
 	"html/template"
 	"time"
 
-	"github.com/statping-ng/statping-ng/types/core"
-	"github.com/statping-ng/statping-ng/types/failures"
-	"github.com/statping-ng/statping-ng/types/services"
-	"github.com/statping-ng/statping-ng/utils"
+	"github.com/handelsblattgroup/statping/types/core"
+	"github.com/handelsblattgroup/statping/types/failures"
+	"github.com/handelsblattgroup/statping/types/services"
+	"github.com/handelsblattgroup/statping/utils"
 )
 
 //go:generate go run generate.go

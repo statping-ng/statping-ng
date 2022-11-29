@@ -4,15 +4,15 @@ import (
 	"context"
 	"crypto/tls"
 	"github.com/gorilla/mux"
-	"github.com/statping-ng/statping-ng/database"
-	"github.com/statping-ng/statping-ng/types/checkins"
-	"github.com/statping-ng/statping-ng/types/failures"
-	"github.com/statping-ng/statping-ng/types/hits"
-	"github.com/statping-ng/statping-ng/types/incidents"
-	"github.com/statping-ng/statping-ng/types/messages"
-	"github.com/statping-ng/statping-ng/types/notifications"
-	"github.com/statping-ng/statping-ng/types/null"
-	"github.com/statping-ng/statping-ng/utils"
+	"github.com/handelsblattgroup/statping/database"
+	"github.com/handelsblattgroup/statping/types/checkins"
+	"github.com/handelsblattgroup/statping/types/failures"
+	"github.com/handelsblattgroup/statping/types/hits"
+	"github.com/handelsblattgroup/statping/types/incidents"
+	"github.com/handelsblattgroup/statping/types/messages"
+	"github.com/handelsblattgroup/statping/types/notifications"
+	"github.com/handelsblattgroup/statping/types/null"
+	"github.com/handelsblattgroup/statping/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
@@ -595,7 +595,7 @@ services:
     <<: *tcpservice
 
   - name: Statping Github
-    domain: https://github.com/statping-ng/statping-ng
+    domain: https://github.com/handelsblattgroup/statping
     <<: *httpservice`
 
 		err := utils.SaveFile(utils.Directory+"/services.yml", []byte(file))

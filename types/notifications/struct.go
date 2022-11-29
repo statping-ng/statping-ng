@@ -1,9 +1,9 @@
 package notifications
 
 import (
+	"github.com/handelsblattgroup/statping/types/null"
+	"github.com/handelsblattgroup/statping/utils"
 	"github.com/sirupsen/logrus"
-	"github.com/statping-ng/statping-ng/types/null"
-	"github.com/statping-ng/statping-ng/utils"
 	"time"
 )
 

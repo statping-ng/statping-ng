@@ -2,23 +2,23 @@ package configs
 
 import (
 	"fmt"
+	"github.com/handelsblattgroup/statping/source"
+	"github.com/handelsblattgroup/statping/types/notifications"
+	"github.com/handelsblattgroup/statping/utils"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/pkg/errors"
-	"github.com/statping-ng/statping-ng/source"
-	"github.com/statping-ng/statping-ng/types/notifications"
-	"github.com/statping-ng/statping-ng/utils"
 
-	"github.com/statping-ng/statping-ng/types/checkins"
-	"github.com/statping-ng/statping-ng/types/core"
-	"github.com/statping-ng/statping-ng/types/failures"
-	"github.com/statping-ng/statping-ng/types/groups"
-	"github.com/statping-ng/statping-ng/types/hits"
-	"github.com/statping-ng/statping-ng/types/incidents"
-	"github.com/statping-ng/statping-ng/types/messages"
-	"github.com/statping-ng/statping-ng/types/services"
-	"github.com/statping-ng/statping-ng/types/users"
+	"github.com/handelsblattgroup/statping/types/checkins"
+	"github.com/handelsblattgroup/statping/types/core"
+	"github.com/handelsblattgroup/statping/types/failures"
+	"github.com/handelsblattgroup/statping/types/groups"
+	"github.com/handelsblattgroup/statping/types/hits"
+	"github.com/handelsblattgroup/statping/types/incidents"
+	"github.com/handelsblattgroup/statping/types/messages"
+	"github.com/handelsblattgroup/statping/types/services"
+	"github.com/handelsblattgroup/statping/types/users"
 )
 
 func (d *DbConfig) ResetCore() error {

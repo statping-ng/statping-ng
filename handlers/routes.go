@@ -5,12 +5,12 @@ import (
 	"net/http/pprof"
 
 	"github.com/gorilla/mux"
+	"github.com/handelsblattgroup/statping/source"
+	"github.com/handelsblattgroup/statping/types/core"
+	"github.com/handelsblattgroup/statping/utils"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/statping-ng/statping-ng/source"
-	"github.com/statping-ng/statping-ng/types/core"
-	"github.com/statping-ng/statping-ng/utils"
 
-	_ "github.com/statping-ng/statping-ng/types/metrics"
+	_ "github.com/handelsblattgroup/statping/types/metrics"
 )
 
 var (

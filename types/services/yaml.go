@@ -1,8 +1,8 @@
 package services
 
 import (
+	"github.com/handelsblattgroup/statping/utils"
 	"github.com/pkg/errors"
-	"github.com/statping-ng/statping-ng/utils"
 	"gopkg.in/yaml.v2"
 )
 

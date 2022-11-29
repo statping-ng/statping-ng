@@ -3,9 +3,9 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"github.com/handelsblattgroup/statping/utils"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"github.com/statping-ng/statping-ng/utils"
 	"io"
 	"os"
 	"os/exec"

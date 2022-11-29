@@ -12,14 +12,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/handelsblattgroup/statping/types/metrics"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/statping-ng/statping-ng/types/metrics"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/statping-ng/statping-ng/types/failures"
-	"github.com/statping-ng/statping-ng/types/hits"
-	"github.com/statping-ng/statping-ng/utils"
+	"github.com/handelsblattgroup/statping/types/failures"
+	"github.com/handelsblattgroup/statping/types/hits"
+	"github.com/handelsblattgroup/statping/utils"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
 

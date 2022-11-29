@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/statping-ng/statping-ng/types/hits"
+	"github.com/handelsblattgroup/statping/types/hits"
 	"time"
 )
 

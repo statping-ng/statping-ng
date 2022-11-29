@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/foomo/simplecert"
 	"github.com/foomo/tlsconfig"
-	"github.com/statping-ng/statping-ng/utils"
+	"github.com/handelsblattgroup/statping/utils"
 	"net/http"
 	"strings"
 )

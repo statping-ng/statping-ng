@@ -4,13 +4,13 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"github.com/handelsblattgroup/statping/handlers"
+	"github.com/handelsblattgroup/statping/source"
+	"github.com/handelsblattgroup/statping/types/configs"
+	"github.com/handelsblattgroup/statping/types/core"
+	"github.com/handelsblattgroup/statping/types/services"
+	"github.com/handelsblattgroup/statping/utils"
 	"github.com/pkg/errors"
-	"github.com/statping-ng/statping-ng/handlers"
-	"github.com/statping-ng/statping-ng/source"
-	"github.com/statping-ng/statping-ng/types/configs"
-	"github.com/statping-ng/statping-ng/types/core"
-	"github.com/statping-ng/statping-ng/types/services"
-	"github.com/statping-ng/statping-ng/utils"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -351,7 +351,7 @@ func ask(format string) bool {
 func updateDisplay() error {
 	gitCurrent, err := checkGithubUpdates()
 	if err != nil {
-		return errors.Wrap(err, "Issue connecting to https://github.com/statping-ng/statping-ng")
+		return errors.Wrap(err, "Issue connecting to https://github.com/handelsblattgroup/statping")
 	}
 	if gitCurrent.TagName == "" {
 		return nil

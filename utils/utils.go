@@ -18,7 +18,7 @@ import (
 	"time"
 
 	"github.com/go-ping/ping"
-	"github.com/statping-ng/statping-ng/types/metrics"
+	"github.com/handelsblattgroup/statping/types/metrics"
 )
 
 var (

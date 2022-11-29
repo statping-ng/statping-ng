@@ -2,7 +2,7 @@ package checkins
 
 import (
 	"fmt"
-	"github.com/statping-ng/statping-ng/utils"
+	"github.com/handelsblattgroup/statping/utils"
 	"time"
 )
 

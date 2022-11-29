@@ -1,7 +1,7 @@
 package messages
 
 import (
-	"github.com/statping-ng/statping-ng/types/null"
+	"github.com/handelsblattgroup/statping/types/null"
 	"time"
 )
 

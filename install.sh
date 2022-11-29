@@ -12,7 +12,7 @@ cyan="\033[36m"
 white="\033[37m"
 gpg_key=64B9C6AAE2D55278
 gpgurl=https://statping.com/statping.gpg
-repo=https://github.com/statping-ng/statping-ng
+repo=https://github.com/handelsblattgroup/statping
 
 statping_get_tarball() {
   fext='tar.gz'

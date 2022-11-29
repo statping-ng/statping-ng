@@ -3,9 +3,9 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"github.com/handelsblattgroup/statping/types/metrics"
+	"github.com/handelsblattgroup/statping/utils"
 	"github.com/jinzhu/gorm"
-	"github.com/statping-ng/statping-ng/types/metrics"
-	"github.com/statping-ng/statping-ng/utils"
 	"strings"
 	"time"
 

@@ -5,13 +5,13 @@ import (
 	"fmt"
 
 	"github.com/go-mail/mail"
+	"github.com/handelsblattgroup/statping/types/core"
+	"github.com/handelsblattgroup/statping/types/failures"
+	"github.com/handelsblattgroup/statping/types/notifications"
+	"github.com/handelsblattgroup/statping/types/notifier"
+	"github.com/handelsblattgroup/statping/types/services"
+	"github.com/handelsblattgroup/statping/utils"
 	"github.com/statping-ng/emails"
-	"github.com/statping-ng/statping-ng/types/core"
-	"github.com/statping-ng/statping-ng/types/failures"
-	"github.com/statping-ng/statping-ng/types/notifications"
-	"github.com/statping-ng/statping-ng/types/notifier"
-	"github.com/statping-ng/statping-ng/types/services"
-	"github.com/statping-ng/statping-ng/utils"
 )
 
 var _ notifier.Notifier = (*emailer)(nil)

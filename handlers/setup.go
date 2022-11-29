@@ -2,12 +2,12 @@ package handlers
 
 import (
 	"errors"
-	"github.com/statping-ng/statping-ng/notifiers"
-	"github.com/statping-ng/statping-ng/types/configs"
-	"github.com/statping-ng/statping-ng/types/core"
-	"github.com/statping-ng/statping-ng/types/null"
-	"github.com/statping-ng/statping-ng/types/services"
-	"github.com/statping-ng/statping-ng/utils"
+	"github.com/handelsblattgroup/statping/notifiers"
+	"github.com/handelsblattgroup/statping/types/configs"
+	"github.com/handelsblattgroup/statping/types/core"
+	"github.com/handelsblattgroup/statping/types/null"
+	"github.com/handelsblattgroup/statping/types/services"
+	"github.com/handelsblattgroup/statping/utils"
 	"net/http"
 	"net/url"
 	"strconv"

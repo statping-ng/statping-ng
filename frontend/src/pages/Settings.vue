@@ -8,10 +8,10 @@
                       Update {{github.tag_name}} Available
                       <div class="row">
                         <div class="col-6">
-                          <a href="https://github.com/statping-ng/statping-ng/releases/latest" class="btn btn-sm text-success mt-2">Download</a>
+                          <a href="https://github.com/handelsblattgroup/statping/releases/latest" class="btn btn-sm text-success mt-2">Download</a>
                         </div>
                         <div class="col-6">
-                          <a href="https://github.com/statping-ng/statping-ng/blob/master/CHANGELOG.md" class="btn btn-sm text-dim mt-2">Changelog</a>
+                          <a href="https://github.com/handelsblattgroup/statping/blob/master/CHANGELOG.md" class="btn btn-sm text-dim mt-2">Changelog</a>
                         </div>
                       </div>
                     </div>
@@ -52,11 +52,11 @@
                         <font-awesome-icon icon="globe" class="mr-3"/> Statping-ng
                     </a>
 
-                    <a href="https://github.com/statping-ng/statping-ng/wiki" class="mb-2 font-2 text-decoration-none text-muted">
+                    <a href="https://github.com/handelsblattgroup/statping/wiki" class="mb-2 font-2 text-decoration-none text-muted">
                         <font-awesome-icon icon="question" class="mr-3"/> {{$t('docs')}}
                     </a>
 
-                    <a href="https://github.com/statping-ng/statping-ng/wiki/API" class="mb-2 font-2 text-decoration-none text-muted">
+                    <a href="https://github.com/handelsblattgroup/statping/wiki/API" class="mb-2 font-2 text-decoration-none text-muted">
                         <font-awesome-icon icon="laptop" class="mr-2"/> API {{$t('docs')}}
                     </a>
 
@@ -64,12 +64,12 @@
                         <font-awesome-icon icon="book" class="mr-3"/> {{$t('changelog')}}
                     </a>
 
-                    <a href="https://github.com/statping-ng/statping-ng" class="mb-2 font-2 text-decoration-none text-muted">
+                    <a href="https://github.com/handelsblattgroup/statping" class="mb-2 font-2 text-decoration-none text-muted">
                         <font-awesome-icon icon="code-branch" class="mr-3"/> {{$t('repo')}}
                     </a>
 
                   <span class="small text-dim text-center mt-5">Statping-ng v{{core.version}}<br>
-                    <a class="small text-muted no-decoration" v-if="core.commit" v-bind:href="`https://github.com/statping-ng/statping-ng/commit/${core.commit}`">{{core.commit.slice(0,8)}}</a>
+                    <a class="small text-muted no-decoration" v-if="core.commit" v-bind:href="`https://github.com/handelsblattgroup/statping/commit/${core.commit}`">{{core.commit.slice(0,8)}}</a>
                   </span>
 
 
