@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/go-ping/ping"
+	"github.com/sirupsen/logrus"
 	"github.com/statping-ng/statping-ng/types/metrics"
 )
 
@@ -259,7 +260,8 @@ func Ping(address string, secondsTimeout int) (int64, error) {
 		return 0, err
 	}
 
-	ping.Count = 1
+	ping.Count = 3
+	ping.Interval = 100 * time.Millisecond
 	ping.Timeout = time.Second * time.Duration(secondsTimeout)
 
 	if runtime.GOOS == "windows" {
@@ -273,8 +275,15 @@ func Ping(address string, secondsTimeout int) (int64, error) {
 
 	stats := ping.Statistics()
 
-	if stats.PacketsSent-stats.PacketsRecv != 0 {
+	if stats.PacketLoss >= 99.0 {
 		return 0, errors.New("destination host unreachable")
+	} else if stats.PacketLoss > 0 {
+		Log.WithFields(logrus.Fields{
+			"address":        address,
+			"packet_loss":    stats.PacketLoss,
+			"avg_latency_ms": stats.AvgRtt.Milliseconds(),
+			"ip_address":     stats.IPAddr.IP.String(),
+		}).Warnln("encountered packet loss when pinging this address")
 	}
 
 	return stats.MinRtt.Microseconds(), nil
