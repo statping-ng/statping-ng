@@ -41,16 +41,45 @@ var Command = &commandLine{&notifications.Notification{
 }}
 
 func runCommand(cmd string) (string, string, error) {
+	
 	utils.Log.Infof("Command notifier sending: %s", cmd)
-	cmdApp := strings.Split(cmd, " ")
+	
 	if len(cmd) == 0 {
 		return "", "", errors.New("you need at least 1 command")
 	}
-	var cmdArgs []string
-	if len(cmd) > 1 {
-		cmdArgs = append(cmdArgs, cmd[1:])
+
+        file, errt := ioutil.TempFile(os.TempDir(), "statping-exec.*.sh")
+
+	utils.Log.Infof("Writing to temp file %s",file.Name())
+
+	defer os.Remove(file.Name())
+
+        errc := os.Chmod(file.Name(), 0711)
+
+        if errc != nil {
+          utils.Log.Errorf("Chmod Error %s",errc)
+        }
+
+        if errt != nil {
+         return "",errt.Error(),errt
+        }
+
+        werr := ioutil.WriteFile(file.Name(), []byte(cmd), 0711)
+
+	if(werr!=nil){
+ 	return "",file.Name(),werr
 	}
-	outStr, errStr, err := utils.Command(cmdApp[0], cmdArgs...)
+
+        file.Close()
+
+	outStr, errStr, err := utils.Command("sh","-c",file.Name())
+
+        if(err!=nil){
+
+    	utils.Log.Errorf("Run Error %s",err)
+
+        }
+
 	return outStr, errStr, err
 }
 
