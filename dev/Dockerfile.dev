@@ -1,36 +1,65 @@
-FROM golang:1.13.5-alpine
+# use Node v16 
+# since in node v17 certain hash functions that the frontend uses somewhere
+# were deprecated, breaking the build.
+
+FROM node:16.14.0-alpine AS node
+
+FROM golang:1.20.0-alpine
+
+# Copy in specific node and npm binaries :)
+COPY --from=node /usr/lib /usr/lib
+COPY --from=node /usr/local/lib /usr/local/lib
+COPY --from=node /usr/local/include /usr/local/include
+COPY --from=node /usr/local/bin /usr/local/bin
+
 LABEL maintainer="Hunter Long (https://github.com/hunterlong)"
 ARG VERSION
-RUN apk add --update --no-cache libstdc++ gcc g++ make git ca-certificates linux-headers wget curl jq libsass nodejs nodejs-npm
-RUN npm install -g yarn
+RUN apk add --update --no-cache libstdc++ gcc g++ make git autoconf \
+    libtool ca-certificates linux-headers wget curl jq && \
+    update-ca-certificates
 
-RUN curl -L -s https://assets.statping.com/sass -o /usr/local/bin/sass && \
-    chmod +x /usr/local/bin/sass
+WORKDIR /go/src/github.com/statping-ng/statping-ng
+ADD frontend/package.json frontend/yarn.lock ./frontend/
 
-WORKDIR /go/src/github.com/statping/statping
+RUN npm install -g yarn --force
+RUN cd frontend && yarn install --pure-lockfile --network-timeout 1000000 && yarn cache clean
 
-ADD go.mod go.sum version.txt ./
+ADD source/ ./source/
+ADD frontend/ ./frontend/
+RUN mkdir source/dist
+RUN cd frontend && ls && yarn build && cp -R dist/ ../source/dist/
+
+WORKDIR /root
+RUN git clone --depth 1 --branch 3.6.2 https://github.com/sass/sassc.git
+RUN . sassc/script/bootstrap && make -C sassc -j4
+RUN mv /root/sassc/bin/sassc /usr/local/bin/sassc && chmod +x /usr/local/bin/sassc
+
+WORKDIR /go/src/github.com/statping-ng/statping-ng
+ENV GOPATH /go
+ENV PATH $GOPATH/bin:$PATH
+
+ADD go.mod go.sum ./
 
 RUN go mod download
 
-RUN go get github.com/stretchr/testify/... && \
-	go get github.com/GeertJohan/go.rice/rice && \
-	go get github.com/cortesi/modd/cmd/modd
+ENV GO111MODULE on
+ENV CGO_ENABLED 1
 
-ADD frontend/package.json frontend/yarn.lock ./frontend/
-
-RUN cd frontend && yarn install --pure-lockfile --network-timeout 1000000 && yarn cache clean
+RUN go install github.com/GeertJohan/go.rice/rice@latest && \
+	go install github.com/cortesi/modd/cmd/modd@latest
 
 ENV IS_DOCKER=true
-ENV STATPING_DIR=/go/src/github.com/statping/statping
+ENV STATPING_DIR=/go/src/github.com/statping-ng/statping-ng
 
 EXPOSE 8585
 EXPOSE 8888
 
-RUN cd frontend && yarn build && cp -R dist ../source/
+RUN cd source && rice embed-go
+
+ADD dev/dev-env.sh /root/dev-env.sh
 
 RUN pwd && ls
+ADD dev ./dev
 
-COPY . .
-
-CMD dev/dev-env.sh
+#ENTRYPOINT ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["/root/dev-env.sh"]

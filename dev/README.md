@@ -13,8 +13,8 @@ The quickest way to start is to use the "lite" Docker Compose setup.
 2. Start the dev server by running:
 
 ```shell
-cd dev
-docker compose -f docker-compose.lite.yml up
+cd statping-ng # go into the root folder, it's important you run it in there.
+docker compose -f dev/docker-compose.lite.yml up
 ```
 
 3. Go to: http://localhost:8585
