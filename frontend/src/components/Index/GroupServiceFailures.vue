@@ -87,7 +87,7 @@ export default {
       async lastDaysFailures() {
         const start = this.beginningOf('day', this.nowSubtract(86400 * this.days_to_show))
         const end = this.endOf('today')
-        // Call both endpoints
+        // Call both endpoints to get both success and failure data for the past 90 days
         const failuresPromise = Api.service_failures_data(this.service.id, this.toUnix(start), this.toUnix(end), "24h", true);
         const hitsPromise = Api.service_hits(this.service.id, this.toUnix(start), this.toUnix(end), "24h", true);
 
@@ -97,18 +97,13 @@ export default {
         // Merge the data
         const mergedData = this.mergeData(failuresData, hitsData);
 
-        if (this.service.id === 3) { console.log(mergedData) }
-
         mergedData.forEach((d) => {
           let date = new Date(d.timeframe);
-          // Throw out data for "tomorrow" since we attempt to pull extra data that doesn't exist.
+          // Throw out data that is from the future (shouldn't happen, but good to check)
           if ((this.toUnix(date) * 1000) > Date.now()) { 
-            // console.log(this.toUnix(date) * 1000)
-            // console.log(Date.now())
             return 
           }
           
-          // console.log(date)
           this.failureData.push({
             month: date.getUTCMonth() + 1,
             day: date.getUTCDate(),
@@ -120,23 +115,18 @@ export default {
 
         // Only show the last configured number of days
         this.failureData.slice(-this.days_to_show);
-
-        // console.log(JSON.stringify(this.failureData, null, 4));
-        if (this.service.id === 3) { console.log(this.failureData) }
       },
       mergeData(failuresData, hitsData) {
         const dataMap = new Map();
         
         // Process hits data
         hitsData.forEach(d => {
-          // console.log(d);
           let date = this.parseISO(d.timeframe);
           dataMap.set(d.timeframe, { hits: d.amount, amount: 0, date: d.timeframe });
         });
         
         // Process failures data
         failuresData.forEach(d => {
-          // console.log(d);
           let date = this.parseISO(d.timeframe);
 
           let data = dataMap.get(d.timeframe) || { hits: 0, amount: 0, date: d.timeframe };
