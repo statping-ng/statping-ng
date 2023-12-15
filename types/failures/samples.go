@@ -66,20 +66,22 @@ func createFailuresForService(serviceID int64, start time.Time, end time.Time, c
 
 func Samples() error {
 	utils.Log.Infoln("Inserting Sample Service Failures...")
-	createdAt := utils.Now().Add(-90 * types.Day) // Start from 90 days ago
 	endDate := utils.Now()                        // Up to current time
 
-	chanceOfFailure := 0.0002 // very small chance of starting an outage at any given minute
+	chanceOfFailure := 0.0003 // very small chance of starting an outage at any given minute
 
 	// Only add failures to services 3 and 4
-	for i := int64(3); i <= 4; i++ {
-		records := createFailuresForService(i, createdAt, endDate, chanceOfFailure)
-		utils.Log.Infoln(fmt.Sprintf("Adding %v Failure records to service %d", len(records), i))
-
-		if err := gormbulk.BulkInsert(db.GormDB(), records, db.ChunkSize()); err != nil {
-			log.Error(err)
-			return err
-		}
+	records_3 := createFailuresForService(3, utils.Now().Add(-60 * types.Day), endDate, chanceOfFailure)
+	utils.Log.Infoln(fmt.Sprintf("Adding %v Failure records to service 3", len(records_3)))
+	if err := gormbulk.BulkInsert(db.GormDB(), records_3, db.ChunkSize()); err != nil {
+		log.Error(err)
+		return err
+	}
+	records_4 := createFailuresForService(4, utils.Now().Add(-90 * types.Day), endDate, chanceOfFailure)
+	utils.Log.Infoln(fmt.Sprintf("Adding %v Failure records to service 4", len(records_4)))
+	if err := gormbulk.BulkInsert(db.GormDB(), records_4, db.ChunkSize()); err != nil {
+		log.Error(err)
+		return err
 	}
 
 	return nil
