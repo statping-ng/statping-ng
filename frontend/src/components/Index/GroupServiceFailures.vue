@@ -15,7 +15,7 @@
         <div class="row mt-2">
           <div class="col-12 no-select">
             <p class="divided">
-              <span class="font-2 text-muted">90 {{$t('days_ago')}}</span>
+              <span class="font-2 text-muted">{{this.days_to_show}} {{$t('days_ago')}}</span>
               <span class="divider"></span>
               <span class="text-center font-2" :class="{'text-muted': service.online, 'text-danger': !service.online}">{{service_txt}}</span>
               <span class="divider"></span>
@@ -43,6 +43,14 @@ export default {
           hover_text: "",
           loaded: false,
           visible: false,
+          days_to_show: 90,
+          // Maximum number before showing the next category
+          outageSeverity: {
+            minor: { start: 1, end: 30 },
+            moderate: { start: 30, end: 120 },
+            major: { start: 120, end: 240 },
+            critical: { start: 240 }
+          }
         }
     },
   props: {
@@ -74,33 +82,91 @@ export default {
         if (e.amount === 0) {
           txt = `No Issues`
         }
-        this.hover_text = `${e.date.toLocaleDateString()} - ${txt}`
+        this.hover_text = `${e.date.toUTCString().replace(" 00:00:00 GMT", "")} - ${txt}`
       },
       async lastDaysFailures() {
-        const start = this.beginningOf('day', this.nowSubtract(86400 * 90))
-        const end = this.endOf('tomorrow')
-        const data = await Api.service_failures_data(this.service.id, this.toUnix(start), this.toUnix(end), "24h", true)
-        console.log(data)
-        data.forEach((d) => {
-          let date = this.parseISO(d.timeframe)
-          this.failureData.push({month: date.getMonth(), day: date.getDate(), date: date, amount: d.amount})
-        })
+        const start = this.beginningOf('day', this.nowSubtract(86400 * this.days_to_show))
+        const end = this.endOf('today')
+        // Call both endpoints
+        const failuresPromise = Api.service_failures_data(this.service.id, this.toUnix(start), this.toUnix(end), "24h", true);
+        const hitsPromise = Api.service_hits(this.service.id, this.toUnix(start), this.toUnix(end), "24h", true);
+
+        // Wait for both promises to resolve
+        const [failuresData, hitsData] = await Promise.all([failuresPromise, hitsPromise]);
+
+        // Merge the data
+        const mergedData = this.mergeData(failuresData, hitsData);
+
+        if (this.service.id === 3) { console.log(mergedData) }
+
+        mergedData.forEach((d) => {
+          let date = new Date(d.timeframe);
+          // Throw out data for "tomorrow" since we attempt to pull extra data that doesn't exist.
+          if ((this.toUnix(date) * 1000) > Date.now()) { 
+            // console.log(this.toUnix(date) * 1000)
+            // console.log(Date.now())
+            return 
+          }
+          
+          // console.log(date)
+          this.failureData.push({
+            month: date.getUTCMonth() + 1,
+            day: date.getUTCDate(),
+            date: date,
+            amount: d.amount,
+            hits: d.hits || 0
+          });
+        });
+
+        // Only show the last configured number of days
+        this.failureData.slice(-this.days_to_show);
+
+        // console.log(JSON.stringify(this.failureData, null, 4));
+        if (this.service.id === 3) { console.log(this.failureData) }
+      },
+      mergeData(failuresData, hitsData) {
+        const dataMap = new Map();
+        
+        // Process hits data
+        hitsData.forEach(d => {
+          // console.log(d);
+          let date = this.parseISO(d.timeframe);
+          dataMap.set(d.timeframe, { hits: d.amount, amount: 0, date: d.timeframe });
+        });
+        
+        // Process failures data
+        failuresData.forEach(d => {
+          // console.log(d);
+          let date = this.parseISO(d.timeframe);
+
+          let data = dataMap.get(d.timeframe) || { hits: 0, amount: 0, date: d.timeframe };
+          data.amount = d.amount;
+          dataMap.set(d.timeframe, data);
+        });
+        
+        // Convert map to array
+        return Array.from(dataMap, ([date, data]) => ({ ...data, timeframe: date }));
       },
       getDayClass(data) {
-        if (data.amount === 0) {
+        // No data points for day
+        if (data.amount === 0 && data.hits === 0) {
+          return 'day-no-data';
+        } 
+        // No failures for day
+        else if (data.amount === 0 && data.hits > 0) {
           return 'day-success';
-        } else {
-          // Determine the severity and return the corresponding class
-          // Here you need to add your logic to determine the severity
-          // For example, if severity is based on `data.duration`:
-          const outageSeverity = data.amount; // You'll need to add duration to your data model
-          if (outageSeverity < 30) {
+        } 
+        // Some failures for the day
+        else {
+          // Determine the severity and return the corresponding color class
+          const outageSeverity = data.amount;
+          if (outageSeverity >= this.outageSeverity.minor.start && outageSeverity < this.outageSeverity.minor.end) {
             return 'day-minor-outage'; // Light green
-          } else if (outageSeverity < 120) {
+          } else if (outageSeverity >= this.outageSeverity.moderate.start && outageSeverity < this.outageSeverity.moderate.end) {
             return 'day-moderate-outage'; // Yellow
-          } else if (outageSeverity < 240) {
+          } else if (outageSeverity >= this.outageSeverity.major.start && outageSeverity < this.outageSeverity.major.end) {
             return 'day-major-outage'; // Orange
-          } else {
+          } else if (outageSeverity >= this.outageSeverity.critical.start) {
             return 'day-critical-outage'; // Red
           }
         }

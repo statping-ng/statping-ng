@@ -41,6 +41,14 @@ A {
   color: lighten($text-color, 30%) !important;
 }
 
+.day-no-data {
+  background-color: $day-no-data-background;
+}
+
+.day-no-data:HOVER {
+  background-color: lighten($day-no-data-background, 5%) !important;
+}
+
 .day-success {
   background-color: $day-success-background;
 }
