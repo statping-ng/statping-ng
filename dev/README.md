@@ -17,4 +17,5 @@ cd statping-ng # go into the root folder, it's important you run it in there.
 docker compose -f dev/docker-compose.lite.yml up
 ```
 
-3. Go to: http://localhost:8585
+3. [Frontend] Go to: http://localhost:8888
+3. [Backend] Go to: http://localhost:8585
