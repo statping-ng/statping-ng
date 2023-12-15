@@ -8,7 +8,7 @@
       <transition name="fade">
         <div v-if="loaded">
         <div class="d-flex mt-3">
-            <div class="flex-fill service_day" v-for="(d, index) in failureData" @mouseover="mouseover(d)" @mouseout="mouseout" :class="{'day-error': d.amount > 0, 'day-success': d.amount === 0}">
+            <div class="flex-fill service_day" v-for="(d, index) in failureData" @mouseover="mouseover(d)" @mouseout="mouseout" :class="getDayClass(d)">
                 <span v-if="d.amount !== 0" class="d-none d-md-block text-center small"></span>
             </div>
         </div>
@@ -69,22 +69,42 @@ export default {
       mouseout() {
         this.hover_text = ""
       },
-    mouseover(e) {
-      let txt = `${e.amount} Failures`
-      if (e.amount === 0) {
-        txt = `No Issues`
-      }
-      this.hover_text = `${e.date.toLocaleDateString()} - ${txt}`
-    },
+      mouseover(e) {
+        let txt = `${e.amount} Failures`
+        if (e.amount === 0) {
+          txt = `No Issues`
+        }
+        this.hover_text = `${e.date.toLocaleDateString()} - ${txt}`
+      },
       async lastDaysFailures() {
         const start = this.beginningOf('day', this.nowSubtract(86400 * 90))
         const end = this.endOf('tomorrow')
         const data = await Api.service_failures_data(this.service.id, this.toUnix(start), this.toUnix(end), "24h", true)
+        console.log(data)
         data.forEach((d) => {
           let date = this.parseISO(d.timeframe)
           this.failureData.push({month: date.getMonth(), day: date.getDate(), date: date, amount: d.amount})
         })
-      }
+      },
+      getDayClass(data) {
+        if (data.amount === 0) {
+          return 'day-success';
+        } else {
+          // Determine the severity and return the corresponding class
+          // Here you need to add your logic to determine the severity
+          // For example, if severity is based on `data.duration`:
+          const outageSeverity = data.amount; // You'll need to add duration to your data model
+          if (outageSeverity < 30) {
+            return 'day-minor-outage'; // Light green
+          } else if (outageSeverity < 120) {
+            return 'day-moderate-outage'; // Yellow
+          } else if (outageSeverity < 240) {
+            return 'day-major-outage'; // Orange
+          } else {
+            return 'day-critical-outage'; // Red
+          }
+        }
+      },
     }
 }
 </script>
