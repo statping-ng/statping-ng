@@ -42,11 +42,16 @@ func createFailuresForService(serviceID int64, start time.Time, end time.Time, c
 				24 * types.Hour,
 				3 * types.Hour,
 				60 * types.Minute,
+				5 * types.Minute,
 			}
 			outageLength := outageLengths[rand.Intn(len(outageLengths))]
 
 			// Simulate failures for the duration of the outage
 			outageEnd := currentTime.Add(outageLength)
+			// Initialize the current day and count of records.
+			currentDay := currentTime.Day()
+			dayRecordCount := 0
+			
 			for currentTime.Before(outageEnd) {
 				f1 := &Failure{
 					Service:   serviceID,
@@ -55,10 +60,26 @@ func createFailuresForService(serviceID int64, start time.Time, end time.Time, c
 					CreatedAt: currentTime.UTC(),
 				}
 				records = append(records, f1)
-				currentTime = currentTime.Add(5 * time.Minute) // simulate the next ping after 5 minutes
+				dayRecordCount++
+				currentTime = currentTime.Add(1 * time.Minute) // simulate the next ping after 1 minute
+
+				// Check if we have moved to the next day
+				if currentDay != currentTime.Day() {
+					// Log the number of failures created for the previous day
+					utils.Log.Infoln("Created", dayRecordCount, "Failures for Service", serviceID, "for day", currentTime.Add(-1 * time.Minute).UTC())
+
+					// Reset for the new day
+					currentDay = currentTime.Day()
+					dayRecordCount = 0
+				}
+			}
+
+			// Don't forget to log the count for the last day of the outage period as well
+			if dayRecordCount > 0 {
+				utils.Log.Infoln("Created", dayRecordCount, "Failures for Service", serviceID, "for day", currentTime.UTC())
 			}
 		} else {
-			currentTime = currentTime.Add(5 * time.Minute) // No outage, move to the next minute
+			currentTime = currentTime.Add(5 * time.Minute) // No outage, move to the next random check period
 		}
 	}
 	return records
