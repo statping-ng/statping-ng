@@ -469,16 +469,6 @@ jobs:
         with:
           name: binaries
           path: binaries
-      - uses: actions/download-artifact@v4
-        with:
-          name: docker-images
-          path: images
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ github.token }}
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
@@ -489,9 +479,8 @@ jobs:
           omitBodyDuringUpdate: true
           prerelease: ${{ fromJSON(needs.data.outputs.is_prerelease) && 'true' || 'false'}}
           updateOnlyUnreleased: true
-      - name: import images
-        run: for file in images/*.tar; do docker load < $file; done
-      - run: docker image ls
-      - name: push all images
-        run: for image in $(cat images/docker-images.txt); do echo pushing $image; docker push $image; done
+      - name: push docker images
+        uses: jemand771/push-docker-artifact@main
+        with:
+          GITHUB_TOKEN: ${{ github.token }}
       # TODO bring back dockerhub image
