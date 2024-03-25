@@ -77,10 +77,10 @@
 
             </div>
 
-            <div class="card text-black-50 bg-white mb-3">
+            <div class="card text-black-50 bg-white mb-0" style="height: 380px">
                 <div class="card-header text-capitalize">Service Failures</div>
                 <div class="card-body">
-                    <div class="service-chart-heatmap mt-5 mb-4">
+                    <div class="service-chart-heatmap mb-4">
                         <ServiceHeatmap :service="service"/>
                     </div>
                 </div>
