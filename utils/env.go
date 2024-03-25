@@ -47,7 +47,7 @@ func InitEnvs() {
 	Params.SetDefault("NAME", "Statping Sample Data")
 	Params.SetDefault("DOMAIN", "http://localhost:8080")
 	Params.SetDefault("DESCRIPTION", "This status page has sample data included")
-	Params.SetDefault("REMOVE_AFTER", 2160*time.Hour)
+	Params.SetDefault("REMOVE_AFTER", 365*24*time.Hour) // Default 12 Months (for 1 year uptime calculation)
 	Params.SetDefault("CLEANUP_INTERVAL", 1*time.Hour)
 	Params.SetDefault("LANGUAGE", "en")
 	Params.SetDefault("LETSENCRYPT_HOST", "")

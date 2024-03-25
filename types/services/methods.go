@@ -261,6 +261,7 @@ func SelectAllServices(start bool) (map[int64]*Service, error) {
 func (s *Service) UpdateStats() *Service {
 	s.Online24Hours = s.OnlineDaysPercent(1)
 	s.Online7Days = s.OnlineDaysPercent(7)
+	s.Online1Year = s.OnlineDaysPercent(365)
 	s.AvgResponse = s.AvgTime()
 	s.FailuresLast24Hours = s.FailuresSince(utils.Now().Add(-time.Hour * 24)).Count()
 
@@ -296,16 +297,19 @@ func (s *Service) OnlineSince(ago time.Time) float32 {
 	failsList := s.FailuresSince(ago).Count()
 	hitsList := s.HitsSince(ago).Count()
 
-	if failsList == 0 {
+	// If there were no failures, and we have success
+	// Then return 100% uptime
+	if failsList == 0 && hitsList > 0 {
 		s.Online24Hours = 100.00
 		return s.Online24Hours
 	}
-
+	// If we have 0 hits then its 0% uptime
 	if hitsList == 0 {
 		s.Online24Hours = 0
 		return s.Online24Hours
 	}
 
+	// Otherwise, calculate the uptime percentage
 	avg := (float64(failsList) / float64(hitsList)) * 100
 	avg = 100 - avg
 	if avg < 0 {

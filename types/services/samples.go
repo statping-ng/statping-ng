@@ -36,6 +36,7 @@ func Example(online bool) Service {
 		PingTime:            83526,
 		Online24Hours:       0.98,
 		Online7Days:         0.99,
+		Online1Year:         0.995,
 		AvgResponse:         303443,
 		FailuresLast24Hours: 2,
 		Checkpoint:          time.Time{},
