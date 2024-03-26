@@ -49,7 +49,7 @@ jobs:
       - name: get go/node version information
         id: tool-versions
         run: |
-          echo "go_version=1.20.0" >> $GITHUB_OUTPUT
+          echo "go_version=1.20.x" >> $GITHUB_OUTPUT
           echo "node_version=16.14.0" >> $GITHUB_OUTPUT
         shell: bash
       - name: show data results
@@ -250,6 +250,8 @@ jobs:
           path: ./source
 
       - name: Install Statping
+        env:
+          GOPROXY: https://proxy.golang.org,direct
         run: |
           make build certs
           chmod +x statping
@@ -324,6 +326,8 @@ jobs:
           path: ./source
 
       - name: Install Statping
+        env:
+          GOPROXY: https://proxy.golang.org,direct
         run: |
           make build
           chmod +x statping
@@ -374,6 +378,8 @@ jobs:
           path: ./source
 
       - name: Install Statping
+        env:
+          GOPROXY: https://proxy.golang.org,direct
         run: |
           make build
           chmod +x statping
