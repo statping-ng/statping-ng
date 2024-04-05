@@ -4,14 +4,19 @@ import (
 	"bytes"
 	"context"
 	"crypto/tls"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"net"
 	"net/http"
 	"net/smtp"
 	"net/url"
+	"os"
+	"os/exec"
 	"regexp"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -58,6 +63,157 @@ CheckLoop:
 			}
 		}
 	}
+}
+
+func makeCmdEnv(oldEnvList []string, newEnvMap map[string]string) []string {
+	newEnvList := make([]string, len(newEnvMap))
+	i := 0
+	for k, v := range newEnvMap {
+		newEnvList[i] = fmt.Sprintf("%v=%v", k, v)
+		i += 1
+	}
+	return append(oldEnvList, newEnvList...)
+}
+
+func runCmd(s *Service, cmdConfig *CmdConfig, cmdResult *CmdResult) {
+	timeout := time.Duration(s.Timeout) * time.Second
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, cmdConfig.Cmd, cmdConfig.Args...)
+	if cmdConfig.Dir != "" {
+		cmd.Dir = cmdConfig.Dir
+	}
+	if cmdConfig.Env != nil {
+		cmd.Env = makeCmdEnv(os.Environ(), cmdConfig.Env)
+	}
+	if cmdConfig.Stdin != "" {
+		cmd.Stdin = bytes.NewBufferString(cmdConfig.Stdin)
+	}
+	var stdoutBuf bytes.Buffer
+	var stderrBuf bytes.Buffer
+	cmd.Stdout = &stdoutBuf
+	cmd.Stderr = &stderrBuf
+
+	err := cmd.Run()
+	cmdResult.Stderr = stderrBuf.String()
+	cmdResult.Stdout = stdoutBuf.String()
+	cmdResult.errMsg = ""
+	if err == nil {
+		cmdResult.isErr = false
+		cmdResult.ExitCode = 0
+	} else {
+		cmdResult.isErr = true
+		cmdResult.ExitCode = 255
+		exitErr, isExitErr := err.(*exec.ExitError)
+		if !isExitErr {
+			cmdResult.errMsg = err.Error()
+		} else {
+			waitStatus, isWaitStatus := exitErr.Sys().(syscall.WaitStatus)
+			if !isWaitStatus {
+				cmdResult.errMsg = err.Error()
+			} else {
+				cmdResult.isErr = false
+				cmdResult.ExitCode = waitStatus.ExitStatus()
+			}
+		}
+	}
+}
+
+func CheckCmd(s *Service, record bool) (*Service, error) {
+	defer s.updateLastCheck()
+	timer := prometheus.NewTimer(metrics.ServiceTimer(s.Name))
+	defer timer.ObserveDuration()
+
+	startTime := utils.Now()
+
+	var cmdConfig CmdConfig
+	err := json.Unmarshal([]byte(s.PostData.String), &cmdConfig)
+	if err != nil {
+		if record {
+			RecordFailure(s, "Command config not JSON", "json")
+		}
+		return s, err
+	}
+
+	var cmdResult CmdResult
+	runCmd(s, &cmdConfig, &cmdResult)
+	if cmdResult.isErr {
+		if record {
+			RecordFailure(s, fmt.Sprintf("Command execution error: %v", cmdResult.errMsg), "cmd")
+		}
+		return s, errors.New(fmt.Sprintf("command execution error: %v", cmdResult.errMsg))
+	}
+
+	cmdResultBytes, err := json.Marshal(cmdResult)
+	if err != nil {
+		if record {
+			RecordFailure(s, "Command result converting to json failed", "json")
+		}
+		return s, err
+	}
+
+	s.Latency = utils.Now().Sub(startTime).Microseconds()
+	s.LastResponse = string(cmdResultBytes[:])
+	s.LastStatusCode = cmdResult.ExitCode
+
+	metrics.Gauge("status_code", float64(cmdResult.ExitCode), s.Name)
+
+	exitCodeExpected := s.ExpectedStatus
+	// ExpectedStatus 0 is stored in database as MinInt32,
+	// to circumvent the problem of gorm not updating zero value.
+	if exitCodeExpected == math.MinInt32 {
+		exitCodeExpected = 0
+	}
+	if exitCodeExpected != cmdResult.ExitCode {
+		if record {
+			RecordFailure(s, fmt.Sprintf("Exit code did not match:\nExpected=%v\nActual=%v", exitCodeExpected, cmdResult.ExitCode), "status_code")
+		}
+		return s, err
+	}
+
+	if cmdConfig.Stdout != "" {
+		match, err := regexp.MatchString(cmdConfig.Stdout, cmdResult.Stdout)
+		if err != nil {
+			if record {
+				msg := fmt.Sprintf("Stdout regex is invalid: Regex=%v", cmdConfig.Stdout)
+				RecordFailure(s, msg, "regex")
+			}
+			return s, err
+		}
+		if !match {
+			if record {
+				msg := fmt.Sprintf("Stdout did not match:\nExpected=%v\nActual=%v", cmdConfig.Stdout, cmdResult.Stdout)
+				RecordFailure(s, msg, "regex")
+			}
+			return s, err
+		}
+	}
+
+	if cmdConfig.Stderr != "" {
+		match, err := regexp.MatchString(cmdConfig.Stderr, cmdResult.Stderr)
+		if err != nil {
+			if record {
+				msg := fmt.Sprintf("Stderr regex is invalid: Regex=%v", cmdConfig.Stderr)
+				RecordFailure(s, msg, "regex")
+			}
+			return s, err
+		}
+		if !match {
+			if record {
+				msg := fmt.Sprintf("Stderr did not match:\nExpected=%v\nActual=%v", cmdConfig.Stderr, cmdResult.Stderr)
+				RecordFailure(s, msg, "regex")
+			}
+			return s, err
+		}
+	}
+
+	s.Online = true
+	if record {
+		RecordSuccess(s)
+	}
+
+	return s, err
 }
 
 func parseHost(s *Service) string {
@@ -671,6 +827,8 @@ func RecordFailure(s *Service, issue, reason string) {
 // if record param is set to true, it will add a record into the database.
 func (s *Service) CheckService(record bool) {
 	switch s.Type {
+	case "cmd":
+		CheckCmd(s, record)
 	case "http":
 		CheckHttp(s, record)
 	case "tcp", "udp":
