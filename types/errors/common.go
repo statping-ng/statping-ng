@@ -22,6 +22,30 @@ var (
 		Err:  "ID needs to be an integer",
 		Code: 422,
 	}
+	ServiceNameMissing = &appError{
+		Err:  "missing service name",
+		Code: 422,
+	}
+	ServiceTypeMissing = &appError{
+		Err:  "missing service type",
+		Code: 422,
+	}
+	DomainNameMissing = &appError{
+		Err:  "missing domain name",
+		Code: 422,
+	}
+	CheckIntervalMissing = &appError{
+		Err:  "missing check interval",
+		Code: 422,
+	}
+	CommandConfigNotJson = &appError{
+		Err:  "command config not JSON",
+		Code: 422,
+	}
+	CommandConfigFieldCmdMissing = &appError{
+		Err:  "command config field \"Cmd\" missing",
+		Code: 422,
+	}
 )
 
 func Missing(object interface{}, id interface{}) error {

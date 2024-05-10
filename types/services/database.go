@@ -1,11 +1,13 @@
 package services
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/statping-ng/statping-ng/database"
 	"github.com/statping-ng/statping-ng/types/errors"
 	"github.com/statping-ng/statping-ng/types/metrics"
 	"github.com/statping-ng/statping-ng/utils"
+	"math"
 	"sort"
 )
 
@@ -17,14 +19,32 @@ var (
 
 func (s *Service) Validate() error {
 	if s.Name == "" {
-		return errors.New("missing service name")
-	} else if s.Domain == "" && s.Type != "static" {
-		return errors.New("missing domain name")
+		return errors.ServiceNameMissing
+	} else if s.Domain == "" && s.Type != "cmd" && s.Type != "static" {
+		return errors.DomainNameMissing
 	} else if s.Type == "" {
-		return errors.New("missing service type")
+		return errors.ServiceTypeMissing
 	} else if s.Interval == 0 && s.Type != "static" {
-		return errors.New("missing check interval")
+		return errors.CheckIntervalMissing
 	}
+
+	if s.Type == "cmd" {
+		var cmdConfig CmdConfig
+		err := json.Unmarshal([]byte(s.PostData.String), &cmdConfig)
+		if err != nil {
+			return errors.CommandConfigNotJson
+		}
+		if cmdConfig.Cmd == "" {
+			return errors.CommandConfigFieldCmdMissing
+		}
+
+		// ExpectedStatus 0 is stored in database as MinInt32,
+		// to circumvent the problem of gorm not updating zero value.
+		if s.ExpectedStatus == 0 {
+			s.ExpectedStatus = math.MinInt32
+		}
+	}
+
 	return nil
 }
 
