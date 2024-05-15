@@ -59,6 +59,26 @@
                             <input @keyup="canSubmit" v-model="setup.db_database" id="db_database" type="text" class="form-control" placeholder="Database name">
                         </div>
 
+                        <div class="form-group">
+                            <label>{{ $t('number_of_days_for_service') }}</label>
+                            <input v-model="setup.number_of_days_for_service" type="text" class="form-control" placeholder="90" id="number_of_days_for_service">
+                            <small class="form-text text-muted">{{ $t('number_of_days_for_service_desc') }}</small>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <div class="row">
+                                <div class="col-9">
+                                    <span class="text-left text-capitalize">{{ $t('show_graphs') }}</span>
+                                </div>
+                                <div class="col-3 text-right">
+                                    <span @click="setup.show_graphs = !!setup.show_graphs" class="switch">
+                                      <input v-model="setup.show_graphs" type="checkbox" name="show_graphs" class="switch" id="show_graphs" :checked="setup.show_graphs">
+                                      <label for="show_graphs"></label>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group mt-3">
                             <div class="row">
                                 <div class="col-9">
@@ -171,6 +191,8 @@
         newsletter: true,
         send_reports: true,
         email: "",
+        number_of_days_for_service: 90,
+        show_graphs: true,
       }
     }
   },

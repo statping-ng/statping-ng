@@ -136,7 +136,12 @@ const english = {
     notify_after: "Notify After Failures",
     notify_all: "Notify All Changes",
     service_update: "Update Service",
-    service_create: "Create Service"
+    service_create: "Create Service",
+    number_of_days_for_service: "Number Of Days For Service",
+    number_of_days_for_service_desc: "How many days of history show for a service.",
+    show_graphs: "Show Graphs",
+    show_graphs_desc: "Show graphs for services. If off, all graphs will be hidden despite their individual settings.",
+    show_graph: "Show Graph"
 }
 
 export default english

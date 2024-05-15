@@ -1,9 +1,10 @@
 package core
 
 import (
+	"time"
+
 	"github.com/statping-ng/statping-ng/types/null"
 	"github.com/statping-ng/statping-ng/utils"
-	"time"
 )
 
 var (
@@ -21,25 +22,27 @@ func New(version, commit string) {
 // will be saved into 1 row in the 'core' table. You can use the core.CoreApp
 // global variable to interact with the attributes to the application, such as services.
 type Core struct {
-	Name          string          `gorm:"not null;column:name" json:"name,omitempty"`
-	Description   string          `gorm:"not null;column:description" json:"description,omitempty"`
-	ConfigFile    string          `gorm:"column:config" json:"-"`
-	ApiSecret     string          `gorm:"column:api_secret" json:"api_secret" scope:"admin"`
-	Style         string          `gorm:"not null;column:style" json:"style,omitempty"`
-	Footer        null.NullString `gorm:"column:footer" json:"footer"`
-	Domain        string          `gorm:"not null;column:domain" json:"domain"`
-	Version       string          `gorm:"column:version" json:"version"`
-	Commit        string          `gorm:"-" json:"commit"`
-	Language      string          `gorm:"column:language" json:"language"`
-	Setup         bool            `gorm:"-" json:"setup"`
-	MigrationId   int64           `gorm:"column:migration_id" json:"migration_id,omitempty"`
-	UseCdn        null.NullBool   `gorm:"column:use_cdn;default:false" json:"using_cdn,omitempty"`
-	AllowReports  null.NullBool   `gorm:"column:allow_reports;default:false" json:"allow_reports,omitempty"`
-	CreatedAt     time.Time       `gorm:"column:created_at" json:"created_at"`
-	UpdatedAt     time.Time       `gorm:"column:updated_at" json:"updated_at"`
-	Started       time.Time       `gorm:"-" json:"started_on"`
-	Notifications []AllNotifiers  `gorm:"-" json:"-"`
-	Integrations  []Integrator    `gorm:"-" json:"-"`
+	Name                   string          `gorm:"not null;column:name" json:"name,omitempty"`
+	Description            string          `gorm:"not null;column:description" json:"description,omitempty"`
+	ConfigFile             string          `gorm:"column:config" json:"-"`
+	ApiSecret              string          `gorm:"column:api_secret" json:"api_secret" scope:"admin"`
+	Style                  string          `gorm:"not null;column:style" json:"style,omitempty"`
+	Footer                 null.NullString `gorm:"column:footer" json:"footer"`
+	Domain                 string          `gorm:"not null;column:domain" json:"domain"`
+	Version                string          `gorm:"column:version" json:"version"`
+	Commit                 string          `gorm:"-" json:"commit"`
+	Language               string          `gorm:"column:language" json:"language"`
+	Setup                  bool            `gorm:"-" json:"setup"`
+	MigrationId            int64           `gorm:"column:migration_id" json:"migration_id,omitempty"`
+	UseCdn                 null.NullBool   `gorm:"column:use_cdn;default:false" json:"using_cdn,omitempty"`
+	AllowReports           null.NullBool   `gorm:"column:allow_reports;default:false" json:"allow_reports,omitempty"`
+	NumberOfDaysForService null.NullInt64  `gorm:"column:number_of_days_for_service;default:90" json:"number_of_days_for_service,omitempty"`
+	ShowGraphs             null.NullBool   `gorm:"column:show_graphs;default:true" json:"show_graphs,omitempty"`
+	CreatedAt              time.Time       `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt              time.Time       `gorm:"column:updated_at" json:"updated_at"`
+	Started                time.Time       `gorm:"-" json:"started_on"`
+	Notifications          []AllNotifiers  `gorm:"-" json:"-"`
+	Integrations           []Integrator    `gorm:"-" json:"-"`
 
 	OAuth `json:"-"`
 }

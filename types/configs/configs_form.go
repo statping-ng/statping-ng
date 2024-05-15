@@ -1,10 +1,11 @@
 package configs
 
 import (
-	"github.com/pkg/errors"
-	"github.com/statping-ng/statping-ng/utils"
 	"net/http"
 	"strconv"
+
+	"github.com/pkg/errors"
+	"github.com/statping-ng/statping-ng/utils"
 )
 
 func LoadConfigForm(r *http.Request) (*DbConfig, error) {
@@ -26,6 +27,8 @@ func LoadConfigForm(r *http.Request) (*DbConfig, error) {
 	email := g("email")
 	language := g("language")
 	reports, _ := strconv.ParseBool(g("send_reports"))
+	numberOfDaysForService := utils.ToInt(g("number_of_days_for_service"))
+	showGraphs, _ := strconv.ParseBool(g("show_graphs"))
 
 	if project == "" || username == "" || password == "" {
 		err := errors.New("Missing required elements on setup form")
@@ -46,23 +49,27 @@ func LoadConfigForm(r *http.Request) (*DbConfig, error) {
 	p.Set("ADMIN_USER", username)
 	p.Set("ADMIN_PASSWORD", password)
 	p.Set("ADMIN_EMAIL", email)
+	p.Set("NUMBER_OF_DAYS_FOR_SERVICE", numberOfDaysForService)
+	p.Set("SHOW_GRAPHS", showGraphs)
 
 	confg := &DbConfig{
-		DbConn:       dbConn,
-		DbHost:       dbHost,
-		DbUser:       dbUser,
-		DbPass:       dbPass,
-		DbData:       dbDatabase,
-		DbPort:       int(dbPort),
-		Project:      project,
-		Description:  description,
-		Domain:       domain,
-		Username:     username,
-		Password:     password,
-		Email:        email,
-		Location:     utils.Directory,
-		Language:     language,
-		AllowReports: reports,
+		DbConn:                 dbConn,
+		DbHost:                 dbHost,
+		DbUser:                 dbUser,
+		DbPass:                 dbPass,
+		DbData:                 dbDatabase,
+		DbPort:                 int(dbPort),
+		Project:                project,
+		Description:            description,
+		Domain:                 domain,
+		Username:               username,
+		Password:               password,
+		Email:                  email,
+		Location:               utils.Directory,
+		Language:               language,
+		AllowReports:           reports,
+		NumberOfDaysForService: int(numberOfDaysForService),
+		ShowGraphs:             showGraphs,
 	}
 
 	return confg, nil

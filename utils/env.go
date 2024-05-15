@@ -1,10 +1,11 @@
 package utils
 
 import (
-	"github.com/spf13/viper"
 	"io/ioutil"
 	"os"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 var (
@@ -59,6 +60,8 @@ func InitEnvs() {
 	Params.SetDefault("LOGS_MAX_AGE", 28)
 	Params.SetDefault("LOGS_MAX_SIZE", 16)
 	Params.SetDefault("DISABLE_COLORS", false)
+	Params.SetDefault("NUMBER_OF_DAYS_FOR_SERVICE", 90)
+	Params.SetDefault("SHOW_GRAPHS", true)
 
 	dbConn := Params.GetString("DB_CONN")
 	dbInt := Params.GetInt("DB_PORT")
