@@ -83,7 +83,9 @@ func ToString(s interface{}) string {
 //
 //	in, out, err := Command("sass assets/scss assets/css/base.css")
 func Command(name string, args ...string) (string, string, error) {
-	testCmd := exec.Command(name, args...)
+	cmd := strings.Join(append([]string{name}, args...), " ")
+	Log.Debugln("running command: " + cmd)
+	testCmd := exec.Command("sh", "-c", cmd)
 	var stdout, stderr []byte
 	var errStdout, errStderr error
 	stdoutIn, _ := testCmd.StdoutPipe()
