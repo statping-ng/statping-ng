@@ -24,6 +24,7 @@ import (
 	"github.com/statping-ng/statping-ng/types/hits"
 	"github.com/statping-ng/statping-ng/utils"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
+        "github.com/Ullaakut/nmap/v3"
 )
 
 // checkServices will start the checking go routine for each service
@@ -231,6 +232,69 @@ func CheckGrpc(s *Service, record bool) (*Service, error) {
 	}
 
 	return s, nil
+}
+
+// checkUdp will check a UDP service using nmap
+func CheckUdp(s *Service, record bool) (*Service, error) {
+        defer s.updateLastCheck()
+        timer := prometheus.NewTimer(metrics.ServiceTimer(s.Name))
+        defer timer.ObserveDuration()
+
+        dnsLookup, err := dnsCheck(s)
+        if err != nil {
+                if record {
+                        RecordFailure(s, fmt.Sprintf("Could not get IP address for UDP service %v, %v", s.Domain, err), "lookup")
+                }
+                return s, err
+        }
+        s.PingTime = dnsLookup
+        t1 := utils.Now()
+
+        ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+        defer cancel()
+        scanner, err := nmap.NewScanner(
+                ctx,
+                nmap.WithTargets(s.Domain),
+                nmap.WithPorts(fmt.Sprintf("%d",s.Port)),
+                nmap.WithCustomArguments("-Pn"),
+                nmap.WithUDPScan(),
+        )
+        result, _, err := scanner.Run()
+
+        if err != nil {
+				return s, err
+        }
+
+	active := false
+        for _, host := range result.Hosts {
+                if len(host.Ports) == 0 || len(host.Addresses) == 0 {
+                        continue
+                }
+
+                for _, port := range host.Ports {
+                        //fmt.Printf("\tPort %d/%s %s %s\n", port.ID, port.Protocol, port.State, port.Service.Name)
+                        dport := fmt.Sprintf("%d",port.ID)
+                        status := fmt.Sprintf("%s",port.Status())
+                        if (dport == fmt.Sprintf("%d",s.Port) && strings.Contains(status,"open")) {
+		            active = true
+                        }
+                }
+        }
+		if !active {
+		if record {
+		       RecordFailure(s, fmt.Sprintf("port is closed"), "tls")
+			   err = errors.New("port is closed")
+		}
+		       return s, err
+		}
+
+        s.Latency = utils.Now().Sub(t1).Microseconds()
+        s.LastResponse = ""
+        s.Online = true
+        if record {
+                RecordSuccess(s)
+        }
+        return s, nil
 }
 
 // checkTcp will check a TCP service
@@ -682,8 +746,10 @@ func (s *Service) CheckService(record bool) {
 	switch s.Type {
 	case "http":
 		CheckHttp(s, record)
-	case "tcp", "udp":
+	case "tcp":
 		CheckTcp(s, record)
+        case "udp":
+                CheckUdp(s, record)
 	case "grpc":
 		CheckGrpc(s, record)
 	case "icmp":
