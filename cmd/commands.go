@@ -81,13 +81,13 @@ var systemctlCmd = &cobra.Command{
 	Short:   "Install or Uninstall systemctl services",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if args[1] == "install" {
-			if len(args) < 3 {
+			if len(args) < 4 {
 				return errors.New("requires 'install <working_path> <port>'")
 			}
 		}
 		port := utils.ToInt(args[2])
 		if port == 0 {
-			port = 80
+			port = 8080
 		}
 		if err := systemctlCli(args[1], args[0] == "uninstall", port); err != nil {
 			return err
@@ -97,7 +97,7 @@ var systemctlCmd = &cobra.Command{
 	},
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 2 {
-			return errors.New("requires 'install <working_path>' or 'uninstall' as arguments")
+			return errors.New("requires 'install <working_path> <port>' or 'uninstall' as arguments")
 		}
 		return nil
 	},
