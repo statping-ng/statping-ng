@@ -24,7 +24,7 @@ require (
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/viper v1.6.3
 	github.com/statping-ng/emails v1.0.3
-	github.com/stretchr/testify v1.8.1
+	github.com/stretchr/testify v1.8.2
 	github.com/t-tiger/gorm-bulk-insert/v2 v2.0.1
 	golang.org/x/crypto v0.4.0
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
@@ -46,6 +46,7 @@ require (
 	github.com/Azure/go-autorest/logger v0.1.0 // indirect
 	github.com/Azure/go-autorest/tracing v0.5.0 // indirect
 	github.com/OpenDNS/vegadns2client v0.0.0-20180418235048-a3fa4a771d87 // indirect
+	github.com/Ullaakut/nmap/v3 v3.0.3 // indirect
 	github.com/akamai/AkamaiOPEN-edgegrid-golang v0.9.11 // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.131 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect

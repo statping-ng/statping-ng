@@ -85,6 +85,8 @@ github.com/OpenDNS/vegadns2client v0.0.0-20180418235048-a3fa4a771d87/go.mod h1:i
 github.com/Shopify/goreferrer v0.0.0-20181106222321-ec9c9a553398/go.mod h1:a1uqRtAwp2Xwc6WNPJEufxJ7fx3npB4UV/JOLmbu5I0=
 github.com/Shopify/sarama v1.19.0/go.mod h1:FVkBWblsNy7DGZRfXLU0O9RCGt5g3g3yEuWXgklEdEo=
 github.com/Shopify/toxiproxy v2.1.4+incompatible/go.mod h1:OXgGpZ6Cli1/URJOF1DMxUHB2q5Ap20/P/eIdh4G0pI=
+github.com/Ullaakut/nmap/v3 v3.0.3 h1:bSFREzf0vWOi27vncgP/tiIRUx2OP+N0hGo8O/YHec8=
+github.com/Ullaakut/nmap/v3 v3.0.3/go.mod h1:dd5K68P7LHc5nKrFwQx6EdTt61O9UN5x3zn1R4SLcco=
 github.com/ajg/form v1.5.1/go.mod h1:uL1WgH+h2mgNtvBq0339dVnzXdBETtL2LeUXaIv25UY=
 github.com/akamai/AkamaiOPEN-edgegrid-golang v0.9.8/go.mod h1:aVvklgKsPENRkl29bNwrHISa1F+YLGTHArMxZMBqWM8=
 github.com/akamai/AkamaiOPEN-edgegrid-golang v0.9.11 h1:QGjNHMwoPYxE5NpOAc8kpd2KTY293/oFk5BWdjkza+k=
@@ -574,6 +576,8 @@ github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
+github.com/stretchr/testify v1.8.2 h1:+h33VjcLVPDHtOdpUCuF+7gSuG3yGIftsP1YvFihtJ8=
+github.com/stretchr/testify v1.8.2/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 github.com/subosito/gotenv v1.2.0 h1:Slr1R9HxAlEKefgq5jn9U+DnETlIUa6HfgEzj0g5d7s=
 github.com/subosito/gotenv v1.2.0/go.mod h1:N0PQaV/YGNqwC0u51sEeR/aUtSLEXKX9iv69rRypqCw=
 github.com/t-tiger/gorm-bulk-insert/v2 v2.0.1 h1:HGVkRrwDCbmSP6h1CoBDj6l/mhnvsP5JbYaQ4ss0R6o=
