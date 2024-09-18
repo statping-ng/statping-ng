@@ -25,6 +25,7 @@ type Service struct {
 	Timeout             int                   `gorm:"default:30;column:timeout" json:"timeout" scope:"user,admin" yaml:"timeout"`
 	Order               int                   `gorm:"default:0;column:order_id" json:"order_id" yaml:"order_id"`
 	VerifySSL           null.NullBool         `gorm:"default:false;column:verify_ssl" json:"verify_ssl" scope:"user,admin" yaml:"verify_ssl"`
+        ShowSSL             null.NullBool         `gorm:"default:false;column:show_ssl" json:"show_ssl" yaml:"show_ssl"`
 	GrpcHealthCheck     null.NullBool         `gorm:"default:false;column:grpc_health_check" json:"grpc_health_check" scope:"user,admin" yaml:"grpc_health_check"`
 	Public              null.NullBool         `gorm:"default:true;column:public" json:"public" yaml:"public"`
 	GroupId             int                   `gorm:"default:0;column:group_id" json:"group_id" yaml:"group_id"`
@@ -43,6 +44,7 @@ type Service struct {
 	Online7Days         float32               `gorm:"-" json:"online_7_days" yaml:"-"`
 	AvgResponse         int64                 `gorm:"-" json:"avg_response" yaml:"-"`
 	FailuresLast24Hours int                   `gorm:"-" json:"failures_24_hours" yaml:"-"`
+        SSLDays             int                   `gorm:"-" json:"ssldays" yaml:"-"`
 	Running             chan bool             `gorm:"-" json:"-" yaml:"-"`
 	Checkpoint          time.Time             `gorm:"-" json:"-" yaml:"-"`
 	SleepDuration       time.Duration         `gorm:"-" json:"-" yaml:"-"`

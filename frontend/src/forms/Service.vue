@@ -171,6 +171,17 @@
                 </span>
             </div>
         </div>
+
+        <div v-if="service.type.match(/^(http)$/)" class="form-group row">
+            <label class="col-12 col-md-4 col-form-label">Show SSL Expiration</label>
+            <div class="col-12 col-md-8 mt-1 mb-2 mb-md-0">
+                <span @click="service.show_ssl = !!service.show_ssl" class="switch float-left">
+                    <input v-model="service.show_ssl" type="checkbox" name="show_ssl-option" class="switch" id="switch-show_ssl" v-bind:checked="service.show_ssl">
+                    <label for="switch-show_ssl">Show SSL Expiration (in days)</label>
+                </span>
+            </div>
+        </div>
+
         <div v-if="service.type.match(/^(http|grpc|smtp|imap)$/)" class="form-group row">
             <label class="col-12 col-md-4 col-form-label">{{ $t('verify_ssl') }}</label>
             <div class="col-12 col-md-8 mt-1 mb-2 mb-md-0">

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+./statping --port 8081

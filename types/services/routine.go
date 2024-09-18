@@ -3,6 +3,7 @@ package services
 import (
 	"bytes"
 	"context"
+        "crypto/x509"
 	"crypto/tls"
 	"errors"
 	"fmt"
@@ -647,6 +648,15 @@ func CheckHttp(s *Service, record bool) (*Service, error) {
 		log.Errorln(err)
 	}
 
+        if s.ShowSSL.Bool  {
+           checkssl, ssldays := TestSSL(s.Domain,30)
+           if err != nil {
+                         RecordFailure(s, fmt.Sprintf("%s",checkssl), "ssl")
+           }
+           s.SSLDays = ssldays
+        }
+
+
 	content, res, err = utils.HttpRequest(s.Domain, s.Method, contentType, headers, data, timeout, s.VerifySSL.Bool, customTLS)
 	if err != nil {
 		if record {
@@ -759,4 +769,103 @@ func (s *Service) CheckService(record bool) {
 	case "imap":
 		CheckImap(s, record)
 	}
+}
+
+func findMin(arr []int) int {
+    if len(arr) == 0 {
+        return 0 // or handle the empty array case as needed
+    }
+    min := arr[0]
+    for _, value := range arr {
+        if value < min {
+            min = value
+        }
+    }
+    return min
+}
+
+func TestSSL(host string, expiry int) (error, int) {
+    errSunsetAlg       := "%s: '%s' (S/N %X) expires after the sunset date for its signature algorithm '%s'."
+    type sigAlgSunset struct {
+        name      string    // Human readable name of signature algorithm
+        sunsetsAt time.Time // Time the algorithm will be sunset
+    }
+    var sunsetSigAlgs = map[x509.SignatureAlgorithm]sigAlgSunset{
+        x509.MD2WithRSA: sigAlgSunset{
+                name:      "MD2 with RSA",
+                sunsetsAt: time.Now(),
+        },
+        x509.MD5WithRSA: sigAlgSunset{
+                name:      "MD5 with RSA",
+                sunsetsAt: time.Now(),
+        },
+        x509.SHA1WithRSA: sigAlgSunset{
+                name:      "SHA1 with RSA",
+                sunsetsAt: time.Date(2017, 1, 1, 0, 0, 0, 0, time.UTC),
+        },
+        x509.DSAWithSHA1: sigAlgSunset{
+                name:      "DSA with SHA1",
+                sunsetsAt: time.Date(2017, 1, 1, 0, 0, 0, 0, time.UTC),
+        },
+        x509.ECDSAWithSHA1: sigAlgSunset{
+                name:      "ECDSA with SHA1",
+                sunsetsAt: time.Date(2017, 1, 1, 0, 0, 0, 0, time.UTC),
+        },
+        }
+
+
+
+        checkSigAlg := true // Verify that non-root certificates are using a good signature algorithm.
+
+        if strings.Contains(host,"http") {
+               parsedURL, err := url.Parse(host)
+               if err != nil {
+                  log.Errorln(fmt.Sprintf("error in ssl check for %s err: %s", host, err))
+               }
+               host = parsedURL.Hostname()
+        }
+
+        if !strings.Contains(host,":") {
+            host = host + ":443"
+        }
+        conn, err := tls.Dial("tcp", host, nil)
+        if err != nil {
+                log.Errorln(fmt.Sprintf("error in ssl check for %s err: %s", host, err))
+                return err,0
+        }
+        defer conn.Close()
+        timeNow := time.Now()
+        checkedCerts := make(map[string]struct{})
+        expirations := []int{}
+        for _, chain := range conn.ConnectionState().VerifiedChains {
+                for certNum, cert := range chain {
+                        if _, checked := checkedCerts[string(cert.Signature)]; checked {
+                                continue
+                        }
+                        checkedCerts[string(cert.Signature)] = struct{}{}
+                        cErrs := []error{}
+                        expirations = append(expirations,int(cert.NotAfter.Sub(timeNow).Hours()/24))
+                        // Check the expiration.
+                        if timeNow.AddDate(0, 0, expiry).After(cert.NotAfter) {
+                                expiresIn := int64(cert.NotAfter.Sub(timeNow).Hours())
+                                expiresInDays := int(cert.NotAfter.Sub(timeNow).Hours()/24)
+                                if expiry >= expiresInDays {
+                                  return errors.New(fmt.Sprintf("SSL Expires in: %d days",expiresInDays)),findMin(expirations)
+                                }
+                                if expiresIn <= 48 {
+                                  return errors.New("SSL Expires in 48 hours"),findMin(expirations)
+                                }
+                        }
+
+                        // Check the signature algorithm, ignoring the root certificate.
+                        if alg, exists := sunsetSigAlgs[cert.SignatureAlgorithm]; checkSigAlg && exists && certNum != len(chain)-1 {
+                                if cert.NotAfter.Equal(alg.sunsetsAt) || cert.NotAfter.After(alg.sunsetsAt) {
+                                        cErrs = append(cErrs, fmt.Errorf(errSunsetAlg, host, cert.Subject.CommonName, cert.SerialNumber, alg.name))
+                                }
+                        }
+
+                }
+        }
+        log.Infoln(fmt.Sprintf("Expiration for %s in days: %d", host, findMin(expirations)))
+        return nil,findMin(expirations)
 }

@@ -17,6 +17,8 @@ ARCHS = 386 arm amd64 arm64
 
 all: build-deps compile install test build
 
+my: compile build
+
 test: clean compile
 	go test -v -p=1 -ldflags="-X main.VERSION=${VERSION} -X main.COMMIT=${COMMIT}" -coverprofile=coverage.out ./...
 
