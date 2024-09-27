@@ -435,7 +435,7 @@ services:
 <li><code>GO_ENV</code>                    - Run Statping in testmode, will bypass HTTP authentication (if set as &lsquo;test&rsquo;)</li>
 <li><code>REMOVE_AFTER</code>              - Automatically delete records after time (default 3 months, &lsquo;12h = 12 hours&rsquo;)</li>
 <li><code>CLEANUP_INTERVAL</code>          - Interval to check for old records (default 1 hour, &lsquo;1h = 1 hour&rsquo;)</li>
-<li><code>ALLOW_REPORTS</code>             - Send Statping anonymous <a href="https://sentry.io/" target="_blank">error reports</a> so we can see issues (default is false)</li>
+<li><code>ALLOW_REPORTS</code>             - Send Statping anonymous <a href="https://sentry.io/" target="_blank">error reports</a> so we can see issues (default is false) - Should be removed in Statping-ng</li>
 <li><code>SERVER_PORT</code>               - Port number to run Statping HTTP server on (or use -p/&ndash;port)</li>
 </ul>
 
