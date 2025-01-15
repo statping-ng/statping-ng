@@ -75,7 +75,7 @@ export default {
             loadingGroups: true,
             loadingServices: true,
             loadingMessages: true,
-              messages: null // Initialize messages to null
+            messages: null // Initialize messages to null
         };
     },
     computed: {
@@ -87,19 +87,19 @@ export default {
           } else if (this.loadingMessages) {
             return "Loading Announcements";
           }
-          return ""; // To avoid an error if no loading message is displayed
+            return ""; // To avoid an error if no loading message is displayed
         },
         groups() {
-          return this.$store.getters.groupsInOrder;
+            return this.$store.getters.groupsInOrder;
         },
         services() {
-          return this.$store.getters.servicesInOrder;
+            return this.$store.getters.servicesInOrder;
         },
         services_no_group() {
-          return this.$store.getters.servicesNoGroup
+            return this.$store.getters.servicesNoGroup
         },
         core() {
-          return this.$store.getters.core
+            return this.$store.getters.core
         },
     },
     async mounted() {
@@ -132,36 +132,36 @@ export default {
       },
     methods: {
         async checkLogin() {
-            const token = this.$cookies.get('statping_auth');
-            if (!token) {
-                this.$store.commit('setLoggedIn', false);
-                return;
-            }
-            try {
-                const jwt = await Api.check_token(token);
-                this.$store.commit('setAdmin', jwt.admin);
-                if (jwt.username) {
-                    this.$store.commit('setLoggedIn', true);
-                }
-            } catch (e) {
-                console.error(e);
-            }
+          const token = this.$cookies.get('statping_auth');
+          if (!token) {
+              this.$store.commit('setLoggedIn', false);
+              return;
+          }
+          try {
+              const jwt = await Api.check_token(token);
+              this.$store.commit('setAdmin', jwt.admin);
+              if (jwt.username) {
+                  this.$store.commit('setLoggedIn', true);
+              }
+          } catch (e) {
+              console.error(e);
+          }
         },
         serviceLink(service) {
-          return `/services/${service.id}`
+            return `/services/${service.id}`
         },
         inRange(message) {
-          return this.isBetween(this.now(), message.start_on, message.start_on === message.end_on ? this.maxDate().toISOString() : message.end_on)
+            return this.isBetween(this.now(), message.start_on, message.start_on === message.end_on ? this.maxDate().toISOString() : message.end_on)
         },
         now() {
-          return new Date();
+            return new Date();
         },
         maxDate() {
-          return new Date(8640000000000000);
+            return new Date(8640000000000000);
         },
         isBetween(value, min, max) {
             return value >= new Date(min) && value <= new Date(max);
         }
-      }
+    }
 }
 </script>
