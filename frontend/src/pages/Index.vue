@@ -1,15 +1,15 @@
 <template>
-  <div class="container col-md-7 col-sm-12 sm-container">
+    <div class="container col-md-7 col-sm-12 sm-container">
 
       <Header/>
 
       <div v-if="loadingGroups || loadingServices || loadingMessages" class="row mt-5 mb-5">
-          <div class="col-12 mt-5 mb-2 text-center">
-              <font-awesome-icon icon="circle-notch" class="text-dim" size="2x" spin/>
-          </div>
-          <div class="col-12 text-center mt-3 mb-3">
-              <span class="text-dim">{{ loadingMessage }}</span>
-          </div>
+        <div class="col-12 mt-5 mb-2 text-center">
+          <font-awesome-icon icon="circle-notch" class="text-dim" size="2x" spin/>
+        </div>
+        <div class="col-12 text-center mt-3 mb-3">
+          <span class="text-dim">{{ loadingMessage }}</span>
+        </div>
       </div>
 
       <div v-else-if="groups.length === 0 && services.length === 0 && messages === null" class="row mt-5 mb-5">
@@ -60,7 +60,7 @@ const IncidentsBlock = () => import(/* webpackChunkName: "index" */ '@/component
 const MessagesIcon = () => import(/* webpackChunkName: "index" */ '@/components/Index/MessagesIcon')
 
 export default {
-  name: 'Index',
+    name: 'Index',
     components: {
       IncidentsBlock,
       GroupServiceFailures,
@@ -70,98 +70,98 @@ export default {
       Group,
       Header
     },
-  data() {
-      return {
-          loadingGroups: true,
-          loadingServices: true,
-          loadingMessages: true,
-            messages: null // Initialize messages to null
-      };
-  },
-  computed: {
-      loadingMessage() {
-        if (this.loadingGroups) {
-          return "Loading Groups";
-        } else if (this.loadingServices) {
-          return "Loading Services";
-        } else if (this.loadingMessages) {
-          return "Loading Announcements";
-        }
-        return ""; // To avoid an error if no loading message is displayed
-      },
-      groups() {
-        return this.$store.getters.groupsInOrder;
-      },
-      services() {
-        return this.$store.getters.servicesInOrder;
-      },
-      services_no_group() {
-        return this.$store.getters.servicesNoGroup
-      },
-      core() {
-        return this.$store.getters.core
-      },
-  },
-  async mounted() {
-      await this.checkLogin();
-
-      try {
-        await this.$store.dispatch('loadGroups');
-      } catch (error) {
-        console.error("Error loading groups :", error);
-      } finally {
-        this.loadingGroups = false;
-      }
-
-      try {
-        await this.$store.dispatch('loadServices');
-      } catch (error) {
-        console.error("Error loading services :", error);
-      } finally {
-        this.loadingServices = false;
-      }
-
-      try {
-        await this.$store.dispatch('loadMessages');
-        this.messages = this.$store.getters.messages ? this.$store.getters.messages.filter(m => this.inRange(m) && m.service === 0) : null;
-      } catch (error) {
-        console.error("Error loading messages :", error);
-      } finally {
-        this.loadingMessages = false;
-      }
+    data() {
+        return {
+            loadingGroups: true,
+            loadingServices: true,
+            loadingMessages: true,
+              messages: null // Initialize messages to null
+        };
     },
-  methods: {
-      async checkLogin() {
-          const token = this.$cookies.get('statping_auth');
-          if (!token) {
-              this.$store.commit('setLoggedIn', false);
-              return;
+    computed: {
+        loadingMessage() {
+          if (this.loadingGroups) {
+            return "Loading Groups";
+          } else if (this.loadingServices) {
+            return "Loading Services";
+          } else if (this.loadingMessages) {
+            return "Loading Announcements";
           }
-          try {
-              const jwt = await Api.check_token(token);
-              this.$store.commit('setAdmin', jwt.admin);
-              if (jwt.username) {
-                  this.$store.commit('setLoggedIn', true);
-              }
-          } catch (e) {
-              console.error(e);
-          }
+          return ""; // To avoid an error if no loading message is displayed
+        },
+        groups() {
+          return this.$store.getters.groupsInOrder;
+        },
+        services() {
+          return this.$store.getters.servicesInOrder;
+        },
+        services_no_group() {
+          return this.$store.getters.servicesNoGroup
+        },
+        core() {
+          return this.$store.getters.core
+        },
+    },
+    async mounted() {
+        await this.checkLogin();
+
+        try {
+          await this.$store.dispatch('loadGroups');
+        } catch (error) {
+          console.error("Error loading groups :", error);
+        } finally {
+          this.loadingGroups = false;
+        }
+
+        try {
+          await this.$store.dispatch('loadServices');
+        } catch (error) {
+          console.error("Error loading services :", error);
+        } finally {
+          this.loadingServices = false;
+        }
+
+        try {
+          await this.$store.dispatch('loadMessages');
+          this.messages = this.$store.getters.messages ? this.$store.getters.messages.filter(m => this.inRange(m) && m.service === 0) : null;
+        } catch (error) {
+          console.error("Error loading messages :", error);
+        } finally {
+          this.loadingMessages = false;
+        }
       },
-      serviceLink(service) {
-        return `/services/${service.id}`
-      },
-      inRange(message) {
-        return this.isBetween(this.now(), message.start_on, message.start_on === message.end_on ? this.maxDate().toISOString() : message.end_on)
-      },
-      now() {
-        return new Date();
-      },
-      maxDate() {
-        return new Date(8640000000000000);
-      },
-      isBetween(value, min, max) {
-          return value >= new Date(min) && value <= new Date(max);
+    methods: {
+        async checkLogin() {
+            const token = this.$cookies.get('statping_auth');
+            if (!token) {
+                this.$store.commit('setLoggedIn', false);
+                return;
+            }
+            try {
+                const jwt = await Api.check_token(token);
+                this.$store.commit('setAdmin', jwt.admin);
+                if (jwt.username) {
+                    this.$store.commit('setLoggedIn', true);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        },
+        serviceLink(service) {
+          return `/services/${service.id}`
+        },
+        inRange(message) {
+          return this.isBetween(this.now(), message.start_on, message.start_on === message.end_on ? this.maxDate().toISOString() : message.end_on)
+        },
+        now() {
+          return new Date();
+        },
+        maxDate() {
+          return new Date(8640000000000000);
+        },
+        isBetween(value, min, max) {
+            return value >= new Date(min) && value <= new Date(max);
+        }
       }
-    }
 }
 </script>
