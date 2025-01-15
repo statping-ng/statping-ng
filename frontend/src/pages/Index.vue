@@ -1,51 +1,51 @@
 <template>
-    <div class="container col-md-7 col-sm-12 sm-container">
+  <div class="container col-md-7 col-sm-12 sm-container">
 
       <Header/>
 
       <div v-if="loadingGroups || loadingServices || loadingMessages" class="row mt-5 mb-5">
-        <div class="col-12 mt-5 mb-2 text-center">
-          <font-awesome-icon icon="circle-notch" class="text-dim" size="2x" spin/>
-        </div>
-        <div class="col-12 text-center mt-3 mb-3">
-          <span class="text-dim">{{ loadingMessage }}</span>
-        </div>
+          <div class="col-12 mt-5 mb-2 text-center">
+              <font-awesome-icon icon="circle-notch" class="text-dim" size="2x" spin/>
+          </div>
+          <div class="col-12 text-center mt-3 mb-3">
+              <span class="text-dim">{{ loadingMessage }}</span>
+          </div>
       </div>
 
       <div v-else-if="groups.length === 0 && services.length === 0 && messages === null" class="row mt-5 mb-5">
-        <div class="col-12 text-center mt-3 mb-3">
+          <div class="col-12 text-center mt-3 mb-3">
           <span class="text-dim">No group, service or message to display.</span>
-        </div>
+          </div>
       </div>
 
       <div v-else>
-        <div class="col-12 full-col-12">
-          <MessageBlock v-for="message in messages" v-bind:key="message.id" :message="message" />
-        </div>
+          <div class="col-12 full-col-12">
+              <MessageBlock v-for="message in messages" v-bind:key="message.id" :message="message" />
+          </div>
 
-        <div class="col-12 full-col-12" v-if="services_no_group.length > 0">
-          <div v-for="service in services_no_group" v-bind:key="service.id" class="list-group online_list mb-4">
-              <div class="list-group-item list-group-item-action">
-                  <router-link class="no-decoration font-3" :to="serviceLink(service)">
-                    {{service.name}}
-                    <MessagesIcon :messages="service.messages"/>
-                  </router-link>
-                  <span class="badge float-right" :class="{'bg-success': service.online, 'bg-danger': !service.online }">{{service.online ? "ONLINE" : "OFFLINE"}}</span>
-                  <GroupServiceFailures :service="service"/>
-                  <IncidentsBlock :service="service"/>
+          <div class="col-12 full-col-12" v-if="services_no_group.length > 0">
+              <div v-for="service in services_no_group" v-bind:key="service.id" class="list-group online_list mb-4">
+                  <div class="list-group-item list-group-item-action">
+                      <router-link class="no-decoration font-3" :to="serviceLink(service)">
+                          {{service.name}}
+                          <MessagesIcon :messages="service.messages"/>
+                      </router-link>
+                      <span class="badge float-right" :class="{'bg-success': service.online, 'bg-danger': !service.online }">{{service.online ? "ONLINE" : "OFFLINE"}}</span>
+                      <GroupServiceFailures :service="service"/>
+                      <IncidentsBlock :service="service"/>
+                  </div>
+              </div>
+          </div>
+
+          <Group v-for="group in groups" v-bind:key="group.id" :group="group" />
+
+          <div class="col-12 full-col-12">
+              <div v-for="service in services" :ref="service.id" v-bind:key="service.id">
+                  <ServiceBlock :service="service" />
               </div>
           </div>
       </div>
-
-      <Group v-for="group in groups" v-bind:key="group.id" :group="group" />
-
-      <div class="col-12 full-col-12">
-          <div v-for="service in services" :ref="service.id" v-bind:key="service.id">
-              <ServiceBlock :service="service" />
-          </div>
-        </div>
-      </div>
-    </div>
+  </div>
 </template>
 
 <script>
@@ -60,7 +60,7 @@ const IncidentsBlock = () => import(/* webpackChunkName: "index" */ '@/component
 const MessagesIcon = () => import(/* webpackChunkName: "index" */ '@/components/Index/MessagesIcon')
 
 export default {
-    name: 'Index',
+  name: 'Index',
     components: {
       IncidentsBlock,
       GroupServiceFailures,
@@ -70,15 +70,15 @@ export default {
       Group,
       Header
     },
-    data() {
-        return {
-            loadingGroups: true,
-            loadingServices: true,
-            loadingMessages: true,
+  data() {
+      return {
+          loadingGroups: true,
+          loadingServices: true,
+          loadingMessages: true,
             messages: null // Initialize messages to null
-        };
-    },
-    computed: {
+      };
+  },
+  computed: {
       loadingMessage() {
         if (this.loadingGroups) {
           return "Loading Groups";
@@ -101,12 +101,14 @@ export default {
       core() {
         return this.$store.getters.core
       },
-    },
-    async mounted() {
+  },
+  async mounted() {
+      await this.checkLogin();
+
       try {
         await this.$store.dispatch('loadGroups');
       } catch (error) {
-        console.error("Erreur lors du chargement des groupes :", error);
+        console.error("Error loading groups :", error);
       } finally {
         this.loadingGroups = false;
       }
@@ -114,21 +116,37 @@ export default {
       try {
         await this.$store.dispatch('loadServices');
       } catch (error) {
-        console.error("Erreur lors du chargement des services :", error);
+        console.error("Error loading services :", error);
       } finally {
         this.loadingServices = false;
       }
 
       try {
-        await this.$store.dispatch('loadMessages'); // Dispatch to load messages
-        this.messages = this.$store.getters.messages.filter(m => this.inRange(m) && m.service === 0);
+        await this.$store.dispatch('loadMessages');
+        this.messages = this.$store.getters.messages ? this.$store.getters.messages.filter(m => this.inRange(m) && m.service === 0) : null;
       } catch (error) {
-        console.error("Erreur lors du chargement des messages :", error);
+        console.error("Error loading messages :", error);
       } finally {
         this.loadingMessages = false;
       }
     },
-    methods: {
+  methods: {
+      async checkLogin() {
+          const token = this.$cookies.get('statping_auth');
+          if (!token) {
+              this.$store.commit('setLoggedIn', false);
+              return;
+          }
+          try {
+              const jwt = await Api.check_token(token);
+              this.$store.commit('setAdmin', jwt.admin);
+              if (jwt.username) {
+                  this.$store.commit('setLoggedIn', true);
+              }
+          } catch (e) {
+              console.error(e);
+          }
+      },
       serviceLink(service) {
         return `/services/${service.id}`
       },
@@ -142,7 +160,7 @@ export default {
         return new Date(8640000000000000);
       },
       isBetween(value, min, max) {
-        return value >= new Date(min) && value <= new Date(max);
+          return value >= new Date(min) && value <= new Date(max);
       }
     }
 }
