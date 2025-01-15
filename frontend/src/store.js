@@ -33,12 +33,12 @@ export default new Vuex.Store({
     user: false,
     loggedIn: false,
     modal: {
-        visible: false,
-        title: "Modal Header",
-        body: "This is the content for the modal body",
-        btnText: "Save Changes",
-        btnColor: "btn-primary",
-        func: null,
+      visible: false,
+      title: "Modal Header",
+      body: "This is the content for the modal body",
+      btnText: "Save Changes",
+      btnColor: "btn-primary",
+      func: null,
     },
     loadingGroupsError: null,
     loadingServicesError: null,
@@ -72,38 +72,38 @@ export default new Vuex.Store({
     groupsClean: state => state.groups.filter(g => g.name !== '').sort((a, b) => a.order_id - b.order_id),
     groupsCleanInOrder: state => state.groups.filter(g => g.name !== '').sort((a, b) => a.order_id - b.order_id).sort((a, b) => a.order_id - b.order_id),
     serviceCheckins: (state) => (id) => {
-        return state.checkins.filter(c => c.service_id === id)
+      return state.checkins.filter(c => c.service_id === id)
     },
     serviceByAll: (state) => (element) => {
-        if (!isNaN(parseFloat(element)) && isFinite(element)) {
-            return state.services.find(s => s.id === parseInt(element))
-        } else {
-            return state.services.find(s => s.permalink === element)
-        }
+      if (!isNaN(parseFloat(element)) && isFinite(element)) {
+          return state.services.find(s => s.id === parseInt(element))
+      } else {
+          return state.services.find(s => s.permalink === element)
+      }
     },
     serviceById: (state) => (id) => {
-        return state.services.find(s => s.permalink === id || s.id === id)
+      return state.services.find(s => s.permalink === id || s.id === id)
     },
     servicesInGroup: (state) => (id) => {
-        return state.services.filter(s => s.group_id === id).sort((a, b) => a.order_id - b.order_id)
+      return state.services.filter(s => s.group_id === id).sort((a, b) => a.order_id - b.order_id)
     },
     serviceMessages: (state) => (id) => {
-        return state.messages ? state.messages.filter(s => s.service === id) : [] // Handling null
+      return state.messages ? state.messages.filter(s => s.service === id) : [] // Handling null
     },
     onlineServices: (state) => (online) => {
-        return state.services.filter(s => s.online === online)
+      return state.services.filter(s => s.online === online)
     },
     groupById: (state) => (id) => {
-        return state.groups.find(g => g.id === id)
+      return state.groups.find(g => g.id === id)
     },
     cleanGroups: (state) => () => {
-        return state.groups.filter(g => g.name !== '').sort((a, b) => a.order_id - b.order_id)
+      return state.groups.filter(g => g.name !== '').sort((a, b) => a.order_id - b.order_id)
     },
     userById: (state) => (id) => {
-        return state.users.find(u => u.id === id)
+      return state.users.find(u => u.id === id)
     },
     messageById: (state) => (id) => {
-        return state.messages ? state.messages.find(m => m.id === id) : null // Handling null
+      return state.messages ? state.messages.find(m => m.id === id) : null // Handling null
     },
     loadingGroupsError: state => state.loadingGroupsError,
     loadingServicesError: state => state.loadingServicesError,
@@ -111,156 +111,156 @@ export default new Vuex.Store({
   },
   mutations: {
     setHasAllData(state, bool) {
-        state.hasAllData = bool
+      state.hasAllData = bool
     },
     setHasPublicData(state, bool) {
-        state.hasPublicData = bool
+      state.hasPublicData = bool
     },
     setCore(state, core) {
-        state.core = core
+      state.core = core
     },
     setToken(state, token) {
-        state.token = token
+      state.token = token
     },
     setService(state, service) {
-        state.service = service
+      state.service = service
     },
     setServices(state, services) {
-        state.services = services
-        state.loadingServicesError = null // Reinitialize error
+      state.services = services
+      state.loadingServicesError = null // Reinitialize error
     },
     setCheckins(state, checkins) {
-        state.checkins = checkins
+      state.checkins = checkins
     },
     setGroups(state, groups) {
-        state.groups = groups
-        state.loadingGroupsError = null // Reinitialize error
+      state.groups = groups
+      state.loadingGroupsError = null // Reinitialize error
     },
     setMessages(state, messages) {
-        state.messages = messages
-        state.loadingMessagesError = null // Reinitialize error
+      state.messages = messages
+      state.loadingMessagesError = null // Reinitialize error
     },
     setUsers(state, users) {
-        state.users = users
+      state.users = users
     },
     setNotifiers(state, notifiers) {
-        state.notifiers = notifiers
+      state.notifiers = notifiers
     },
     setAdmin(state, admin) {
-        state.admin = admin
+      state.admin = admin
     },
     setLoggedIn(state, loggedIn) {
-        state.loggedIn = loggedIn
+      state.loggedIn = loggedIn
     },
     setUser(state, user) {
-        state.user = user
+      state.user = user
     },
     setOAuth(state, oauth) {
-        state.oauth = oauth
+      state.oauth = oauth
     },
     setModal(state, modal) {
-        state.modal = modal
+      state.modal = modal
     },
     setLoadingGroupsError(state, error) {
-        state.loadingGroupsError = error
+      state.loadingGroupsError = error
     },
     setLoadingServicesError(state, error) {
-        state.loadingServicesError = error
+      state.loadingServicesError = error
     },
     setLoadingMessagesError(state, error) {
-        state.loadingMessagesError = error
+      state.loadingMessagesError = error
     },
   },
   actions: {
     async getAllServices(context) {
-        try {
-            const services = await Api.services()
-            context.commit("setServices", services);
-        } catch (error) {
-            console.error("Erreur lors du chargement des services :", error)
-            context.commit('setLoadingServicesError', error);
-        }
+      try {
+        const services = await Api.services()
+        context.commit("setServices", services);
+      } catch (error) {
+        console.error("Erreur lors du chargement des services :", error)
+        context.commit('setLoadingServicesError', error);
+      }
     },
     async loadCore(context) {
-        try {
-            const core = await Api.core()
-            const token = await Api.token()
-            context.commit("setCore", core);
-            context.commit('setAdmin', token);
-            context.commit('setUser', token !== undefined);
-        } catch (error) {
-            console.error("Erreur lors du chargement de Core :", error)
-        }
+      try {
+        const core = await Api.core()
+        const token = await Api.token()
+        context.commit("setCore", core);
+        context.commit('setAdmin', token);
+        context.commit('setUser', token !== undefined);
+      } catch (error) {
+        console.error("Erreur lors du chargement de Core :", error)
+      }
     },
     async loadRequired(context) {
-        try {
-            const groups = await Api.groups()
-            context.commit("setGroups", groups);
-            const services = await Api.services()
-            context.commit("setServices", services);
-            const messages = await Api.messages()
-            context.commit("setMessages", messages);
-            const oauth = await Api.oauth()
-            context.commit("setOAuth", oauth);
-            context.commit("setHasPublicData", true);
-        } catch (error) {
-            console.error("Erreur lors du chargement des données requises :", error)
-            context.commit('setLoadingGroupsError', error);
-            context.commit('setLoadingServicesError', error);
-            context.commit('setLoadingMessagesError', error);
-        }
+      try {
+        const groups = await Api.groups()
+        context.commit("setGroups", groups);
+        const services = await Api.services()
+        context.commit("setServices", services);
+        const messages = await Api.messages()
+        context.commit("setMessages", messages);
+        const oauth = await Api.oauth()
+        context.commit("setOAuth", oauth);
+        context.commit("setHasPublicData", true);
+      } catch (error) {
+        console.error("Erreur lors du chargement des données requises :", error)
+        context.commit('setLoadingGroupsError', error);
+        context.commit('setLoadingServicesError', error);
+        context.commit('setLoadingMessagesError', error);
+      }
     },
     async loadAdmin(context) {
-        try {
-            const groups = await Api.groups()
-            context.commit("setGroups", groups);
-            const services = await Api.services()
-            context.commit("setServices", services);
-            const messages = await Api.messages()
-            context.commit("setMessages", messages);
-            context.commit("setHasPublicData", true);
-            const checkins = await Api.checkins()
-            context.commit("setCheckins", checkins);
-            const notifiers = await Api.notifiers()
-            context.commit("setNotifiers", notifiers);
-            const users = await Api.users()
-            context.commit("setUsers", users);
-            const oauth = await Api.oauth()
-            context.commit("setOAuth", oauth);
-        } catch (error) {
-            console.error("Erreur lors du chargement des données admin :", error)
-            context.commit('setLoadingGroupsError', error);
-            context.commit('setLoadingServicesError', error);
-            context.commit('setLoadingMessagesError', error);
-        }
+      try {
+        const groups = await Api.groups()
+        context.commit("setGroups", groups);
+        const services = await Api.services()
+        context.commit("setServices", services);
+        const messages = await Api.messages()
+        context.commit("setMessages", messages);
+        context.commit("setHasPublicData", true);
+        const checkins = await Api.checkins()
+        context.commit("setCheckins", checkins);
+        const notifiers = await Api.notifiers()
+        context.commit("setNotifiers", notifiers);
+        const users = await Api.users()
+        context.commit("setUsers", users);
+        const oauth = await Api.oauth()
+        context.commit("setOAuth", oauth);
+      } catch (error) {
+        console.error("Erreur lors du chargement des données admin :", error)
+        context.commit('setLoadingGroupsError', error);
+        context.commit('setLoadingServicesError', error);
+        context.commit('setLoadingMessagesError', error);
+      }
     },
     async loadGroups({ commit }) { // Action to load groupes
-        try {
-            const groups = await Api.groups()
-            commit('setGroups', groups);
-        } catch (error) {
-            console.error("Erreur lors du chargement des groupes :", error)
-            commit('setLoadingGroupsError', error);
-        }
+      try {
+        const groups = await Api.groups()
+        commit('setGroups', groups);
+      } catch (error) {
+        console.error("Erreur lors du chargement des groupes :", error)
+        commit('setLoadingGroupsError', error);
+      }
     },
     async loadServices({ commit }) { // Action to load services
-        try {
-            const services = await Api.services()
-            commit('setServices', services);
-        } catch (error) {
-            console.error("Erreur lors du chargement des services :", error)
-            commit('setLoadingServicesError', error);
-        }
+      try {
+        const services = await Api.services()
+        commit('setServices', services);
+      } catch (error) {
+        console.error("Erreur lors du chargement des services :", error)
+        commit('setLoadingServicesError', error);
+      }
     },
     async loadMessages({ commit }) { // Action to load messages
-        try {
-            const messages = await Api.messages()
-            commit('setMessages', messages);
-        } catch (error) {
-            console.error("Erreur lors du chargement des messages :", error)
-            commit('setLoadingMessagesError', error);
-          }
-        }
+      try {
+        const messages = await Api.messages()
+        commit('setMessages', messages);
+      } catch (error) {
+        console.error("Erreur lors du chargement des messages :", error)
+        commit('setLoadingMessagesError', error);
       }
-    });
+    }
+  }
+});
       
