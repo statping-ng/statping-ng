@@ -90,10 +90,10 @@ export default {
             return ""; // To avoid an error if no loading message is displayed
         },
         groups() {
-            return this.$store.getters.groupsInOrder;
+            return this.$store.getters.groupsInOrder
         },
         services() {
-            return this.$store.getters.servicesInOrder;
+            return this.$store.getters.servicesInOrder
         },
         services_no_group() {
             return this.$store.getters.servicesNoGroup
@@ -132,19 +132,19 @@ export default {
       },
     methods: {
         async checkLogin() {
-          const token = this.$cookies.get('statping_auth');
+          const token = this.$cookies.get('statping_auth')
           if (!token) {
-              this.$store.commit('setLoggedIn', false);
-              return;
+            this.$store.commit('setLoggedIn', false);
+            return;
           }
           try {
-              const jwt = await Api.check_token(token);
-              this.$store.commit('setAdmin', jwt.admin);
-              if (jwt.username) {
-                  this.$store.commit('setLoggedIn', true);
-              }
+            const jwt = await Api.check_token(token);
+            this.$store.commit('setAdmin', jwt.admin);
+            if (jwt.username) {
+              this.$store.commit('setLoggedIn', true);
+            }
           } catch (e) {
-              console.error(e);
+            console.error(e)
           }
         },
         serviceLink(service) {
