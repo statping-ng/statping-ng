@@ -76,9 +76,9 @@ export default new Vuex.Store({
     },
     serviceByAll: (state) => (element) => {
       if (!isNaN(parseFloat(element)) && isFinite(element)) {
-          return state.services.find(s => s.id === parseInt(element))
+        return state.services.find(s => s.id === parseInt(element))
       } else {
-          return state.services.find(s => s.permalink === element)
+        return state.services.find(s => s.permalink === element)
       }
     },
     serviceById: (state) => (id) => {
@@ -263,4 +263,3 @@ export default new Vuex.Store({
     }
   }
 });
-      

@@ -25,27 +25,27 @@
 
         <div class="col-12 full-col-12" v-if="services_no_group.length > 0">
           <div v-for="service in services_no_group" v-bind:key="service.id" class="list-group online_list mb-4">
-            <div class="list-group-item list-group-item-action">
-              <router-link class="no-decoration font-3" :to="serviceLink(service)">
-                {{service.name}}
-                <MessagesIcon :messages="service.messages"/>
-              </router-link>
-              <span class="badge float-right" :class="{'bg-success': service.online, 'bg-danger': !service.online }">{{service.online ? "ONLINE" : "OFFLINE"}}</span>
-              <GroupServiceFailures :service="service"/>
-              <IncidentsBlock :service="service"/>
-            </div>
+              <div class="list-group-item list-group-item-action">
+                  <router-link class="no-decoration font-3" :to="serviceLink(service)">
+                    {{service.name}}
+                    <MessagesIcon :messages="service.messages"/>
+                  </router-link>
+                  <span class="badge float-right" :class="{'bg-success': service.online, 'bg-danger': !service.online }">{{service.online ? "ONLINE" : "OFFLINE"}}</span>
+                  <GroupServiceFailures :service="service"/>
+                  <IncidentsBlock :service="service"/>
+              </div>
           </div>
-        </div>
+      </div>
 
-        <Group v-for="group in groups" v-bind:key="group.id" :group="group" />
+      <Group v-for="group in groups" v-bind:key="group.id" :group="group" />
 
-        <div class="col-12 full-col-12">
+      <div class="col-12 full-col-12">
           <div v-for="service in services" :ref="service.id" v-bind:key="service.id">
-            <ServiceBlock :service="service" />
+              <ServiceBlock :service="service" />
           </div>
         </div>
       </div>
-  </div>
+    </div>
 </template>
 
 <script>
@@ -62,13 +62,13 @@ const MessagesIcon = () => import(/* webpackChunkName: "index" */ '@/components/
 export default {
     name: 'Index',
     components: {
-        IncidentsBlock,
-        GroupServiceFailures,
-        ServiceBlock,
-        MessageBlock,
-        MessagesIcon,
-        Group,
-        Header
+      IncidentsBlock,
+      GroupServiceFailures,
+      ServiceBlock,
+      MessageBlock,
+      MessagesIcon,
+      Group,
+      Header
     },
     data() {
         return {
@@ -145,5 +145,5 @@ export default {
         return value >= new Date(min) && value <= new Date(max);
       }
     }
-  }
+}
 </script>
