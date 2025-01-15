@@ -135,10 +135,10 @@ export default {
           const token = this.$cookies.get('statping_auth')
           if (!token) {
             this.$store.commit('setLoggedIn', false);
-            return;
+            return
           }
           try {
-            const jwt = await Api.check_token(token);
+            const jwt = await Api.check_token(token)
             this.$store.commit('setAdmin', jwt.admin);
             if (jwt.username) {
               this.$store.commit('setLoggedIn', true);
