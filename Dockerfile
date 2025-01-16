@@ -62,4 +62,4 @@ ENV BASE_PATH=""
 EXPOSE $PORT
 HEALTHCHECK --interval=60s --timeout=10s --retries=3 CMD if [ -z "$BASE_PATH" ]; then HEALTHPATH="/health"; else HEALTHPATH="/$BASE_PATH/health" ; fi && curl -s "http://localhost:${PORT}$HEALTHPATH" | jq -r -e ".online==true"
 
-CMD statping --port $PORT
+CMD ["statping", "--port", "$PORT"]
