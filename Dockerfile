@@ -2,7 +2,8 @@ FROM --platform=$BUILDPLATFORM tonistiigi/xx:1.6.1 AS xx
 
 
 FROM --platform=$BUILDPLATFORM node:16.14.0-alpine AS frontend
-WORKDIR /statping
+RUN mkdir /build
+WORKDIR /build
 COPY ./frontend/package.json .
 COPY ./frontend/yarn.lock .
 RUN yarn install --pure-lockfile --network-timeout 1000000
@@ -16,7 +17,9 @@ RUN apk add --no-cache clang lld
 ARG TARGETPLATFORM
 RUN xx-apk add --no-cache musl-dev gcc
 
-WORKDIR /go/src/github.com/statping-ng/statping-ng
+RUN mkdir /build
+WORKDIR /build
+
 ADD go.mod go.sum ./
 RUN go mod download
 
@@ -27,7 +30,8 @@ COPY notifiers ./notifiers
 COPY source ./source
 COPY types ./types
 COPY utils ./utils
-COPY --from=frontend /statping/dist/ ./source/dist/
+
+COPY --from=frontend /build/dist/ ./source/dist/
 RUN go install github.com/GeertJohan/go.rice/rice@latest
 RUN cd source && rice embed-go
 
@@ -36,9 +40,6 @@ ARG VERSION
 ARG COMMIT
 RUN xx-go build -a -ldflags "-s -w -extldflags -static -X main.VERSION=$VERSION -X main.COMMIT=$COMMIT" -o statping --tags "netgo linux" ./cmd
 RUN xx-verify --static statping
-RUN chmod a+x statping && mv statping /go/bin/statping
-# /go/bin/statping - statping binary
-# /statping - Vue frontend (from frontend)
 
 
 # Statping main Docker image that contains all required libraries
@@ -47,7 +48,7 @@ LABEL maintainer="Statping-NG (https://github.com/statping-ng)"
 
 RUN apk --no-cache add libgcc libstdc++ ca-certificates curl jq sassc && update-ca-certificates
 
-COPY --from=backend /go/bin/statping /usr/local/bin/
+COPY --from=backend /build/statping /usr/local/bin/
 COPY --from=backend /usr/local/share/ca-certificates /usr/local/share/
 
 WORKDIR /app
