@@ -46,7 +46,7 @@ RUN xx-verify --static statping
 FROM alpine:latest
 LABEL maintainer="Statping-NG (https://github.com/statping-ng)"
 
-RUN apk --no-cache add libgcc libstdc++ ca-certificates curl jq sassc
+RUN apk --no-cache add ca-certificates curl jq sassc
 
 COPY --from=backend /build/statping /usr/local/bin/
 
