@@ -1,5 +1,4 @@
 FROM --platform=$BUILDPLATFORM tonistiigi/xx:1.6.1 AS xx
-LABEL maintainer="Statping-ng (https://github.com/statping-ng)"
 
 
 FROM --platform=$BUILDPLATFORM node:16.14.0-alpine AS frontend
@@ -12,7 +11,6 @@ RUN yarn build && yarn cache clean
 
 
 FROM --platform=$BUILDPLATFORM golang:1.20.0-alpine AS backend
-LABEL maintainer="Statping-NG (https://github.com/statping-ng)"
 COPY --from=xx / /
 RUN apk add --no-cache clang lld
 ARG TARGETPLATFORM
@@ -45,6 +43,7 @@ RUN chmod a+x statping && mv statping /go/bin/statping
 
 # Statping main Docker image that contains all required libraries
 FROM alpine:latest
+LABEL maintainer="Statping-NG (https://github.com/statping-ng)"
 
 RUN apk --no-cache add libgcc libstdc++ ca-certificates curl jq sassc && update-ca-certificates
 
@@ -61,7 +60,6 @@ ENV PORT=8080
 ENV BASE_PATH=""
 
 EXPOSE $PORT
-
 HEALTHCHECK --interval=60s --timeout=10s --retries=3 CMD if [ -z "$BASE_PATH" ]; then HEALTHPATH="/health"; else HEALTHPATH="/$BASE_PATH/health" ; fi && curl -s "http://localhost:${PORT}$HEALTHPATH" | jq -r -e ".online==true"
 
 CMD statping --port $PORT
