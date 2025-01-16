@@ -14,14 +14,9 @@ RUN yarn build && yarn cache clean
 FROM --platform=$BUILDPLATFORM golang:1.20.0-alpine AS backend
 LABEL maintainer="Statping-NG (https://github.com/statping-ng)"
 COPY --from=xx / /
-RUN apk add --no-cache clang lld git make g++
+RUN apk add --no-cache clang lld
 ARG TARGETPLATFORM
 RUN xx-apk add --no-cache musl-dev gcc
-
-WORKDIR /root
-RUN git clone --depth 1 --branch 3.6.2 https://github.com/sass/sassc.git
-RUN . sassc/script/bootstrap && make -C sassc -j4
-# sassc binary: /root/sassc/bin/sassc
 
 WORKDIR /go/src/github.com/statping-ng/statping-ng
 ADD go.mod go.sum ./
@@ -45,24 +40,22 @@ RUN xx-go build -a -ldflags "-s -w -extldflags -static -X main.VERSION=$VERSION 
 RUN xx-verify --static statping
 RUN chmod a+x statping && mv statping /go/bin/statping
 # /go/bin/statping - statping binary
-# /root/sassc/bin/sassc - sass binary
 # /statping - Vue frontend (from frontend)
 
 
 # Statping main Docker image that contains all required libraries
 FROM alpine:latest
 
-RUN apk --no-cache add libgcc libstdc++ ca-certificates curl jq && update-ca-certificates
+RUN apk --no-cache add libgcc libstdc++ ca-certificates curl jq sassc && update-ca-certificates
 
 COPY --from=backend /go/bin/statping /usr/local/bin/
-COPY --from=backend /root/sassc/bin/sassc /usr/local/bin/
 COPY --from=backend /usr/local/share/ca-certificates /usr/local/share/
 
 WORKDIR /app
 VOLUME /app
 
 ENV IS_DOCKER=true
-ENV SASS=/usr/local/bin/sassc
+ENV SASS=/usr/bin/sassc
 ENV STATPING_DIR=/app
 ENV PORT=8080
 ENV BASE_PATH=""
