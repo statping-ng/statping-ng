@@ -1,6 +1,8 @@
-FROM node:16.14.0-alpine AS frontend
+FROM --platform=$BUILDPLATFORM tonistiigi/xx:1.6.1 AS xx
 LABEL maintainer="Statping-ng (https://github.com/statping-ng)"
-ARG BUILDPLATFORM
+
+
+FROM --platform=$BUILDPLATFORM node:16.14.0-alpine AS frontend
 WORKDIR /statping
 COPY ./frontend/package.json .
 COPY ./frontend/yarn.lock .
@@ -8,17 +10,13 @@ RUN yarn install --pure-lockfile --network-timeout 1000000
 COPY ./frontend .
 RUN yarn build && yarn cache clean
 
-# Statping Golang BACKEND building from source
-# Creates "/go/bin/statping" and "/usr/local/bin/sass" for copying
-FROM golang:1.20.0-alpine AS backend
+
+FROM --platform=$BUILDPLATFORM golang:1.20.0-alpine AS backend
 LABEL maintainer="Statping-NG (https://github.com/statping-ng)"
-ARG VERSION
-ARG COMMIT
-ARG BUILDPLATFORM
-ARG TARGETARCH
-RUN apk add --no-cache libstdc++ gcc g++ make git autoconf \
-    libtool ca-certificates linux-headers wget curl jq && \
-    update-ca-certificates
+COPY --from=xx / /
+RUN apk add --no-cache clang lld git make g++
+ARG TARGETPLATFORM
+RUN xx-apk add --no-cache musl-dev gcc
 
 WORKDIR /root
 RUN git clone --depth 1 --branch 3.6.2 https://github.com/sass/sassc.git
@@ -28,8 +26,7 @@ RUN . sassc/script/bootstrap && make -C sassc -j4
 WORKDIR /go/src/github.com/statping-ng/statping-ng
 ADD go.mod go.sum ./
 RUN go mod download
-ENV GO111MODULE on
-ENV CGO_ENABLED 1
+
 COPY cmd ./cmd
 COPY database ./database
 COPY handlers ./handlers
@@ -40,11 +37,17 @@ COPY utils ./utils
 COPY --from=frontend /statping/dist/ ./source/dist/
 RUN go install github.com/GeertJohan/go.rice/rice@latest
 RUN cd source && rice embed-go
-RUN go build -a -ldflags "-s -w -extldflags -static -X main.VERSION=$VERSION -X main.COMMIT=$COMMIT" -o statping --tags "netgo linux" ./cmd
+
+ENV CGO_ENABLED=1
+ARG VERSION
+ARG COMMIT
+RUN xx-go build -a -ldflags "-s -w -extldflags -static -X main.VERSION=$VERSION -X main.COMMIT=$COMMIT" -o statping --tags "netgo linux" ./cmd
+RUN xx-verify --static statping
 RUN chmod a+x statping && mv statping /go/bin/statping
 # /go/bin/statping - statping binary
 # /root/sassc/bin/sassc - sass binary
 # /statping - Vue frontend (from frontend)
+
 
 # Statping main Docker image that contains all required libraries
 FROM alpine:latest
