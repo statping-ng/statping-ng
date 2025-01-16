@@ -251,6 +251,8 @@ jobs:
           path: ./source
 
       - name: Install Statping
+        env:
+          GOPROXY: https://proxy.golang.org,direct
         run: |
           make build certs
           chmod +x statping
@@ -310,11 +312,12 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ needs.data.outputs.go_version }}
+          go-version: '1.21.8'
 
       - name: Setting ENV's
         run: |
-          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+          echo "GOROOT=$GOROOT" >> $GITHUB_ENV
+          echo "PATH=$GOROOT/bin:$PATH" >> $GITHUB_ENV
           echo "/opt/hostedtoolcache/node/${{ needs.data.outputs.node_version }}/x64/bin" >> $GITHUB_PATH
         shell: bash
 
@@ -325,7 +328,10 @@ jobs:
           path: ./source
 
       - name: Install Statping
+        env:
+          GOPROXY: https://proxy.golang.org,direct
         run: |
+          go version
           make build
           chmod +x statping
           mv statping $(go env GOPATH)/bin/
@@ -360,11 +366,12 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ needs.data.outputs.go_version }}
+          go-version: '1.21.8'
 
       - name: Setting ENV's
         run: |
-          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+          echo "GOROOT=$GOROOT" >> $GITHUB_ENV
+          echo "PATH=$GOROOT/bin:$PATH" >> $GITHUB_ENV
           echo "/opt/hostedtoolcache/node/${{ needs.data.outputs.node_version }}/x64/bin" >> $GITHUB_PATH
         shell: bash
 
@@ -375,7 +382,10 @@ jobs:
           path: ./source
 
       - name: Install Statping
+        env:
+          GOPROXY: https://proxy.golang.org,direct
         run: |
+          go version
           make build
           chmod +x statping
           mv statping $(go env GOPATH)/bin/
@@ -411,11 +421,12 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ needs.data.outputs.go_version }}
+          go-version: '1.21.8'
 
       - name: Setting ENV's
         run: |
-          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+          echo "GOROOT=$GOROOT" >> $GITHUB_ENV
+          echo "PATH=$GOROOT/bin:$PATH" >> $GITHUB_ENV
           echo "/opt/hostedtoolcache/node/${{ needs.data.outputs.node_version }}/x64/bin" >> $GITHUB_PATH
         shell: bash
 
@@ -427,6 +438,7 @@ jobs:
 
       - name: Install Statping
         run: |
+          go version
           make build
           chmod +x statping
           mv statping $(go env GOPATH)/bin/

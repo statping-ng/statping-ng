@@ -41,6 +41,7 @@ type Service struct {
 	PingTime            int64                 `gorm:"-" json:"ping_time" yaml:"-"`
 	Online24Hours       float32               `gorm:"-" json:"online_24_hours" yaml:"-"`
 	Online7Days         float32               `gorm:"-" json:"online_7_days" yaml:"-"`
+	Online1Year         float32               `gorm:"-" json:"online_1_year" yaml:"-"`
 	AvgResponse         int64                 `gorm:"-" json:"avg_response" yaml:"-"`
 	FailuresLast24Hours int                   `gorm:"-" json:"failures_24_hours" yaml:"-"`
 	Running             chan bool             `gorm:"-" json:"-" yaml:"-"`

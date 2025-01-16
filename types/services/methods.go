@@ -261,6 +261,7 @@ func SelectAllServices(start bool) (map[int64]*Service, error) {
 func (s *Service) UpdateStats() *Service {
 	s.Online24Hours = s.OnlineDaysPercent(1)
 	s.Online7Days = s.OnlineDaysPercent(7)
+	s.Online1Year = s.OnlineDaysPercent(365)
 	s.AvgResponse = s.AvgTime()
 	s.FailuresLast24Hours = s.FailuresSince(utils.Now().Add(-time.Hour * 24)).Count()
 
@@ -296,24 +297,35 @@ func (s *Service) OnlineSince(ago time.Time) float32 {
 	failsList := s.FailuresSince(ago).Count()
 	hitsList := s.HitsSince(ago).Count()
 
-	if failsList == 0 {
+	// If there were no failures, and we have success
+	// Then return 100% uptime
+	if failsList == 0 && hitsList > 0 {
 		s.Online24Hours = 100.00
 		return s.Online24Hours
 	}
-
+	// If we have 0 hits then its 0% uptime
 	if hitsList == 0 {
 		s.Online24Hours = 0
 		return s.Online24Hours
 	}
 
+	// Otherwise, calculate the uptime percentage
 	avg := (float64(failsList) / float64(hitsList)) * 100
 	avg = 100 - avg
 	if avg < 0 {
 		avg = 0
 	}
-	amount, _ := strconv.ParseFloat(fmt.Sprintf("%0.2f", avg), 10)
-	s.Online24Hours = float32(amount)
-	return s.Online24Hours
+
+	// If we have a huge amount of data points, use a more precise number
+	if hitsList > 100000 {
+		amount, _ := strconv.ParseFloat(fmt.Sprintf("%0.3f", avg), 10)
+		s.Online24Hours = float32(amount)
+		return s.Online24Hours
+	} else {
+		amount, _ := strconv.ParseFloat(fmt.Sprintf("%0.2f", avg), 10)
+		s.Online24Hours = float32(amount)
+		return s.Online24Hours
+	}
 }
 
 // Uptime returns the duration of how long the service was online
