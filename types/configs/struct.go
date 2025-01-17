@@ -49,5 +49,14 @@ type DbConfig struct {
 
 	PostgresSSLMode string `yaml:"postgres_ssl,omitempty" json:"postgres_ssl"`
 
+	KeycloakEnabled          bool   `yaml:"keycloak_enabled" json:"keycloak_enabled"`
+	KeycloakClientID         string `yaml:"keycloak_client_id,omitempty" json:"keycloak_client_id"`
+	KeycloakClientSecret     string `yaml:"keycloak_client_secret,omitempty" json:"keycloak_client_secret"`
+	KeycloakEndpointAuth     string `yaml:"keycloak_endpoint_auth,omitempty" json:"keycloak_endpoint_auth"`
+	KeycloakEndpointToken    string `yaml:"keycloak_endpoint_token,omitempty" json:"keycloak_endpoint_token"`
+	KeycloakEndpointUserInfo string `yaml:"keycloak_endpoint_userinfo,omitempty" json:"keycloak_endpoint_userinfo"`
+	KeycloakScopes           string `yaml:"keycloak_scopes,omitempty" json:"keycloak_scopes"`
+	KeycloakAdminGroups   	 string `yaml:"keycloak_admin_groups,omitempty" json:"keycloak_admin_groups"`
+
 	Db database.Database `yaml:"-" json:"-"`
 }

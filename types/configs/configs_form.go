@@ -25,6 +25,14 @@ func LoadConfigForm(r *http.Request) (*DbConfig, error) {
 	domain := g("domain")
 	email := g("email")
 	language := g("language")
+	keycloakEnabled, _ := strconv.ParseBool(g("keycloak_enabled"))
+    keycloakClientID := g("keycloak_client_id")
+    keycloakClientSecret := g("keycloak_client_secret")
+    keycloakEndpointAuth := g("keycloak_endpoint_auth")
+    keycloakEndpointToken := g("keycloak_endpoint_token")
+    keycloakEndpointUserInfo := g("keycloak_endpoint_userinfo")
+    keycloakScopes := g("keycloak_scopes")
+	keycloakAdminGroups := g("keycloak_admin_groups")
 	reports, _ := strconv.ParseBool(g("send_reports"))
 
 	if project == "" || username == "" || password == "" {
@@ -46,6 +54,14 @@ func LoadConfigForm(r *http.Request) (*DbConfig, error) {
 	p.Set("ADMIN_USER", username)
 	p.Set("ADMIN_PASSWORD", password)
 	p.Set("ADMIN_EMAIL", email)
+	p.Set("KEYCLOAK_ENABLED", keycloakEnabled)
+    p.Set("KEYCLOAK_CLIENT_ID", keycloakClientID)
+    p.Set("KEYCLOAK_CLIENT_SECRET", keycloakClientSecret)
+    p.Set("KEYCLOAK_ENDPOINT_AUTH", keycloakEndpointAuth)
+    p.Set("KEYCLOAK_ENDPOINT_TOKEN", keycloakEndpointToken)
+    p.Set("KEYCLOAK_ENDPOINT_USERINFO", keycloakEndpointUserInfo)
+    p.Set("KEYCLOAK_SCOPES", keycloakScopes)
+	p.Set("KEYCLOAK_ADMIN_GROUPS", keycloakAdminGroups)
 
 	confg := &DbConfig{
 		DbConn:       dbConn,
@@ -63,6 +79,14 @@ func LoadConfigForm(r *http.Request) (*DbConfig, error) {
 		Location:     utils.Directory,
 		Language:     language,
 		AllowReports: reports,
+        KeycloakEnabled:      		keycloakEnabled,
+        KeycloakClientID:     		keycloakClientID,
+        KeycloakClientSecret: 		keycloakClientSecret,
+        KeycloakEndpointAuth: 		keycloakEndpointAuth,
+		KeycloakEndpointToken: 		keycloakEndpointToken,
+		KeycloakEndpointUserInfo: 	keycloakEndpointUserInfo,
+		KeycloakScopes:        		keycloakScopes,
+		KeycloakAdminGroups:        keycloakAdminGroups,
 	}
 
 	return confg, nil

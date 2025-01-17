@@ -28,6 +28,8 @@ func oauthHandler(w http.ResponseWriter, r *http.Request) {
 		oauth, err = googleOAuth(r)
 	case "github":
 		oauth, err = githubOAuth(r)
+    case "keycloak":
+        oauth, err = keycloakOAuth(r)
 	case "slack":
 		oauth, err = slackOAuth(r)
 	case "custom":
