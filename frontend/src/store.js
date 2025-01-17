@@ -159,12 +159,41 @@ export default new Vuex.Store({
       context.commit("setServices", services);
     },
     async loadCore(context) {
-      const core = await Api.core()
-      const token = await Api.token()
-      context.commit("setCore", core);
-      context.commit('setAdmin', token)
-      context.commit('setCore', core)
-      context.commit('setUser', token !== undefined)
+      try {
+        const core = await Api.core()
+        const token = await Api.token()
+        let isAdmin = false
+
+        if (token) {
+          try {
+            const jwt = await Api.check_token(token)
+            if (jwt && jwt.groups && Array.isArray(jwt.groups)) {
+              try {
+                const configResponse = await Api.getConfig();
+                let adminGroupsString = configResponse.keycloakAdminGroups || ''; // Priority to configured groups
+                if (!adminGroupsString) { // If no group is configured, use environment variable
+                  adminGroupsString = process.env.KEYCLOAK_ADMIN_GROUPS || '';
+                }
+                const adminGroups = adminGroupsString.split(',').map(group => group.trim());
+                isAdmin = jwt.groups.some(group => adminGroups.includes(group));
+              } catch (configError) {
+                console.error("Loading configuration error :", configError);
+                isAdmin = false;
+              }
+          }
+            context.commit('setUser', jwt.username !== null);
+          }
+          catch (error) {
+            console.error("Token validation error :", error);
+          }
+
+          context.commit("setCore", core);
+          context.commit('setAdmin', token);
+        }
+      }
+      catch (error) {
+        console.error("Error on Core loading :", error)
+      }
     },
     async loadRequired(context) {
       const groups = await Api.groups()

@@ -37,6 +37,10 @@
             <font-awesome-icon :icon="['fab', 'google']" /> Login with Google
         </a>
 
+        <a v-if="oauth && oauth.keycloak_client_id" @click.prevent="Keycloaklogin" href="#" class="btn btn-block btn-outline-dark">
+            <font-awesome-icon :icon="['fas', 'address-card']" /> Login with {{oauth.keycloak_name}}
+        </a>
+
         <a v-if="oauth && oauth.custom_client_id" @click.prevent="Customlogin" href="#" class="btn btn-block btn-outline-dark">
             <font-awesome-icon :icon="['fas', 'address-card']" /> Login with {{oauth.custom_name}}
         </a>
@@ -117,6 +121,9 @@
         },
         Googlelogin() {
           window.location = `https://accounts.google.com/signin/oauth?client_id=${this.oauth.google_client_id}&redirect_uri=${this.encode(this.core.domain+"/oauth/google")}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email`
+        },
+        Keycloaklogin() {
+          window.location = `${this.oauth.keycloak_endpoint_auth}?client_id=${this.oauth.keycloak_client_id}&redirect_uri=${this.encode(this.core.domain+"/oauth/keycloak")}&response_type=code${this.keycloak_scopes()}`
         },
         Customlogin() {
           window.location = `${this.oauth.custom_endpoint_auth}?client_id=${this.oauth.custom_client_id}&redirect_uri=${this.encode(this.core.domain+"/oauth/custom")}&response_type=code${this.custom_scopes()}`

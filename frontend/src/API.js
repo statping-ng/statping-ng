@@ -28,9 +28,14 @@ class Api {
     return axios.post('api/core', obj).then(response => (response.data))
   }
 
-  async oauth_save(obj) {
-    return axios.post('api/oauth', obj).then(response => (response.data))
-  }
+  async oauth_save(data) {
+    return await axios.post('/api/oauth', data)
+      .then(response => response.data)
+      .catch(error => {
+          console.error("Error on OAuth parameters save :", error)
+          throw error // Important to re-throw the error to avoid swallowing it
+      })
+}
 
   async setup_save(data) {
     return axios.post('api/setup', qs.stringify(data)).then(response => (response.data))
@@ -229,8 +234,14 @@ class Api {
   }
 
   async check_token(token) {
-    const f = {token: token}
-    return axios.post('api/users/token', qs.stringify(f)).then(response => (response.data))
+    try {
+      const f = {token: token}
+      return axios.post('api/users/token', qs.stringify(f)).then(response => (response.data))
+    }
+    catch (error) {
+      console.error("Token validation error :", error)
+      return { admin: false, username: null }
+    }
   }
 
   async login(username, password) {

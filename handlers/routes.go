@@ -6,6 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/statping-ng/statping-ng/middleware"
 	"github.com/statping-ng/statping-ng/source"
 	"github.com/statping-ng/statping-ng/types/core"
 	"github.com/statping-ng/statping-ng/utils"
@@ -99,7 +100,7 @@ func Router() *mux.Router {
 
 	// API OAUTH Routes
 	api.Handle("/api/oauth", scoped(apiOAuthHandler)).Methods("GET")
-	api.Handle("/api/oauth", authenticated(apiUpdateOAuthHandler, false)).Methods("POST")
+	api.Handle("/api/oauth", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
 	api.Handle("/oauth/{provider}", http.HandlerFunc(oauthHandler))
 
 	// API SCSS and ASSETS Routes
@@ -110,24 +111,24 @@ func Router() *mux.Router {
 
 	// API GROUPS Routes
 	api.Handle("/api/groups", scoped(apiAllGroupHandler)).Methods("GET")
-	api.Handle("/api/groups", authenticated(apiCreateGroupHandler, false)).Methods("POST")
+	api.Handle("/api/groups", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
 	api.Handle("/api/groups/{id}", readOnly(http.HandlerFunc(apiGroupHandler), false)).Methods("GET")
-	api.Handle("/api/groups/{id}", authenticated(apiGroupUpdateHandler, false)).Methods("POST")
-	api.Handle("/api/groups/{id}", authenticated(apiGroupDeleteHandler, false)).Methods("DELETE")
-	api.Handle("/api/reorder/groups", authenticated(apiGroupReorderHandler, false)).Methods("POST")
+	api.Handle("/api/groups/{id}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
+	api.Handle("/api/groups/{id}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("DELETE")
+	api.Handle("/api/reorder/groups", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
 
 	// API SERVICE Routes
 	api.Handle("/api/services", scoped(apiAllServicesHandler)).Methods("GET")
-	api.Handle("/api/services", authenticated(apiCreateServiceHandler, false)).Methods("POST")
+	api.Handle("/api/services", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
 	api.Handle("/api/services/{id}", scoped(apiServiceHandler)).Methods("GET")
 	api.Handle("/api/reorder/services", authenticated(reorderServiceHandler, false)).Methods("POST")
-	api.Handle("/api/services/{id}", authenticated(apiServiceUpdateHandler, false)).Methods("POST")
-	api.Handle("/api/services/{id}", authenticated(apiServicePatchHandler, false)).Methods("PATCH")
-	api.Handle("/api/services/{id}", authenticated(apiServiceDeleteHandler, false)).Methods("DELETE")
+	api.Handle("/api/services/{id}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
+	api.Handle("/api/services/{id}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("PATCH")
+	api.Handle("/api/services/{id}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("DELETE")
 	api.Handle("/api/services/{id}/failures", scoped(apiServiceFailuresHandler)).Methods("GET")
-	api.Handle("/api/services/{id}/failures", authenticated(servicesDeleteFailuresHandler, false)).Methods("DELETE")
+	api.Handle("/api/services/{id}/failures", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("DELETE")
 	api.Handle("/api/services/{id}/hits", scoped(apiServiceHitsHandler)).Methods("GET")
-	api.Handle("/api/services/{id}/hits", authenticated(apiServiceHitsDeleteHandler, false)).Methods("DELETE")
+	api.Handle("/api/services/{id}/hits", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("DELETE")
 
 	// API SERVICE CHART DATA Routes
 	api.Handle("/api/services/{id}/hits_data", http.HandlerFunc(apiServiceDataHandler)).Methods("GET")
@@ -137,41 +138,41 @@ func Router() *mux.Router {
 
 	// API INCIDENTS Routes
 	api.Handle("/api/services/{id}/incidents", http.HandlerFunc(apiServiceIncidentsHandler)).Methods("GET")
-	api.Handle("/api/services/{id}/incidents", authenticated(apiCreateIncidentHandler, false)).Methods("POST")
-	api.Handle("/api/incidents/{id}", authenticated(apiIncidentUpdateHandler, false)).Methods("POST")
-	api.Handle("/api/incidents/{id}", authenticated(apiDeleteIncidentHandler, false)).Methods("DELETE")
+	api.Handle("/api/services/{id}/incidents", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
+	api.Handle("/api/incidents/{id}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
+	api.Handle("/api/incidents/{id}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("DELETE")
 
 	// API INCIDENTS UPDATES Routes
 	api.Handle("/api/incidents/{id}/updates", http.HandlerFunc(apiIncidentUpdatesHandler)).Methods("GET")
-	api.Handle("/api/incidents/{id}/updates", authenticated(apiCreateIncidentUpdateHandler, false)).Methods("POST")
-	api.Handle("/api/incidents/{id}/updates/{uid}", authenticated(apiDeleteIncidentUpdateHandler, false)).Methods("DELETE")
+	api.Handle("/api/incidents/{id}/updates", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
+	api.Handle("/api/incidents/{id}/updates/{uid}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("DELETE")
 
 	// API USER Routes
 	api.Handle("/api/users", scoped(apiAllUsersHandler)).Methods("GET")
-	api.Handle("/api/users", authenticated(apiCreateUsersHandler, false)).Methods("POST")
+	api.Handle("/api/users", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
 	api.Handle("/api/users/token", http.HandlerFunc(apiCheckUserTokenHandler)).Methods("POST")
-	api.Handle("/api/users/{id}", authenticated(apiUserHandler, false)).Methods("GET")
-	api.Handle("/api/users/{id}", authenticated(apiUserUpdateHandler, false)).Methods("POST")
-	api.Handle("/api/users/{id}", authenticated(apiUserDeleteHandler, false)).Methods("DELETE")
+	api.Handle("/api/users/{id}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("GET")
+	api.Handle("/api/users/{id}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
+	api.Handle("/api/users/{id}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("DELETE")
 
 	// API NOTIFIER Routes
-	api.Handle("/api/notifiers", scoped(apiAllNotifiersHandler)).Methods("GET")
+	api.Handle("/api/notifiers", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("GET")
 	api.Handle("/api/notifier/{notifier}", authenticated(apiNotifierGetHandler, false)).Methods("GET")
-	api.Handle("/api/notifier/{notifier}", authenticated(apiNotifierUpdateHandler, false)).Methods("POST")
-	api.Handle("/api/notifier/{notifier}/test", authenticated(testNotificationHandler, false)).Methods("POST")
+	api.Handle("/api/notifier/{notifier}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
+	api.Handle("/api/notifier/{notifier}/test", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
 
 	// API MESSAGES Routes
 	api.Handle("/api/messages", scoped(apiAllMessagesHandler)).Methods("GET")
-	api.Handle("/api/messages", authenticated(apiMessageCreateHandler, false)).Methods("POST")
+	api.Handle("/api/messages", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
 	api.Handle("/api/messages/{id}", scoped(apiMessageGetHandler)).Methods("GET")
-	api.Handle("/api/messages/{id}", authenticated(apiMessageUpdateHandler, false)).Methods("POST")
-	api.Handle("/api/messages/{id}", authenticated(apiMessageDeleteHandler, false)).Methods("DELETE")
+	api.Handle("/api/messages/{id}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
+	api.Handle("/api/messages/{id}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("DELETE")
 
 	// API CHECKIN Routes
 	api.Handle("/api/checkins", scoped(apiAllCheckinsHandler)).Methods("GET")
-	api.Handle("/api/checkins", authenticated(checkinCreateHandler, false)).Methods("POST")
-	api.Handle("/api/checkins/{api}", authenticated(apiCheckinHandler, false)).Methods("GET")
-	api.Handle("/api/checkins/{api}", authenticated(checkinDeleteHandler, false)).Methods("DELETE")
+	api.Handle("/api/checkins", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("POST")
+	api.Handle("/api/checkins/{api}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("GET")
+	api.Handle("/api/checkins/{api}", middleware.AdminAuth(http.HandlerFunc(apiUpdateOAuthHandler))).Methods("DELETE")
 	r.Handle("/checkin/{api}", http.HandlerFunc(checkinHitHandler))
 
 	// API Generic Routes
