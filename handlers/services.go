@@ -269,7 +269,8 @@ func apiServiceDeleteHandler(w http.ResponseWriter, r *http.Request) {
 func apiAllServicesHandler(r *http.Request) interface{} {
 	var srvs []services.Service
 	for _, v := range services.AllInOrder() {
-		if !v.Public.Bool && !IsUser(r) {
+		// Skip service if its private and no user, admin or API token is authenticated
+		if !v.Public.Bool && !IsUser(r) && !hasAuthorizationHeader(r) {
 			continue
 		}
 		srvs = append(srvs, v)

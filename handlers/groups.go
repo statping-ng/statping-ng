@@ -29,8 +29,8 @@ func findGroup(r *http.Request) (*groups.Group, error) {
 
 // apiAllGroupHandler will show all the groups
 func apiAllGroupHandler(r *http.Request) interface{} {
-	auth, admin := IsUser(r), IsAdmin(r)
-	return groups.SelectGroups(admin, auth)
+	auth, isAdmin := IsUser(r), IsAdmin(r) || hasAuthorizationHeader(r)
+	return groups.SelectGroups(isAdmin, auth)
 }
 
 // apiGroupHandler will show a single group
