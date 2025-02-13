@@ -154,6 +154,7 @@ class Api {
         updates = uniqueUpdates;
       }
       return updates;
+  
     } catch (error) {
       console.error("Erreur lors de la récupération des mises à jour de l'incident :", error);
       return { erreur: error.message };
