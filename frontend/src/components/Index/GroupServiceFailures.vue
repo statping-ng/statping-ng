@@ -9,7 +9,8 @@
         <div v-if="loaded">
         <div class="d-flex mt-3">
             <div class="flex-fill service_day" v-for="(d, index) in failureData" @mouseover="mouseover(d)" @mouseout="mouseout" :class="getBarClass(d)">
-                <span v-if="d.amount !== 0" class="d-none d-md-block text-center small"></span>
+            <div class="flex-fill service_day" v-for="(d, index) in failureData" @mouseover="mouseover(d)" @mouseout="mouseout" :class="getBarClass(d)">
+                <span v-if="d.amount !== 0" class="d-none d-md-block text-center small">{{ d.amount }}</span>
             </div>
         </div>
         <!-- custom -->
@@ -18,6 +19,7 @@
             <p class="divided">
               <span class="font-2 text-muted">90 {{$t('days_ago')}}</span>
               <span class="divider"></span>
+              <span class="text-center font-2" :class="textClass(service)">{{service_txt}}</span>
               <span class="text-center font-2" :class="textClass(service)">{{service_txt}}</span>
               <span class="divider"></span>
               <span class="font-2 text-muted">{{$t('today')}}</span>
@@ -44,7 +46,8 @@ export default {
           hover_text: "",
           loaded: false,
           visible: false,
-        }
+          }
+        },
     },
   props: {
       service: {
@@ -59,8 +62,8 @@ export default {
   },
   mounted () {
 
-    },
-    methods: {
+  },
+  methods: {
       visibleChart(isVisible, entry) {
         if (isVisible && !this.visible) {
           this.visible = true
