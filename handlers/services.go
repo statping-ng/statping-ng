@@ -9,6 +9,8 @@ import (
 	"github.com/statping-ng/statping-ng/types/services"
 	"github.com/statping-ng/statping-ng/utils"
 	"net/http"
+	"encoding/json"
+    "time"    
 )
 
 type serviceOrder struct {
@@ -313,4 +315,64 @@ func apiServiceHitsHandler(r *http.Request) interface{} {
 	}
 	query.Find(&hts)
 	return hts
+}
+
+// apiServiceOutageHandler forces a service into outage mode by setting
+// IsOutageEnabled to true and defining the OutageType (e.g., "Minor", "Major", "Critical").
+// It also records the outage event in the failures history.
+func apiServiceOutageHandler(w http.ResponseWriter, r *http.Request) {
+	// Retrieve the service ID from the URL parameters.
+	vars := mux.Vars(r)
+	id := utils.ToInt(vars["id"])
+
+	// Find the service using its ID.
+	service, err := services.Find(int64(id))
+	if err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+
+	// Verify that the request is authenticated.
+	if !IsReadAuthenticated(r) {
+		sendErrorJson(errors.NotAuthenticated, w, r)
+		return
+	}
+
+	// Decode the JSON payload.
+	var payload struct {
+		OutageType string `json:"outage_type"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+
+	// Update the service to force an outage.
+	service.IsOutageEnabled = true
+	service.OutageType = payload.OutageType
+
+	// Save the updated service record.
+	if err := service.Update(); err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+
+	// Record the outage event in the failures history.
+	newFailure := &failures.Failure{
+		Issue:      "Manual outage set (" + payload.OutageType + ")",
+		Method:     "manual", // Indicates this is a manual trigger.
+		ErrorCode:  0,
+		Service:    service.Id,
+		PingTime:   0,
+		OutageType: payload.OutageType,
+		CreatedAt:  time.Now(),
+	}
+	// Use the Create method defined in types/failures/database.go
+	if err := newFailure.Create(); err != nil {
+		utils.Log.Error("Unable to record outage in failures: ", err)
+		// Continue even if recording the failure fails.
+	}
+
+	// Return the updated service as a JSON response.
+	sendJsonAction(service, "update", w, r)
 }

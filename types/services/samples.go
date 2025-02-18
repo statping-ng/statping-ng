@@ -54,6 +54,8 @@ func Example(online bool) Service {
 		LastOnline:          utils.Now().Add(-37 * time.Second),
 		LastOffline:         utils.Now().Add(-75 * time.Second),
 		prevOnline:          false,
+		IsOutageEnabled:	 false,
+		OutageType:          "",
 	}
 }
 

@@ -74,6 +74,16 @@
           return this.$store.getters.groupsInOrder
         },
       },
+      // async mounted() {
+      //   try {
+      //     await this.$store.dispatch('loadServices');
+      //   } catch (error) {
+      //     console.error("Error loading services :", error);
+      //   } finally {
+      //     console.log("done loading services", this.$store.getters.servicesInOrder)
+      //     this.loadingServices = false;
+      //   }
+      // },
       methods: {
           failuresLast24Hours() {
               let total = 0;

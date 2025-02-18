@@ -23,6 +23,7 @@ func Example() Failure {
 		Checkin:   0,
 		PingTime:  48309,
 		Reason:    "status_code",
+		OutageType: "",
 		CreatedAt: utils.Now(),
 	}
 }

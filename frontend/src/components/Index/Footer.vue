@@ -4,7 +4,7 @@
           <div class="d-block text-dim">
             <span class="font-1 mt-3">
             <a href="https://www.socotec.fr" class="statping" target="_blank">
-              Proudly made by socotec.io team ‍🧑‍💻</a>
+              Fièrement fabriqué par Socotec.io team ‍🧑‍💻</a>
             </span>
           </div>
         </div>

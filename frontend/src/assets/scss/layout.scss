@@ -42,6 +42,10 @@ A {
   color: $expert-blue !important;
 }
 
+.text-outage {
+  color: $secondary_orange !important;
+}
+
 .day-success {
   background-color: $day-success-background;
 }
@@ -49,6 +53,15 @@ A {
 .day-success:HOVER {
   background-color: lighten($day-success-background, 2%) !important;
 }
+
+.day-outage {
+  background-color: $day-success-background;
+}
+
+.day-outage:HOVER {
+  background-color: lighten($day-success-background, 2%) !important;
+}
+
 
 .day-error {
   background-color: $day-error-background;

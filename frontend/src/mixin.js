@@ -256,6 +256,28 @@ export default Vue.mixin({
     },
     addSeconds(date, amount) {
       return addSeconds(date, amount)
+    },
+    badgeClass(service) {
+      if (service.outageEnabled) {
+        if (service.outageType === 'Critical') {
+          return 'badge-danger';
+        } else if (service.outageType === 'Minor' || service.outageType === 'Major') {
+          return 'badge-outage';
+        }
+        return 'badge-outage'; // Valeur par défaut si le type est inconnu
+      }
+      return service.online ? 'badge-success' : 'badge-danger';
+    },
+    textClass(service) {
+      if (service.outageEnabled) {
+        if (service.outageType === 'Critical') {
+          return 'text-danger';
+        } else if (service.outageType === 'Minor' || service.outageType === 'Major') {
+          return 'text-outage';
+        }
+        return 'text-outage'; // Valeur par défaut si le type est inconnu
+      }
+      return service.online ? 'text-muted' : 'text-danger';
     }
   }
 });

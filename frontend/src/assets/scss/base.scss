@@ -381,6 +381,10 @@
     background-color: $cherry_red_light;
   }
 
+  .btn-outage {
+    background-color: $light_orange;
+  }
+
   .bg-success {
     background-color: $meadow_green_light !important;
     color: $meadow_green !important;
@@ -393,12 +397,22 @@
     border: 1px solid $cherry_red !important;
   }
 
+  .bg-outage {
+    background-color: $light_orange !important;
+    color: $secondary_orange !important;
+    border: 1px solid $secondary_orange !important;
+  }
+
   .bg-success .dyn-dark {
     background-color: $meadow_green_light !important;
   }
 
   .bg-danger .dyn-dark {
     background-color: $cherry_red_light !important;
+  }
+
+  .bg-outage .dyn-dark {
+    background-color: $light_orange !important;
   }
 
   @keyframes fadeInOut {
