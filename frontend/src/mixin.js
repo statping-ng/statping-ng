@@ -258,24 +258,24 @@ export default Vue.mixin({
       return addSeconds(date, amount)
     },
     badgeClass(service) {
-      if (service.outageEnabled) {
-        if (service.outageType === 'Critical') {
-          return 'badge-danger';
-        } else if (service.outageType === 'Minor' || service.outageType === 'Major') {
-          return 'badge-outage';
+      if (service.is_outage_enabled) {
+        if (service.outage_type === 'Critical') {
+          return 'bg-danger';
+        } else if (service.outage_type === 'Minor' || service.outage_type === 'Major') {
+          return 'bg-outage';
         }
-        return 'badge-outage'; // Valeur par défaut si le type est inconnu
+        return 'bg-outage';
       }
-      return service.online ? 'badge-success' : 'badge-danger';
+      return service.online ? 'bg-success' : 'bg-danger';
     },
     textClass(service) {
-      if (service.outageEnabled) {
-        if (service.outageType === 'Critical') {
+      if (service.is_outage_enabled) {
+        if (service.outage_type === 'Critical') {
           return 'text-danger';
-        } else if (service.outageType === 'Minor' || service.outageType === 'Major') {
+        } else if (service.outage_type === 'Minor' || service.outage_type === 'Major') {
           return 'text-outage';
         }
-        return 'text-outage'; // Valeur par défaut si le type est inconnu
+        return 'text-outage';
       }
       return service.online ? 'text-muted' : 'text-danger';
     }

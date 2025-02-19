@@ -37,6 +37,7 @@ func Samples() error {
 			Service:   i,
 			Issue:     "Server failure",
 			Reason:    "lookup",
+			OutageType: "",
 			CreatedAt: utils.Now().Add(-time.Duration(3*i) * 86400),
 		}
 		if err := f1.Create(); err != nil {
@@ -47,6 +48,7 @@ func Samples() error {
 			Service:   i,
 			Issue:     "Regex failed to match the response",
 			Reason:    "regex",
+			OutageType: "",
 			CreatedAt: utils.Now().Add(-time.Duration(5*i) * 12400),
 		}
 		if err := f2.Create(); err != nil {
@@ -60,12 +62,16 @@ func Samples() error {
 			failure := &Failure{
 				Service:   i,
 				Issue:     "testing right here",
+				OutageType: "",
 				CreatedAt: createdAt.UTC(),
 			}
 			records = append(records, failure)
 			createdAt = createdAt.Add(35 * time.Minute)
 		}
-		if err := gormbulk.BulkInsert(db.GormDB(), records, db.ChunkSize()); err != nil {
+		
+		// fix sqlite too many sql variables error
+		chunkSize := 50
+		if err := gormbulk.BulkInsert(db.GormDB(), records, chunkSize); err != nil {
 			log.Error(err)
 			return err
 		}

@@ -69,8 +69,27 @@ func (t *TimeVar) ToValues() ([]*TimeValue, error) {
 	return t.data, nil
 }
 
-// GraphData will return all hits or failures
-func (b *GroupQuery) GraphData(by By) ([]*TimeValue, error) {
+// GraphDataForFailures will return failures data with outage_type selection
+func (b *GroupQuery) GraphDataForFailures(by By) ([]*TimeValue, error) { // RENOMMER en GraphDataForFailures
+	b.db = b.db.MultipleSelects(
+		b.db.SelectByTime(b.Group),
+		by.String(),
+		"outage_type", // <-- Garder "outage_type" pour les failures
+	).Group("timeframe").Order("timeframe", true)
+
+	caller, err := b.ToTimeValueForFailures()
+	if err != nil {
+		return nil, err
+	}
+
+	if b.FillEmpty {
+		return caller.FillMissing(b.Start, b.End)
+	}
+	return caller.ToValues()
+}
+
+// GraphData will return hits data, without outage_type selection
+func (b *GroupQuery) GraphData(by By) ([]*TimeValue, error) { // Nouvelle fonction GraphData pour les HITS (sans outage_type)
 	b.db = b.db.MultipleSelects(
 		b.db.SelectByTime(b.Group),
 		by.String(),
@@ -90,28 +109,58 @@ func (b *GroupQuery) GraphData(by By) ([]*TimeValue, error) {
 // ToTimeValue will format the SQL rows into a JSON format for the API.
 // [{"timestamp": "2006-01-02T15:04:05Z", "amount": 468293}]
 // TODO redo this entire function, use better SQL query to group by time
-func (b *GroupQuery) ToTimeValue() (*TimeVar, error) {
-	rows, err := b.db.Rows()
-	if err != nil {
-		return nil, err
-	}
-	var data []*TimeValue
-	for rows.Next() {
-		var timeframe string
-		var amount int64
-		if err := rows.Scan(&timeframe, &amount); err != nil {
-			log.Error(err, timeframe)
-		}
-		trueTime, _ := b.db.ParseTime(timeframe)
-		newTs := types.FixedTime(trueTime, b.Group)
+func (b *GroupQuery) ToTimeValueForFailures() (*TimeVar, error) {
+	log.Debugln("**** ToTimeValue FUNCTION IS RUNNING - MODIFIED VERSION ****")
+    rows, err := b.db.Rows()
+    if err != nil {
+        return nil, err
+    }
+    var data []*TimeValue
+    for rows.Next() {
+        var timeframe string
+        var amount int64
+        var outageType string // <-- Déclaration de outageType
+        // Modifier rows.Scan pour inclure outage_type
+        if err := rows.Scan(&timeframe, &amount, &outageType); err != nil { // <-- rows.Scan avec 3 arguments
+            log.Errorln(err, timeframe)
+        }
+        trueTime, _ := b.db.ParseTime(timeframe)
+        newTs := types.FixedTime(trueTime, b.Group)
 
-		tv := &TimeValue{
-			Timeframe: newTs,
-			Amount:    amount,
-		}
-		data = append(data, tv)
-	}
-	return &TimeVar{b, data}, nil
+        tv := &TimeValue{
+            Timeframe:  newTs,
+            Amount:     amount,
+            OutageType: outageType, // <-- Assignation de outageType
+        }
+        data = append(data, tv)
+    }
+    return &TimeVar{b, data}, nil
+}
+
+func (b *GroupQuery) ToTimeValue() (*TimeVar, error) {
+	log.Debugln("**** ToTimeValue FUNCTION IS RUNNING - MODIFIED VERSION ****")
+    rows, err := b.db.Rows()
+    if err != nil {
+        return nil, err
+    }
+    var data []*TimeValue
+    for rows.Next() {
+        var timeframe string
+        var amount int64
+        // Modifier rows.Scan pour inclure outage_type
+        if err := rows.Scan(&timeframe, &amount); err != nil { // <-- rows.Scan avec 3 arguments
+            log.Errorln(err, timeframe)
+        }
+        trueTime, _ := b.db.ParseTime(timeframe)
+        newTs := types.FixedTime(trueTime, b.Group)
+
+        tv := &TimeValue{
+            Timeframe:  newTs,
+            Amount:     amount,
+        }
+        data = append(data, tv)
+    }
+    return &TimeVar{b, data}, nil
 }
 
 func (t *TimeVar) FillMissing(current, end time.Time) ([]*TimeValue, error) {

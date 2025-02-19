@@ -77,6 +77,8 @@ func Samples() error {
 		VerifySSL:      null.NewNullBool(true),
 		Redirect:       null.NewNullBool(true),
 		NotifyAfter:    3,
+		IsOutageEnabled:	 false,
+		OutageType:          "",
 		CreatedAt:      createdOn,
 	}
 	if err := s1.Create(); err != nil {
@@ -96,6 +98,8 @@ func Samples() error {
 		Permalink:      null.NewNullString("statping_github"),
 		VerifySSL:      null.NewNullBool(true),
 		NotifyAfter:    1,
+		IsOutageEnabled:	 false,
+		OutageType:          "",
 		CreatedAt:      createdOn,
 	}
 	if err := s2.Create(); err != nil {
@@ -115,6 +119,8 @@ func Samples() error {
 		VerifySSL:      null.NewNullBool(true),
 		GroupId:        2,
 		NotifyAfter:    2,
+		IsOutageEnabled:	 false,
+		OutageType:          "",
 		CreatedAt:      createdOn,
 	}
 	if err := s3.Create(); err != nil {
@@ -137,6 +143,8 @@ func Samples() error {
 		Redirect:       null.NewNullBool(true),
 		GroupId:        2,
 		NotifyAfter:    3,
+		IsOutageEnabled:	 false,
+		OutageType:          "",
 		CreatedAt:      createdOn,
 	}
 	if err := s4.Create(); err != nil {
@@ -153,6 +161,8 @@ func Samples() error {
 		Order:     5,
 		Public:    null.NewNullBool(true),
 		GroupId:   1,
+		IsOutageEnabled:	 false,
+		OutageType:          "",
 		CreatedAt: createdOn,
 	}
 	if err := s5.Create(); err != nil {
@@ -170,6 +180,8 @@ func Samples() error {
 		Public:    null.NewNullBool(false),
 		Redirect:  null.NewNullBool(true),
 		GroupId:   3,
+		IsOutageEnabled:	 false,
+		OutageType:          "",
 		CreatedAt: createdOn,
 	}
 	if err := s6.Create(); err != nil {
@@ -182,6 +194,8 @@ func Samples() error {
 		Type:      "static",
 		Order:     7,
 		Public:    null.NewNullBool(true),
+		IsOutageEnabled:	 false,
+		OutageType:          "",
 		CreatedAt: createdOn,
 	}
 	if err := s7.Create(); err != nil {

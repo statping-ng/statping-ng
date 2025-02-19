@@ -77,28 +77,43 @@ export default {
       }
       this.hover_text = `${e.date.toLocaleDateString()} - ${txt}`
     },
-      async lastDaysFailures() {
-        const start = this.beginningOf('day', this.nowSubtract(86400 * 90))
-        const end = this.endOf('tomorrow')
-        const data = await Api.service_failures_data(this.service.id, this.toUnix(start), this.toUnix(end), "24h", true)
-        data.forEach((d) => {
-          let date = this.parseISO(d.timeframe)
-          this.failureData.push({month: date.getMonth(), day: date.getDate(), date: date, amount: d.amount})
+    async lastDaysFailures() {
+      const start = this.beginningOf('day', this.nowSubtract(86400 * 90))
+      const end = this.endOf('tomorrow')
+      const data = await Api.service_failures_data(this.service.id, this.toUnix(start), this.toUnix(end), "24h", true)
+      data.forEach((d) => {
+        console.log("failures_data", d.outage_type)
+        let date = this.parseISO(d.timeframe)
+        this.failureData.push({
+          month: date.getMonth(),
+          day: date.getDate(),
+          date: date,
+          amount: d.amount,
+          outage_type: d.outage_type,
+          // ou éventuellement :
+          // outage_type: d.outage_type
         })
-      },
+      })
+    },
       // Returns a CSS class for the bar depending on the day's failure data.
       // If an outage was recorded for that day:
       // - 'Critical' returns 'day-error'
       // - 'Minor' or 'Major' returns 'day-outage'
       // Otherwise, it returns 'day-error' if there are failures, or 'day-success' if not.
       getBarClass(dayData) {
-        if (dayData.outage) {
-          if (dayData.outage === 'Critical') {
+        // Si l'élément indique qu'il y a eu un outage
+        if (dayData.outage_type != '') {
+          // Ici, selon le type d'outage, tu peux choisir la classe CSS à appliquer
+          // Par exemple, si tu reçois également "outage_type":
+          if (dayData.outage_type === 'Critical') {
             return 'day-error';
-          } else if (dayData.outage === 'Minor' || dayData.outage === 'Major') {
+          } else if (dayData.outage_type === 'Major' || dayData.outage_type === 'Minor') {
             return 'day-outage';
           }
+          // Si tu n'as qu'un booléen, tu peux par défaut utiliser :
+          return 'day-error';
         }
+        // Si pas de panne, on affiche en vert ou autre
         return dayData.amount > 0 ? 'day-error' : 'day-success';
       },
     }

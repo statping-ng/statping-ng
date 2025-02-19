@@ -55,11 +55,11 @@ A {
 }
 
 .day-outage {
-  background-color: $day-success-background;
+  background-color: $day-outage-background;
 }
 
 .day-outage:HOVER {
-  background-color: lighten($day-success-background, 2%) !important;
+  background-color: lighten($day-outage-background, 2%) !important;
 }
 
 
