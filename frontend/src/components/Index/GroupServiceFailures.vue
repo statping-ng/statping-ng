@@ -82,16 +82,12 @@ export default {
       const end = this.endOf('tomorrow')
       const data = await Api.service_failures_data(this.service.id, this.toUnix(start), this.toUnix(end), "24h", true)
       data.forEach((d) => {
-        console.log("failures_data", d.outage_type)
-        let date = this.parseISO(d.timeframe)
         this.failureData.push({
           month: date.getMonth(),
           day: date.getDate(),
           date: date,
           amount: d.amount,
           outage_type: d.outage_type,
-          // ou éventuellement :
-          // outage_type: d.outage_type
         })
       })
     },
@@ -101,19 +97,11 @@ export default {
       // - 'Minor' or 'Major' returns 'day-outage'
       // Otherwise, it returns 'day-error' if there are failures, or 'day-success' if not.
       getBarClass(dayData) {
-        // Si l'élément indique qu'il y a eu un outage
-        if (dayData.outage_type != '') {
-          // Ici, selon le type d'outage, tu peux choisir la classe CSS à appliquer
-          // Par exemple, si tu reçois également "outage_type":
-          if (dayData.outage_type === 'Critical') {
-            return 'day-error';
-          } else if (dayData.outage_type === 'Major' || dayData.outage_type === 'Minor') {
-            return 'day-outage';
-          }
-          // Si tu n'as qu'un booléen, tu peux par défaut utiliser :
+        if (dayData.outage_type === 'Critical') {
           return 'day-error';
+        } else if (dayData.outage_type === 'Major' || dayData.outage_type === 'Minor') {
+          return 'day-outage';
         }
-        // Si pas de panne, on affiche en vert ou autre
         return dayData.amount > 0 ? 'day-error' : 'day-success';
       },
     }

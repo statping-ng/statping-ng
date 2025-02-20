@@ -171,20 +171,18 @@ func apiServiceFailureDataHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	objs, err := groupQuery.GraphDataForFailures(database.ByCount) // Utiliser GraphDataForFailures pour failures
+	objs, err := groupQuery.GraphDataForFailures(database.ByCount)
 	if err != nil {
 		sendErrorJson(err, w, r)
 		return
 	}
 
-	// Ici, objs est de type []*database.TimeValue, et chacun contient désormais
-	// "OutageType" (que nous allons renommer "outage" dans la réponse JSON).
 	enriched := make([]interface{}, 0, len(objs))
 	for _, tv := range objs {
 		record := map[string]interface{}{
 			"timeframe":         tv.Timeframe,
-			"amount":            tv.Amount, // Garder "amount"
-			"outage_type":            tv.OutageType, // <-- AJOUTER "outage" en utilisant tv.OutageType
+			"amount":            tv.Amount,
+			"outage_type":       tv.OutageType,
 		}
 		enriched = append(enriched, record)
 	}

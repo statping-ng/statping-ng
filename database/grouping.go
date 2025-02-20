@@ -70,22 +70,33 @@ func (t *TimeVar) ToValues() ([]*TimeValue, error) {
 }
 
 // GraphDataForFailures will return failures data with outage_type selection
-func (b *GroupQuery) GraphDataForFailures(by By) ([]*TimeValue, error) { // RENOMMER en GraphDataForFailures
-	b.db = b.db.MultipleSelects(
-		b.db.SelectByTime(b.Group),
-		by.String(),
-		"outage_type", // <-- Garder "outage_type" pour les failures
-	).Group("timeframe").Order("timeframe", true)
+func (b *GroupQuery) GraphDataForFailures(by By) ([]*TimeValue, error) {
+    selectExpr := fmt.Sprintf(`%s, 
+        CASE 
+            WHEN SUM(CASE WHEN outage_type = 'Critical' THEN 1 ELSE 0 END) > 0 THEN 'Critical'
+            WHEN SUM(CASE WHEN outage_type = 'Major' THEN 1 ELSE 0 END) > 0 THEN 'Major'
+            WHEN SUM(CASE WHEN outage_type = 'Minor' THEN 1 ELSE 0 END) > 0 THEN 'Minor'
+            ELSE ''
+        END as outage_type`, by.String())
+    
+    b.db = b.db.MultipleSelects(b.db.SelectByTime(b.Group), selectExpr).Group("timeframe").Order("timeframe", true)
+    
+    caller, err := b.ToTimeValueForFailures()	
 
-	caller, err := b.ToTimeValueForFailures()
-	if err != nil {
-		return nil, err
-	}
-
-	if b.FillEmpty {
-		return caller.FillMissing(b.Start, b.End)
-	}
-	return caller.ToValues()
+    if err != nil {
+        return nil, err
+    }
+    
+    
+    if b.FillEmpty {
+        filled, err := caller.FillMissing(b.Start, b.End)
+        if err != nil {
+            log.Errorf("GraphDataForFailures: Error in FillMissing: %v", err)
+            return nil, err
+        }
+        return filled, nil
+    }
+    return caller.ToValues()
 }
 
 // GraphData will return hits data, without outage_type selection
@@ -132,6 +143,7 @@ func (b *GroupQuery) ToTimeValueForFailures() (*TimeVar, error) {
             Amount:     amount,
             OutageType: outageType, // <-- Assignation de outageType
         }
+		log.Infoln("**** ToTimeValueForFailures tv.OutageType: ", tv.OutageType)
         data = append(data, tv)
     }
     return &TimeVar{b, data}, nil
@@ -164,23 +176,34 @@ func (b *GroupQuery) ToTimeValue() (*TimeVar, error) {
 }
 
 func (t *TimeVar) FillMissing(current, end time.Time) ([]*TimeValue, error) {
-	timeMap := make(map[string]int64)
-	var validSet []*TimeValue
+	timeMap := make(map[string]*TimeValue)
 	for _, v := range t.data {
-		timeMap[v.Timeframe] = v.Amount
+		timeMap[v.Timeframe] = v
 	}
+
+	var validSet []*TimeValue
+	var lastOutageType string
 
 	for {
 		currentStr := types.FixedTime(current, t.g.Group)
 
 		var amount int64
-		if timeMap[currentStr] != 0 {
-			amount = timeMap[currentStr]
+		var outageType string
+
+		if tv, ok := timeMap[currentStr]; ok {
+			amount = tv.Amount
+			outageType = tv.OutageType
+			if tv.OutageType != "" {
+				lastOutageType = tv.OutageType
+			}
+		} else {
+			outageType = lastOutageType
 		}
 
 		validSet = append(validSet, &TimeValue{
-			Timeframe: currentStr,
-			Amount:    amount,
+			Timeframe:  currentStr,
+			Amount:     amount,
+			OutageType: outageType,
 		})
 		current = current.Add(t.g.Group)
 		if current.After(end) {
