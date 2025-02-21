@@ -1,0 +1,84 @@
+/*    Colors      */
+$surface_grey: #F4F6FF;
+$medium_grey: #BCC9D5;
+$grey_regular: #D4D5DE;
+$expert-blue: #141F35;
+$cherry_red_light: #FFF0F0;
+$cherry_red: #D80F0C;
+$meadow_green_light: #E6F3EC;
+$meadow_green: #00833F;
+$black_regular: #333333;
+
+/*    Pages      */
+.mainPage {
+    margin-top: 48px;
+    background-color: white !important;
+    padding-inline: 9px !important;
+    box-shadow: none !important;
+    border-radius: 4px;
+    border: 1px solid $grey_regular;
+}
+
+.logo {
+    width: 90px;
+    height: 90px;
+    margin-bottom: 8.9px;
+    margin-top: 8.9px;
+    margin-left: 6.83px;
+    margin-right: 6.85px;
+}
+
+.button {
+    border: 1px solid $grey_regular;
+    border-radius: 4px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 16px;
+    padding-right: 16px;
+    font-weight: 500;
+    font-size: 12px;
+    height: 28px;
+    line-height: 16px;
+    color: $black_regular;
+    margin-left: 15px;
+}
+
+.small-text {
+    color: $expert-blue;
+}
+
+.navbar-nav {
+    color: $black_regular !important;
+    padding: 13px 16px;
+}
+
+.navbar-nav .router-link-exact-active {
+    background-color: #FFF8E6 !important;
+    border-bottom: 4px solid #FCB902;
+}
+
+.dashboard_card {
+    .failures {
+        display: flex;
+    }
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+
+        h6 {
+            width: 100% !important;
+            display: flex;
+            align-items: center;
+
+            a {
+                width: 100% !important;
+            }
+        }
+    }
+}
+
+.badge-danger {
+    padding: 8px !important;
+    min-height: auto !important;
+}

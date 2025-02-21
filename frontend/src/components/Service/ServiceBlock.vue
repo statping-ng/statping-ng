@@ -5,7 +5,7 @@
                 <div class="col-12">
                     <h4 class="mt-2">
                         <router-link :to="serviceLink(service)" class="d-inline-block text-truncate font-4" style="max-width: 65vw;" :in_service="service">{{service.name}}</router-link>
-                        <span class="badge float-right" :class="{'bg-success': service.online, 'bg-danger': !service.online}">{{service.online ? "ONLINE" : "OFFLINE"}}</span>
+                        <span class="badge float-right" :class="{'bg-success': service.online, 'bg-danger': !service.online}">{{service.online ? $t('online') : $t('offline')}}</span>
                     </h4>
 
                     <ServiceTopStats :service="service"/>
@@ -17,10 +17,10 @@
                 <ServiceChart :service="service" :visible="visible" :chart_timeframe="chartTimeframe"/>
             </div>
 
-            <div class="row lower_canvas full-col-12 text-white" :class="{'bg-success': service.online, 'bg-danger': !service.online}">
+            <div class="row lower_canvas full-col-12" :class="{'bg-success': service.online, 'bg-danger': !service.online}">
                 <div class="col-md-10 col-6">
                     <div class="dropup" :class="{show: dropDownMenu}">
-                        <button style="font-size: 10pt;" @click.prevent="openMenu('timeframe')" type="button" class="col-4 float-left btn btn-sm float-right btn-block text-white dropdown-toggle service_scale pr-2">
+                        <button style="font-size: 10pt;" @click.prevent="openMenu('timeframe')" type="button" class="col-4 float-left btn btn-sm float-right btn-block dropdown-toggle service_scale pr-2">
                             {{timeframepick.text}}
                         </button>
                         <div class="service-tm-menu" :class="{'d-none': !dropDownMenu}">
@@ -29,7 +29,7 @@
                     </div>
 
                     <div class="dropup" :class="{show: intervalMenu}">
-                        <button style="font-size: 10pt;" @click.prevent="openMenu('interval')" type="button" class="col-4 float-left btn btn-sm float-right btn-block text-white dropdown-toggle service_scale pr-2">
+                        <button style="font-size: 10pt;" @click.prevent="openMenu('interval')" type="button" class="col-4 float-left btn btn-sm float-right btn-block dropdown-toggle service_scale pr-2">
                             {{intervalpick.text}}
                         </button>
                         <div class="service-tm-menu" :class="{'d-none': !intervalMenu}">
@@ -38,7 +38,7 @@
                             </a>
                         </div>
 
-                        <span class="d-none float-left d-md-inline">
+                        <span class="d-none float-left d-md-inline small-text">
                             {{smallText(service)}}
                         </span>
                     </div>
@@ -47,7 +47,7 @@
 
 
                 <div class="col-md-2 col-6 float-right">
-                    <button v-if="!expanded" @click="setService" class="btn btn-sm float-right dyn-dark text-white" :class="{'bg-success': service.online, 'bg-danger': !service.online}">
+                    <button v-if="!expanded" @click="setService" class="btn btn-sm float-right dyn-dark" :class="{'bg-success': service.online, 'bg-danger': !service.online}">
                         {{$t('view')}}
                     </button>
                 </div>

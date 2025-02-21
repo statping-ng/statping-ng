@@ -12,7 +12,8 @@
                 <span v-if="d.amount !== 0" class="d-none d-md-block text-center small"></span>
             </div>
         </div>
-        <div class="row mt-2">
+        <!-- custom -->
+        <div class="row mt-3">
           <div class="col-12 no-select">
             <p class="divided">
               <span class="font-2 text-muted">90 {{$t('days_ago')}}</span>

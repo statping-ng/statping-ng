@@ -1,6 +1,7 @@
 const english = {
     settings: "Settings",
     dashboard: "Dashboard",
+    go_to_dashboard: "Go to Dashboard",
     services: "Services",
     service: "Service",
     failures: "Failures",
@@ -42,6 +43,7 @@ const english = {
     save: "Save",
     title: "Title",
     status: "Status",
+    go_to_status_page: "Go to Status Page",
     begins: "Begins",
     total_services: "Total Services",
     online_services: "Online Services",

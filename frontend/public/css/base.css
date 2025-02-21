@@ -9,7 +9,7 @@ HTML, BODY {
   background-color: #fcfcfc;
   padding-bottom: 10px;
 }
-
+<
 .container {
   padding-top: 20px;
   padding-bottom: 25px;
@@ -207,7 +207,7 @@ input.inputTags-field:focus {
 }
 
 .btn-success {
-  background-color: #47d337;
+  background-color: #E6F3EC;
 }
 .btn-success.dyn-dark {
   background-color: #32a825 !important;

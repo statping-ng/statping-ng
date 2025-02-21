@@ -44,7 +44,7 @@ const routes = [
     component: Dashboard,
     meta: {
       requiresAuth: true,
-      title: 'Statping - Dashboard',
+      title: 'Socio-Status - Dashboard',
     },
     beforeEnter: async (to, from, next) => {
       if (to.matched.some(record => record.meta.requiresAuth)) {
@@ -85,7 +85,7 @@ const routes = [
       component: DashboardIndex,
       meta: {
         requiresAuth: true,
-        title: 'Statping - Dashboard',
+        title: 'Socio-Status - Dashboard',
       }
     },{
       path: 'users',
@@ -93,84 +93,84 @@ const routes = [
       loading: Loading,
         meta: {
             requiresAuth: true,
-          title: 'Statping - Users',
+          title: 'Socio-Status - Users',
         }
     },{
       path: 'services',
       component: DashboardServices,
         meta: {
             requiresAuth: true,
-          title: 'Statping - Services',
+          title: 'Socio-Status - Services',
         }
     },{
       path: 'create_service',
       component: EditService,
         meta: {
             requiresAuth: true,
-          title: 'Statping - Create Service',
+          title: 'Socio-Status - Create Service',
         }
     },{
       path: 'edit_service/:id',
       component: EditService,
       meta: {
         requiresAuth: true,
-        title: 'Statping - Edit Service',
+        title: 'Socio-Status - Edit Service',
       }
     },{
       path: 'service/:id/incidents',
       component: Incidents,
       meta: {
         requiresAuth: true,
-        title: 'Statping - Incidents',
+        title: 'Socio-Status - Incidents',
       }
     },{
       path: 'service/:id/checkins',
       component: Checkins,
       meta: {
         requiresAuth: true,
-        title: 'Statping - Checkins',
+        title: 'Socio-Status - Checkins',
       }
     },{
       path: 'service/:id/failures',
       component: Failures,
       meta: {
         requiresAuth: true,
-        title: 'Statping - Service Failures',
+        title: 'Socio-Status - Service Failures',
       }
     },{
       path: 'messages',
       component: DashboardMessages,
         meta: {
             requiresAuth: true,
-          title: 'Statping - Messages',
+          title: 'Socio-Status - Messages',
         }
     },{
       path: 'settings',
       component: Settings,
         meta: {
             requiresAuth: true,
-          title: 'Statping - Settings',
+          title: 'Socio-Status - Settings',
         }
     },{
       path: 'logs',
       component: Logs,
         meta: {
             requiresAuth: true,
-          title: 'Statping - Logs',
+          title: 'Socio-Status - Logs',
         }
     },{
       path: 'help',
       component: Help,
         meta: {
             requiresAuth: true,
-          title: 'Statping - Help',
+          title: 'Socio-Status - Help',
         }
     },{
       path: 'import',
       component: Importer,
       meta: {
         requiresAuth: true,
-        title: 'Statping - Import',
+        title: 'Socio-Status - Import',
       }
     }]
   },
@@ -179,7 +179,7 @@ const routes = [
     name: 'Login',
     component: Login,
     meta: {
-      title: 'Statping - Login',
+      title: 'Socio-Status - Login',
     }
   },
   { path: '/logout', redirect: '/' },

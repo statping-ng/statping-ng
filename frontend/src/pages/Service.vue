@@ -10,13 +10,13 @@
       </div>
 
         <div v-if="ready && service" class="col-12 mb-4">
-            <span class="mt-3 mb-3 text-white d-md-none btn d-block d-md-none text-uppercase" :class="{'bg-success': service.online, 'bg-danger': !service.online}">
+            <span class="mt-3 mb-3 d-md-none btn d-block d-md-none " :class="{'bg-success': service.online, 'bg-danger': !service.online}">
                 {{service.online ? $t('online') : $t('offline')}}
             </span>
 
             <span class="mt-2 font-3">
                 <router-link to="/" class="text-black-50 text-decoration-none">{{core.name}}</router-link> - <span class="text-muted">{{service.name}}</span>
-                <span class="badge float-right d-none d-md-block text-uppercase" :class="{'bg-success': service.online, 'bg-danger': !service.online}">
+                <span class="badge float-right d-none d-md-block " :class="{'bg-success': service.online, 'bg-danger': !service.online}">
                     {{service.online ? $t('online') : $t('offline')}}
                 </span>
             </span>

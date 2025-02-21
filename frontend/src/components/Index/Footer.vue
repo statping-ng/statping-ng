@@ -2,12 +2,9 @@
     <footer>
         <div v-if="!core.footer" class="footer text-center mb-4 p-2">
           <div class="d-block text-dim">
-          <div class="mb-3">
-            <router-link class="links" :to="admin ? '/dashboard' : '/login'">{{$t('dashboard')}}</router-link>
-          </div>
             <span class="font-1 mt-3">
-            <a href="https://github.com/statping-ng/statping-ng" class="statping" target="_blank">
-              Statping {{core.version}} made with <font-awesome-icon icon="heart" class="hlight font-1"/></a>
+            <a href="https://www.socotec.fr" class="statping" target="_blank">
+              Proudly made by socotec.io team ‍🧑‍💻</a>
             </span>
           </div>
         </div>

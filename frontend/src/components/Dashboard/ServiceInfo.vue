@@ -3,7 +3,7 @@
         <div class="card-header pb-1">
             <h6 v-observe-visibility="setVisible">
                 <router-link :to="serviceLink(service)" class="no-decoration">{{service.name}}</router-link>
-                <span class="badge float-right text-uppercase" :class="{'badge-success': service.online, 'badge-danger': !service.online}">
+                <span class="badge float-right " :class="{'badge-success': service.online, 'badge-danger': !service.online}">
                     {{service.online ? $t('online') : $t('offline')}}
                 </span>
             </h6>
@@ -11,9 +11,9 @@
 
         <div class="card-body pb-1">
             <div v-if="loaded" class="row pl-2">
-              <div class="col-md-12 col-sm-12 pl-2 mt-2 mt-md-0 mb-3">
+              <!-- <div class="col-md-12 col-sm-12 pl-2 mt-2 mt-md-0 mb-3">
                   <ServiceSparkLine :title="set2_name" subtitle="Latency Last 24 Hours" :series="set2"/>
-              </div>
+              </div> -->
               <ServiceEvents :service="service"/>
             </div>
               <div v-else class="row mb-5">
