@@ -138,7 +138,26 @@ class Api {
   }
 
   async incident_updates(incident) {
-    return axios.get('api/incidents/' + incident.id + '/updates').then(response => (response.data))
+    try {
+      const response = await axios.get(`api/incidents/${incident.id}/updates`);
+      let updates = response.data;
+      // Delete duplicate updates
+      if (Array.isArray(updates) && updates.length > 0 && typeof updates[0] === 'object') {
+        const uniqueUpdates = [];
+        const seenIds = new Set(); // To keep track of seen IDs
+        for (const update of updates) {
+          if (!seenIds.has(update.id)) { // Assuming 'id' is the unique identifier
+            uniqueUpdates.push(update);
+            seenIds.add(update.id);
+          }
+        }
+        updates = uniqueUpdates;
+      }
+      return updates;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des mises à jour de l'incident :", error);
+      return { erreur: error.message };
+    }
   }
 
   async incident_update_create(update) {
@@ -150,7 +169,38 @@ class Api {
   }
 
   async incidents_service(id) {
-    return axios.get('api/services/' + id + '/incidents').then(response => (response.data))
+    try {
+      const response = await axios.get(`api/services/${id}/incidents`);
+      let incidents = response.data;
+      // Remove duplicates (if it's an array of objects)
+      if (Array.isArray(incidents) && incidents.length > 0 && typeof incidents[0] === 'object') {
+        const uniqueIncidents = [];
+        const seenIncidentIds = new Set(); // To keep track of seen incident IDs
+        for (const incident of incidents) {
+          if (!seenIncidentIds.has(incident.id)) {
+            // Remove duplicate updates within the current incident
+            if (Array.isArray(incident.updates) && incident.updates.length > 0 && typeof incident.updates[0] === 'object') {
+              const uniqueUpdates = [];
+              const seenUpdateIds = new Set();
+              for (const update of incident.updates) {
+                if (!seenUpdateIds.has(update.id)) {
+                  uniqueUpdates.push(update);
+                  seenUpdateIds.add(update.id);
+                }
+              }
+              incident.updates = uniqueUpdates; // Update the incident's updates array
+            }
+            uniqueIncidents.push(incident);
+            seenIncidentIds.add(incident.id);
+          }
+        }
+        incidents = uniqueIncidents;
+      }
+      return incidents;
+    } catch (error) {
+      console.error("Error fetching incidents:", error);
+      return { error: error.message };
+    }
   }
 
   async incident_create(service_id, data) {
