@@ -64,6 +64,13 @@ type OAuth struct {
 	CustomEndpointToken string        `gorm:"column:custom_endpoint_token" json:"custom_endpoint_token" scope:"admin"`
 	CustomScopes        string        `gorm:"column:custom_scopes" json:"custom_scopes"`
 	CustomIsOpenID      null.NullBool `gorm:"column:custom_open_id" json:"custom_open_id"`
+	KeycloakClientID     	  string        `gorm:"column:keycloak_client_id" json:"keycloak_client_id"`
+	KeycloakClientSecret 	  string        `gorm:"column:keycloak_client_secret" json:"keycloak_client_secret" scope:"admin"`
+	KeycloakEndpointAuth      string        `gorm:"column:keycloak_endpoint_auth" json:"keycloak_endpoint_auth"`
+	KeycloakEndpointToken     string        `gorm:"column:keycloak_endpoint_token" json:"keycloak_endpoint_token"`
+	KeycloakEndpointUserinfo  string        `gorm:"column:keycloak_endpoint_userinfo" json:"keycloak_endpoint_userinfo"`
+	KeycloakScopes       	  string        `gorm:"column:keycloak_scopes" json:"keycloak_scopes"`
+	KeycloakIsOpenID     	  null.NullBool `gorm:"column:keycloak_is_open_id" json:"keycloak_is_open_id"`
 }
 
 // AllNotifiers contains all the Notifiers loaded

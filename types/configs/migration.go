@@ -122,7 +122,7 @@ func (d *DbConfig) MigrateDatabase() error {
 	}
 
 	log.Infof("Migrating App to version: %s (%s)", utils.Params.GetString("VERSION"), utils.Params.GetString("COMMIT"))
-	if err := tx.Table("core").AutoMigrate(&core.Core{}); err.Error() != nil {
+	if err := tx.Table("core").AutoMigrate(&core.Core{}, &core.OAuth{}); err.Error() != nil {
 		tx.Rollback()
 		log.Errorln(fmt.Sprintf("Statping Database could not be migrated: %v", tx.Error()))
 		return tx.Error()

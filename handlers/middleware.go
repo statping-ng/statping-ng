@@ -111,9 +111,12 @@ func scoped(handler func(r *http.Request) interface{}) http.Handler {
 func authenticated(handler func(w http.ResponseWriter, r *http.Request), redirect bool) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !IsFullAuthenticated(r) {
+			log.Warnf("User is not authenticated")
 			if redirect {
+				log.Warnf("Redirecting to %s", basePath)
 				http.Redirect(w, r, basePath, http.StatusSeeOther)
 			} else {
+				log.Warnf("Sending unauthorized JSON")
 				sendUnauthorizedJson(w, r)
 			}
 			return

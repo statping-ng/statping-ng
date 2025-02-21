@@ -161,6 +161,77 @@
 
         <div class="card mb-3">
             <div class="card-header">
+                <font-awesome-icon @click="expanded.keycloak = !expanded.keycloak" :icon="expanded.keycloak ? 'minus' : 'plus'" class="mr-2 pointer"/>
+                Keycloak Settings
+                <span @click="keycloak_enabled = !!keycloak_enabled" class="switch switch-sm switch-rd-gr float-right">
+                    <input v-model="keycloak_enabled" type="checkbox" id="switch-keycloak-oauth" :checked="keycloak_enabled">
+                    <label for="switch-keycloak-oauth" class="mb-0"> </label>
+                </span>
+            </div>
+            <div class="card-body" :class="{'d-none': !expanded.keycloak}">
+                <div class="form-group row">
+                    <label for="keycloak_client_id" class="col-sm-4 col-form-label">Keycloak Client ID</label>
+                    <div class="col-sm-8">
+                        <input v-model="oauth.keycloak_client_id" type="text" class="form-control" id="keycloak_client_id" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="keycloak_client_secret" class="col-sm-4 col-form-label">Keycloak Client Secret</label>
+                    <div class="col-sm-8">
+                        <input v-model="oauth.keycloak_client_secret" type="text" class="form-control" id="keycloak_client_secret" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="keycloak_endpoint_auth" class="col-sm-4 col-form-label">Keycloak Auth URL</label>
+                    <div class="col-sm-8">
+                        <input v-model="oauth.keycloak_endpoint_auth" type="text" class="form-control" id="keycloak_endpoint_auth" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="keycloak_endpoint_token" class="col-sm-4 col-form-label">Keycloak Token URL</label>
+                    <div class="col-sm-8">
+                        <input v-model="oauth.keycloak_endpoint_token" type="text" class="form-control" id="keycloak_endpoint_token" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="keycloak_endpoint_userinfo" class="col-sm-4 col-form-label">Keycloak User Info URL</label>
+                    <div class="col-sm-8">
+                        <input v-model="oauth.keycloak_endpoint_userinfo" type="text" class="form-control" id="keycloak_endpoint_userinfo" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="keycloak_scopes" class="col-sm-4 col-form-label">Scopes</label>
+                    <div class="col-sm-8">
+                        <input v-model="oauth.keycloak_scopes" type="text" class="form-control" id="keycloak_scopes" placeholder="e.g. openid,profile,email">
+                        <small>Optional comma delimited list of keycloak scopes</small>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="switch-keycloak-open-id" class="col-sm-4 col-form-label">Open ID</label>
+                    <div class="col-sm-8">
+                        <span @click="oauth.keycloak_is_open_id = !!oauth.keycloak_is_open_id" class="switch switch-rd-gr float-right">
+                            <input v-model="oauth.keycloak_is_open_id" type="checkbox" id="switch-keycloak-open-id" :checked="oauth.keycloak_is_open_id">
+                            <label for="switch-keycloak-open-id" class="mb-0"> </label>
+                        </span>
+                        <small>Enable if provider is OpenID</small>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="keycloak_callback" class="col-sm-4 col-form-label">Callback URL</label>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <input v-bind:value="`${core.domain}/oauth/keycloak`" type="text" class="form-control" id="keycloak_callback" readonly>
+                            <div class="input-group-append copy-btn">
+                                <button @click.prevent="copy(`${core.domain}/oauth/keycloak`)" class="btn btn-outline-secondary" type="button">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-3">
+            <div class="card-header">
                 <font-awesome-icon @click="expanded.custom = !expanded.custom" :icon="expanded.custom ? 'minus' : 'plus'" class="mr-2 pointer"/>
                 Custom oAuth Settings
                 <span @click="custom_enabled = !!custom_enabled" class="switch switch-sm switch-rd-gr float-right">
@@ -255,6 +326,7 @@
             github_enabled: false,
             local_enabled: false,
             custom_enabled: false,
+            keycloak_enabled: false,
             loading: false,
             expanded: {
               github: false,
@@ -262,6 +334,7 @@
               slack: false,
               custom: false,
               openid: false,
+              keycloak: false,
             },
             oauth: {
               gh_client_id: "",
@@ -283,16 +356,32 @@
               custom_endpoint_token: "",
               custom_scopes: "",
               custom_open_id: false,
+              keycloak_client_id: "",
+              keycloak_client_secret: "",
+              keycloak_endpoint_auth: "",
+              keycloak_endpoint_token: "",
+              keycloak_endpoint_userinfo: "",
+              keycloak_scopes: '',
+              keycloak_is_open_id: false,
             }
           }
       },
-    async mounted() {
-        this.oauth = await Api.oauth()
-      this.local_enabled = this.has('local')
-      this.github_enabled = this.has('github')
-      this.google_enabled = this.has('google')
-      this.slack_enabled = this.has('slack')
-      this.custom_enabled = this.has('custom')
+      async mounted() {
+        try {
+            const oauthData = await Api.oauth();
+            this.oauth = oauthData;
+
+            this.local_enabled = this.has('local');
+            this.github_enabled = this.has('github');
+            this.google_enabled = this.has('google');
+            this.slack_enabled = this.has('slack');
+            this.custom_enabled = this.has('custom');
+
+            this.keycloak_enabled = oauthData.keycloak_client_id && oauthData.keycloak_client_secret;
+
+        } catch (error) {
+            console.error("Error loading OAuth data: ", error);
+        }
     },
     methods: {
       providers() {
@@ -311,6 +400,9 @@
         }
         if (this.custom_enabled) {
           providers.push("custom")
+        }
+        if (this.keycloak_enabled) {
+          providers.push("keycloak")
         }
         return providers.join(",")
       },
