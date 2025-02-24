@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-        <div v-for="(incident, i) in incidents" class="col-12 mt-2">
+        <div v-for="(incident, i) in filteredIncidents" class="col-12 mt-2">
             <span class="braker mt-1 mb-3"></span>
             <h6>{{incident.title}}
                 <span class="font-2 float-right">{{niceDate(incident.created_at)}}</span>
@@ -31,8 +31,16 @@ export default {
             incidents: null,
         }
     },
+  computed: {
+    filteredIncidents() {
+      if (!this.incidents) return [];
+      const now = new Date();
+      const cutoff = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      return this.incidents.filter(incident => new Date(incident.created_at) >= cutoff);
+        }
+    },
     mounted () {
-        this.getIncidents()
+        this.getIncidents();
     },
     methods: {
         badgeClass(val) {
@@ -50,11 +58,13 @@ export default {
       },
       async incident_updates(incident) {
         return await Api.incident_updates(incident)
+      },
+      niceDate(dateStr) {
+        return new Date(dateStr).toLocaleString();
       }
     }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 </style>

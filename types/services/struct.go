@@ -62,6 +62,9 @@ type Service struct {
 	Incidents           []*incidents.Incident `gorm:"foreignkey:service;association_foreignkey:id" json:"incidents,omitempty" yaml:"incidents"`
 	Checkins            []*checkins.Checkin   `gorm:"foreignkey:service;association_foreignkey:id" json:"checkins,omitempty" yaml:"-" scope:"user,admin"`
 	Failures            []*failures.Failure   `gorm:"-" json:"failures,omitempty" yaml:"-" scope:"user,admin"`
+	OutageType         string   			  `gorm:"column:outage_type;default:''" json:"outage_type,omitempty" yaml:"-"`
+	IsOutageEnabled    bool     			  `gorm:"column:is_outage_enabled;default:false" json:"is_outage_enabled" yaml:"-"`
+
 
 	notifyAfterCount int64 `gorm:"-" json:"-" yaml:"-"`
 	prevOnline       bool  `gorm:"-" json:"-" yaml:"-"`
@@ -105,4 +108,6 @@ type series struct {
 	End      time.Time `json:"end"`
 	Duration int64     `json:"duration"`
 	Online   bool      `json:"online"`
+	// IsOutageEnabled bool   `json:"is_outage_enabled"`
+	// OutageType 		string `json:"outage_type"`
 }

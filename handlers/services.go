@@ -23,7 +23,7 @@ func findService(r *http.Request) (*services.Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	if !servicer.Public.Bool && !IsReadAuthenticated(r) {
+	if !IsReadAuthenticated(r) {
 		return nil, errors.NotAuthenticated
 	}
 	return servicer, nil
@@ -101,7 +101,7 @@ func apiServicePatchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !req.Online {
-		services.RecordFailure(service, issueDefault, "trigger")
+		services.RecordFailure(service, issueDefault, "trigger", service.OutageType)
 	} else {
 		services.RecordSuccess(service)
 	}
@@ -129,6 +129,10 @@ func apiServiceUpdateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	go service.CheckService(true)
+
+	if service.IsOutageEnabled {
+		services.RecordFailure(service, "Manual outage set ("+service.OutageType+")", "manual", service.OutageType)
+	}
 	sendJsonAction(service, "update", w, r)
 }
 
@@ -154,6 +158,7 @@ func apiServiceDataHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func apiServiceFailureDataHandler(w http.ResponseWriter, r *http.Request) {
+	// On vérifie que le service est accessible (pour l'authentification par exemple)
 	service, err := findService(r)
 	if err != nil {
 		sendErrorJson(err, w, r)
@@ -166,13 +171,23 @@ func apiServiceFailureDataHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	objs, err := groupQuery.GraphData(database.ByCount)
+	objs, err := groupQuery.GraphDataForFailures(database.ByCount)
 	if err != nil {
 		sendErrorJson(err, w, r)
 		return
 	}
 
-	returnJson(objs, w, r)
+	enriched := make([]interface{}, 0, len(objs))
+	for _, tv := range objs {
+		record := map[string]interface{}{
+			"timeframe":         tv.Timeframe,
+			"amount":            tv.Amount,
+			"outage_type":       tv.OutageType,
+		}
+		enriched = append(enriched, record)
+	}
+
+	returnJson(enriched, w, r) // Renvoyer la réponse JSON enrichie
 }
 
 func apiServicePingDataHandler(w http.ResponseWriter, r *http.Request) {
@@ -269,9 +284,6 @@ func apiServiceDeleteHandler(w http.ResponseWriter, r *http.Request) {
 func apiAllServicesHandler(r *http.Request) interface{} {
 	var srvs []services.Service
 	for _, v := range services.AllInOrder() {
-		if !v.Public.Bool && !IsUser(r) {
-			continue
-		}
 		srvs = append(srvs, v)
 	}
 	return srvs

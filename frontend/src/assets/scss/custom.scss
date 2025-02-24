@@ -8,6 +8,8 @@ $cherry_red: #D80F0C;
 $meadow_green_light: #E6F3EC;
 $meadow_green: #00833F;
 $black_regular: #333333;
+$light_orange: #FFF0EB;
+$secondary_orange: #FF6533;
 
 /*    Pages      */
 .mainPage {
@@ -79,6 +81,16 @@ $black_regular: #333333;
 }
 
 .badge-danger {
+    padding: 8px !important;
+    min-height: auto !important;
+}
+
+.badge-success {
+    padding: 8px !important;
+    min-height: auto !important;
+}
+
+.badge-outage {
     padding: 8px !important;
     min-height: auto !important;
 }

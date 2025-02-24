@@ -256,6 +256,28 @@ export default Vue.mixin({
     },
     addSeconds(date, amount) {
       return addSeconds(date, amount)
+    },
+    badgeClass(service) {
+      if (service.is_outage_enabled) {
+        if (service.outage_type === 'Critical') {
+          return 'bg-danger';
+        } else if (service.outage_type === 'Minor' || service.outage_type === 'Major') {
+          return 'bg-outage';
+        }
+        return 'bg-outage';
+      }
+      return service.online ? 'bg-success' : 'bg-danger';
+    },
+    textClass(service) {
+      if (service.is_outage_enabled) {
+        if (service.outage_type === 'Critical') {
+          return 'text-danger';
+        } else if (service.outage_type === 'Minor' || service.outage_type === 'Major') {
+          return 'text-outage';
+        }
+        return 'text-outage';
+      }
+      return service.online ? 'text-muted' : 'text-danger';
     }
   }
 });

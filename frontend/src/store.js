@@ -29,6 +29,7 @@ export default new Vuex.Store({
     users: [],
     notifiers: [],
     checkins: [],
+    incidents: [],
     admin: false,
     user: false,
     loggedIn: false,

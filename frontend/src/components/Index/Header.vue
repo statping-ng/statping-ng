@@ -118,7 +118,12 @@ export default {
     computed: {
       core() {
           return this.$store.getters.core
-      }
+      },
+      isAdmin() {
+        const isAdmin = this.$store.state.admin
+        console.log("this.$store.state.admin", isAdmin)
+        return isAdmin
+    },
     }
 }
 </script>
