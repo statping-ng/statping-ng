@@ -269,7 +269,7 @@ func runNotifyTests(t *testing.T, notif *exampleNotifier, tests ...notifyTest) {
 			if test.OnSuccess {
 				RecordSuccess(test.Service)
 			} else {
-				RecordFailure(test.Service, "test issue", "lookup")
+				RecordFailure(test.Service, "test issue", "lookup", "test")
 			}
 
 			assert.Equal(t, test.ExpectedSuccess, notif.success)

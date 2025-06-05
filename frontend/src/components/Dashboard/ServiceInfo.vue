@@ -3,7 +3,7 @@
         <div class="card-header pb-1">
             <h6 v-observe-visibility="setVisible">
                 <router-link :to="serviceLink(service)" class="no-decoration">{{service.name}}</router-link>
-                <span class="badge float-right text-uppercase" :class="{'badge-success': service.online, 'badge-danger': !service.online}">
+                <span class="badge float-right text-uppercase" :class="serviceBadgeClass(service)">
                     {{service.online ? $t('online') : $t('offline')}}
                 </span>
             </h6>

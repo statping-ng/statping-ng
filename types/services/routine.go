@@ -102,7 +102,7 @@ func CheckIcmp(s *Service, record bool) (*Service, error) {
 	dur, err := utils.Ping(s.Domain, s.Timeout)
 	if err != nil {
 		if record {
-			RecordFailure(s, fmt.Sprintf("Could not send ICMP to service %v, %v", s.Domain, err), "lookup")
+			RecordFailure(s, fmt.Sprintf("Could not send ICMP to service %v, %v", s.Domain, err), "lookup", "icmp_lookup_failure")
 		}
 		return s, err
 	}
@@ -130,7 +130,7 @@ func CheckGrpc(s *Service, record bool) (*Service, error) {
 			// Unable to parse.
 			log.Warnln(fmt.Sprintf("GRPC Service: '%s', Unable to parse URL: '%v'", s.Name, s.Domain))
 			if record {
-				RecordFailure(s, fmt.Sprintf("Unable to parse GRPC domain %v, %v", s.Domain, err), "parse_domain")
+				RecordFailure(s, fmt.Sprintf("Unable to parse GRPC domain %v, %v", s.Domain, err), "parse_domain", "grpc_parse_domain_error")
 			}
 		}
 
@@ -142,7 +142,7 @@ func CheckGrpc(s *Service, record bool) (*Service, error) {
 	dnsLookup, err := dnsCheck(s)
 	if err != nil {
 		if record {
-			RecordFailure(s, fmt.Sprintf("Could not get IP address for GRPC service %v, %v", s.Domain, err), "lookup")
+			RecordFailure(s, fmt.Sprintf("Could not get IP address for GRPC service %v, %v", s.Domain, err), "lookup", "grpc_lookup_failure")
 		}
 		return s, err
 	}
@@ -177,7 +177,7 @@ func CheckGrpc(s *Service, record bool) (*Service, error) {
 	conn, err := grpc.DialContext(ctx, domain, grpcOption, grpc.WithBlock())
 	if err != nil {
 		if record {
-			RecordFailure(s, fmt.Sprintf("Dial Error %v", err), "connection")
+			RecordFailure(s, fmt.Sprintf("Dial Error %v", err), "connection", "grpc_connection_error")
 		}
 		return s, err
 	}
@@ -189,7 +189,7 @@ func CheckGrpc(s *Service, record bool) (*Service, error) {
 		res, err := c.Check(ctx, in)
 		if err != nil {
 			if record {
-				RecordFailure(s, fmt.Sprintf("GRPC Error %v", err), "healthcheck")
+				RecordFailure(s, fmt.Sprintf("GRPC Error %v", err), "healthcheck", "grpc_healthcheck_error")
 			}
 			return s, nil
 		}
@@ -201,7 +201,7 @@ func CheckGrpc(s *Service, record bool) (*Service, error) {
 
 	if err := conn.Close(); err != nil {
 		if record {
-			RecordFailure(s, fmt.Sprintf("%v Socket Close Error %v", strings.ToUpper(s.Type), err), "close")
+			RecordFailure(s, fmt.Sprintf("%v Socket Close Error %v", strings.ToUpper(s.Type), err), "close", "grpc_socket_close_error")
 		}
 		return s, err
 	}
@@ -213,7 +213,7 @@ func CheckGrpc(s *Service, record bool) (*Service, error) {
 	if s.GrpcHealthCheck.Bool {
 		if s.ExpectedStatus != s.LastStatusCode {
 			if record {
-				RecordFailure(s, fmt.Sprintf("GRPC Service: '%s', Status Code: expected '%v', got '%v'", s.Name, s.ExpectedStatus, s.LastStatusCode), "response_code")
+				RecordFailure(s, fmt.Sprintf("GRPC Service: '%s', Status Code: expected '%v', got '%v'", s.Name, s.ExpectedStatus, s.LastStatusCode), "response_code", "grpc_status_code_error")
 			}
 			return s, nil
 		}
@@ -221,7 +221,7 @@ func CheckGrpc(s *Service, record bool) (*Service, error) {
 		if s.Expected.String != s.LastResponse {
 			log.Warnln(fmt.Sprintf("GRPC Service: '%s', Response: expected '%v', got '%v'", s.Name, s.Expected.String, s.LastResponse))
 			if record {
-				RecordFailure(s, fmt.Sprintf("GRPC Response Body '%v' did not match '%v'", s.LastResponse, s.Expected.String), "response_body")
+				RecordFailure(s, fmt.Sprintf("GRPC Response Body '%v' did not match '%v'", s.LastResponse, s.Expected.String), "response_body", "grpc_response_body_error")
 			}
 			return s, nil
 		}
@@ -243,7 +243,7 @@ func CheckTcp(s *Service, record bool) (*Service, error) {
 	dnsLookup, err := dnsCheck(s)
 	if err != nil {
 		if record {
-			RecordFailure(s, fmt.Sprintf("Could not get IP address for TCP service %v, %v", s.Domain, err), "lookup")
+			RecordFailure(s, fmt.Sprintf("Could not get IP address for TCP service %v, %v", s.Domain, err), "lookup", "tcp_lookup_failure")
 		}
 		return s, err
 	}
@@ -267,7 +267,7 @@ func CheckTcp(s *Service, record bool) (*Service, error) {
 		conn, err := net.DialTimeout(s.Type, domain, time.Duration(s.Timeout)*time.Second)
 		if err != nil {
 			if record {
-				RecordFailure(s, fmt.Sprintf("Dial Error: %v", err), "tls")
+				RecordFailure(s, fmt.Sprintf("Dial Error: %v", err), "connection", "tcp_connection_error")
 			}
 			return s, err
 		}
@@ -281,7 +281,7 @@ func CheckTcp(s *Service, record bool) (*Service, error) {
 		conn, err := tls.DialWithDialer(dialer, s.Type, domain, tlsConfig)
 		if err != nil {
 			if record {
-				RecordFailure(s, fmt.Sprintf("Dial Error: %v", err), "tls")
+				RecordFailure(s, fmt.Sprintf("Dial Error: %v", err), "connection", "tcp_connection_error")
 			}
 			return s, err
 		}
@@ -306,7 +306,7 @@ func CheckSmtp(s *Service, record bool) (*Service, error) {
 	dnsLookup, err := dnsCheck(s)
 	if err != nil {
 		if record {
-			RecordFailure(s, fmt.Sprintf("Could not get IP address for %s service %v, %v", strings.ToUpper(s.Type), s.Domain, err), "lookup")
+			RecordFailure(s, fmt.Sprintf("Could not get IP address for %s service %v, %v", strings.ToUpper(s.Type), s.Domain, err), "lookup", "smtp_lookup_failure")
 		}
 		return s, err
 	}
@@ -356,15 +356,15 @@ func CheckSmtp(s *Service, record bool) (*Service, error) {
 		conn, err := tls.DialWithDialer(dialer, "tcp", domain, tlsConfig)
 		if err != nil {
 			if record {
-				RecordFailure(s, fmt.Sprintf("Dial Error: %v", err), "tls")
-			}
-			return s, err
+				RecordFailure(s, fmt.Sprintf("Dial Error: %v", err), "tls", "smtp_tls_error")
+ 			}
+ 			return s, err
 		}
 		defer conn.Close()
 		c, err = smtp.NewClient(conn, s.Domain)
 		if err != nil {
 			if record {
-				RecordFailure(s, fmt.Sprintf("%s Connection Error: %v", strings.ToUpper(s.Type), err), s.Type)
+				RecordFailure(s, fmt.Sprintf("%s Connection Error: %v", strings.ToUpper(s.Type), err), s.Type, "smtp_connection_error")
 			}
 			return s, err
 		}
@@ -373,7 +373,7 @@ func CheckSmtp(s *Service, record bool) (*Service, error) {
 		conn, err := net.DialTimeout("tcp", domain, time.Duration(s.Timeout)*time.Second)
 		if err != nil {
 			if record {
-				RecordFailure(s, fmt.Sprintf("Dial Error: %v", err), "tls")
+				RecordFailure(s, fmt.Sprintf("Dial Error: %v", err), "connection", "smtp_connection_error")
 			}
 			return s, err
 		}
@@ -381,7 +381,7 @@ func CheckSmtp(s *Service, record bool) (*Service, error) {
 		c, err = smtp.NewClient(conn, s.Domain)
 		if err != nil {
 			if record {
-				RecordFailure(s, fmt.Sprintf("%s Connection Error: %v", strings.ToUpper(s.Type), err), s.Type)
+				RecordFailure(s, fmt.Sprintf("%s Connection Error: %v", strings.ToUpper(s.Type), err), s.Type, "smtp_connection_error")
 			}
 			return s, err
 		}
@@ -392,14 +392,14 @@ func CheckSmtp(s *Service, record bool) (*Service, error) {
 		if username == "" || password == "" {
 			err = errors.New("no credentials configured")
 			if record {
-				RecordFailure(s, fmt.Sprintf("%s Authentication Error: %v", strings.ToUpper(s.Type), err), s.Type)
+				RecordFailure(s, fmt.Sprintf("%s Authentication Error: %v", strings.ToUpper(s.Type), err), s.Type, "smtp_authentication_error")
 			}
 			return s, err
 		}
 
 		if err = c.Auth(smtp.PlainAuth("", username, password, s.Domain)); err != nil {
 			if record {
-				RecordFailure(s, fmt.Sprintf("%s Authentication Error: %v", strings.ToUpper(s.Type), err), s.Type)
+				RecordFailure(s, fmt.Sprintf("%s Authentication Error: %v", strings.ToUpper(s.Type), err), s.Type, "smtp_authentication_error")
 			}
 			return s, err
 		}
@@ -422,7 +422,7 @@ func CheckImap(s *Service, record bool) (*Service, error) {
 	dnsLookup, err := dnsCheck(s)
 	if err != nil {
 		if record {
-			RecordFailure(s, fmt.Sprintf("Could not get IP address for %s service %v, %v", strings.ToUpper(s.Type), s.Domain, err), "lookup")
+			RecordFailure(s, fmt.Sprintf("Could not get IP address for %s service %v, %v", strings.ToUpper(s.Type), s.Domain, err), "lookup", "imap_lookup_failure")
 		}
 		return s, err
 	}
@@ -472,7 +472,7 @@ func CheckImap(s *Service, record bool) (*Service, error) {
 		conn, err = client.DialWithDialerTLS(dialer, domain, tlsConfig)
 		if err != nil {
 			if record {
-				RecordFailure(s, fmt.Sprintf("Dial Error: %v", err), "tls")
+				RecordFailure(s, fmt.Sprintf("Dial Error: %v", err), "tls", "imap_tls_error")
 			}
 			return s, err
 		}
@@ -485,7 +485,7 @@ func CheckImap(s *Service, record bool) (*Service, error) {
 		conn, err = client.DialWithDialer(dialer, domain)
 		if err != nil {
 			if record {
-				RecordFailure(s, fmt.Sprintf("Dial Error: %v", err), "tls")
+				RecordFailure(s, fmt.Sprintf("Dial Error: %v", err), "tls", "imap_tls_error")
 			}
 			return s, err
 		}
@@ -497,14 +497,14 @@ func CheckImap(s *Service, record bool) (*Service, error) {
 		if username == "" || password == "" {
 			err = errors.New("no credentials configured")
 			if record {
-				RecordFailure(s, fmt.Sprintf("%s Authentication Error: %v", strings.ToUpper(s.Type), err), s.Type)
+				RecordFailure(s, fmt.Sprintf("%s Authentication Error: %v", strings.ToUpper(s.Type), err), s.Type, "imap_authentication_error")
 			}
 			return s, err
 		}
 
 		if err = conn.Login(username, password); err != nil {
 			if record {
-				RecordFailure(s, fmt.Sprintf("%s Authentication Error: %v", strings.ToUpper(s.Type), err), s.Type)
+				RecordFailure(s, fmt.Sprintf("%s Authentication Error: %v", strings.ToUpper(s.Type), err), s.Type, "imap_authentication_error")
 			}
 			return s, err
 		}
@@ -532,7 +532,7 @@ func CheckHttp(s *Service, record bool) (*Service, error) {
 	dnsLookup, err := dnsCheck(s)
 	if err != nil {
 		if record {
-			RecordFailure(s, fmt.Sprintf("Could not get IP address for domain %v, %v", s.Domain, err), "lookup")
+			RecordFailure(s, fmt.Sprintf("Could not get IP address for domain %v, %v", s.Domain, err), "lookup", "http_lookup_failure")
 		}
 		return s, err
 	}
@@ -587,7 +587,7 @@ func CheckHttp(s *Service, record bool) (*Service, error) {
 	content, res, err = utils.HttpRequest(s.Domain, s.Method, contentType, headers, data, timeout, s.VerifySSL.Bool, customTLS)
 	if err != nil {
 		if record {
-			RecordFailure(s, fmt.Sprintf("HTTP Error %v", err), "request")
+			RecordFailure(s, fmt.Sprintf("HTTP Error %v", err), "request", "http_request_error")
 		}
 		return s, err
 	}
@@ -604,14 +604,14 @@ func CheckHttp(s *Service, record bool) (*Service, error) {
 		}
 		if !match {
 			if record {
-				RecordFailure(s, fmt.Sprintf("HTTP Response Body did not match '%v'", s.Expected), "regex")
+				RecordFailure(s, fmt.Sprintf("HTTP Response Body did not match '%v'", s.Expected), "regex", "http_regex_mismatch")
 			}
 			return s, err
 		}
 	}
 	if s.ExpectedStatus != res.StatusCode {
 		if record {
-			RecordFailure(s, fmt.Sprintf("HTTP Status Code %v did not match %v", res.StatusCode, s.ExpectedStatus), "status_code")
+			RecordFailure(s, fmt.Sprintf("HTTP Status Code %v did not match %v", res.StatusCode, s.ExpectedStatus), "status_code", "http_status_code_error")
 		}
 		return s, err
 	}
@@ -658,7 +658,7 @@ func RecordCheckinSuccess(s *Service, checkin *checkins.Checkin, hit *checkins.C
 }
 
 // RecordFailure will create a new 'Failure' record in the database for a offline service
-func RecordFailure(s *Service, issue, reason string) {
+func RecordFailure(s *Service, issue string, reason string, outageType string) { 
 	s.LastOffline = utils.Now()
 
 	fail := &failures.Failure{
@@ -667,6 +667,7 @@ func RecordFailure(s *Service, issue, reason string) {
 		PingTime:  s.PingTime,
 		CreatedAt: utils.Now(),
 		ErrorCode: s.LastStatusCode,
+		OutageType: outageType,
 		Reason:    reason,
 	}
 	log.WithFields(utils.ToFields(fail, s)).

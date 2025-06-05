@@ -78,7 +78,12 @@ func apiCreateServiceHandler(w http.ResponseWriter, r *http.Request) {
 type servicePatchReq struct {
 	Online  bool   `json:"online"`
 	Issue   string `json:"issue,omitempty"`
-	Latency int64  `json:"latency,omitempty"`
+	Latency int64    `json:"latency,omitempty"`
+}
+
+type serviceOutagePatchReq struct {
+	IsOutageEnabled bool 	`json:"is_outage_enabled"`
+	OutageType 		string 	`json:"outage_type"`
 }
 
 func apiServicePatchHandler(w http.ResponseWriter, r *http.Request) {
@@ -102,10 +107,39 @@ func apiServicePatchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !req.Online {
-		services.RecordFailure(service, issueDefault, "trigger")
+		services.RecordFailure(service, issueDefault, "trigger", "offline")
 	} else {
 		services.RecordSuccess(service)
 	}
+
+	if err := service.Update(); err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+
+	sendJsonAction(service, "update", w, r)
+}
+
+func apiServiceOutagePatchHandler(w http.ResponseWriter, r *http.Request) {
+	service, err := findService(r)
+	if err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+	var req serviceOutagePatchReq
+	if err := DecodeJSON(r, &req); err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+
+	issueDefault := "Service was triggered to be outaged"
+
+	if req.IsOutageEnabled {
+		services.RecordFailure(service, issueDefault, "trigger", req.OutageType)
+	}
+
+	service.IsOutageEnabled = req.IsOutageEnabled
+	service.OutageType = req.OutageType
 
 	if err := service.Update(); err != nil {
 		sendErrorJson(err, w, r)
@@ -167,13 +201,23 @@ func apiServiceFailureDataHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	objs, err := groupQuery.GraphData(database.ByCount)
+	objs, err := groupQuery.GraphDataForFailures(database.ByCount)
 	if err != nil {
 		sendErrorJson(err, w, r)
 		return
 	}
 
-	returnJson(objs, w, r)
+	enriched := make([]interface{}, 0, len(objs))
+	for _, tv := range objs {
+		record := map[string]interface{}{
+			"timeframe":         tv.Timeframe,
+			"amount":            tv.Amount,
+			"outage_type":       tv.OutageType,
+		}
+		enriched = append(enriched, record)
+	}
+
+	returnJson(enriched, w, r) 
 }
 
 func apiServicePingDataHandler(w http.ResponseWriter, r *http.Request) {

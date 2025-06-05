@@ -14,6 +14,7 @@ type Failure struct {
 	Checkin   int64     `gorm:"index;column:checkin" json:"-"`
 	PingTime  int64     `gorm:"column:ping_time"  json:"ping"`
 	Reason    string    `gorm:"column:reason" json:"reason,omitempty"`
+	OutageType string    `gorm:"column:outage_type" json:"outage_type,omitempty"`
 	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
 }
 

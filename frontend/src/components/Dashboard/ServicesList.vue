@@ -32,7 +32,7 @@
                     </span> {{service.name}}
                 </td>
               <td class="d-none d-md-table-cell">
-                    <span class="badge text-uppercase" :class="{'badge-success': service.online, 'badge-danger': !service.online}">
+                    <span class="badge text-uppercase" :class="serviceBadgeClass(service)">
                         {{service.online ? $t('online') : $t('offline')}}
                     </span>
               </td>

@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'mixin';
+@import 'custom';
 
 .index-chart {
   height: $service-card-height;
@@ -369,6 +370,10 @@
     @include dynamic-color($danger-color);
   }
 
+  .btn-outage {
+    background-color: $light_orange;
+  }
+
   .bg-success {
     background-color: $success-color !important;
   }
@@ -377,12 +382,22 @@
     background-color: $danger-color !important;
   }
 
+  .bg-outage {
+    background-color: $light_orange !important;
+    color: $secondary_orange !important;
+    border: 1px solid $secondary_orange !important;
+  }
+
   .bg-success .dyn-dark {
     background-color: darken($success-color, 10%) !important;
   }
 
   .bg-danger .dyn-dark {
     background-color: darken($danger-color, 10%) !important;
+  }
+
+  .bg-outage .dyn-dark {
+    background-color: $light_orange !important;
   }
 
   @keyframes fadeInOut {
