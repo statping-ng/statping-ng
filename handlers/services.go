@@ -24,7 +24,7 @@ func findService(r *http.Request) (*services.Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	if !servicer.Public.Bool && !IsReadAuthenticated(r) {
+	if !IsReadAuthenticated(r) {
 		return nil, errors.NotAuthenticated
 	}
 	return servicer, nil
@@ -280,11 +280,9 @@ func apiServiceDeleteHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func apiAllServicesHandler(r *http.Request) interface{} {
+	log.Info("apiAllServicesHandler")
 	var srvs []services.Service
 	for _, v := range services.AllInOrder() {
-		if !v.Public.Bool && !IsUser(r) {
-			continue
-		}
 		srvs = append(srvs, v)
 	}
 	return srvs

@@ -820,7 +820,7 @@
 									"",
 									"pm.test(\"View All Services\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.length).to.eql(6);",
+									"    pm.expect(jsonData.length).to.eql(7);",
 									"});"
 								],
 								"type": "text/javascript"
