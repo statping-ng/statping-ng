@@ -69,7 +69,7 @@ name: "ServiceEvents",
       return this.$store.getters.serviceMessages(this.service.id)
     },
     success_event() {
-      if (this.service.online && this.service.messages.length === 0 && this.service.incidents.length === 0) {
+      if (this.service.online && this.service.messages && this.service.messages.length === 0 && this.service.incidents.length === 0) {
         return true
       }
       return false
