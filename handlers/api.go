@@ -2,6 +2,9 @@ package handlers
 
 import (
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/statping-ng/statping-ng/types/checkins"
 	"github.com/statping-ng/statping-ng/types/configs"
 	"github.com/statping-ng/statping-ng/types/core"
@@ -14,8 +17,6 @@ import (
 	"github.com/statping-ng/statping-ng/types/services"
 	"github.com/statping-ng/statping-ng/types/users"
 	"github.com/statping-ng/statping-ng/utils"
-	"net/http"
-	"time"
 )
 
 type apiResponse struct {
@@ -97,6 +98,10 @@ func apiCoreHandler(w http.ResponseWriter, r *http.Request) {
 	utils.Params.Set("LANGUAGE", app.Language)
 	app.UseCdn = null.NewNullBool(c.UseCdn.Bool)
 	app.AllowReports = null.NewNullBool(c.AllowReports.Bool)
+	app.NumberOfDaysForService = null.NewNullInt64(c.NumberOfDaysForService.Int64)
+	app.ShowGraphs = null.NewNullBool(c.ShowGraphs.Bool)
+	utils.Params.Set("NUMBER_OF_DAYS_FOR_SERVICE", app.NumberOfDaysForService.Int64)
+	utils.Params.Set("SHOW_GRAPHS", app.ShowGraphs.Bool)
 
 	if err := app.Update(); err != nil {
 		sendErrorJson(err, w, r)

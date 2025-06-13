@@ -51,6 +51,25 @@
                     </select>
                 </div>
 
+                <div class="form-group">
+                    <label>{{ $t('number_of_days_for_service') }}</label>
+                    <input v-model="core.number_of_days_for_service" type="text" class="form-control" placeholder="90" id="number_of_days_for_service">
+                    <small class="form-text text-muted">{{ $t('number_of_days_for_service_desc') }}</small>
+                </div>
+
+                <div class="form-group row mt-3">
+                    <label class="col-sm-10 col-form-label">{{ $t('show_graphs') }}</label>
+                    <div class="col-sm-2 float-right">
+                        <span @click="core.show_graphs = !!core.show_graphs" class="switch" id="show_graphs">
+                        <input v-model="core.show_graphs" type="checkbox" name="show_graphs" class="switch" id="switch_show_graphs" :checked="core.show_graphs">
+                        <label for="switch_show_graphs"></label>
+                      </span>
+                    </div>
+                    <div class="col-12">
+                        <small>{{ $t('show_graphs_desc') }}</small>
+                    </div>
+                </div>
+
                 <div class="form-group row mt-3">
                     <label class="col-sm-10 col-form-label">{{ $t('send_reports') }}</label>
                     <div class="col-sm-2 float-right">
@@ -93,6 +112,7 @@
           async saveSettings() {
             this.loading = true
               const c = this.core
+              c.number_of_days_for_service = Number(c.number_of_days_for_service)
               await Api.core_save(c)
               this.$store.commit('setCore', c)
             this.$i18n.locale = c.language || "en";

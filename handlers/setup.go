@@ -2,15 +2,16 @@ package handlers
 
 import (
 	"errors"
+	"net/http"
+	"net/url"
+	"strconv"
+
 	"github.com/statping-ng/statping-ng/notifiers"
 	"github.com/statping-ng/statping-ng/types/configs"
 	"github.com/statping-ng/statping-ng/types/core"
 	"github.com/statping-ng/statping-ng/types/null"
 	"github.com/statping-ng/statping-ng/types/services"
 	"github.com/statping-ng/statping-ng/utils"
-	"net/http"
-	"net/url"
-	"strconv"
 )
 
 func processSetupHandler(w http.ResponseWriter, r *http.Request) {
@@ -79,17 +80,19 @@ func processSetupHandler(w http.ResponseWriter, r *http.Request) {
 	notifiers.InitNotifiers()
 
 	c := &core.Core{
-		Name:         project,
-		Description:  description,
-		ApiSecret:    utils.Params.GetString("API_SECRET"),
-		Domain:       domain,
-		Version:      core.App.Version,
-		Started:      utils.Now(),
-		CreatedAt:    utils.Now(),
-		UseCdn:       null.NewNullBool(false),
-		Footer:       null.NewNullString(""),
-		Language:     confgs.Language,
-		AllowReports: null.NewNullBool(sendReports),
+		Name:                   project,
+		Description:            description,
+		ApiSecret:              utils.Params.GetString("API_SECRET"),
+		Domain:                 domain,
+		Version:                core.App.Version,
+		Started:                utils.Now(),
+		CreatedAt:              utils.Now(),
+		UseCdn:                 null.NewNullBool(false),
+		Footer:                 null.NewNullString(""),
+		Language:               confgs.Language,
+		AllowReports:           null.NewNullBool(sendReports),
+		NumberOfDaysForService: null.NewNullInt64(90),
+		ShowGraphs:             null.NewNullBool(true),
 	}
 
 	log.Infoln("Creating new Core")

@@ -27,6 +27,7 @@ type Service struct {
 	VerifySSL           null.NullBool         `gorm:"default:false;column:verify_ssl" json:"verify_ssl" scope:"user,admin" yaml:"verify_ssl"`
 	GrpcHealthCheck     null.NullBool         `gorm:"default:false;column:grpc_health_check" json:"grpc_health_check" scope:"user,admin" yaml:"grpc_health_check"`
 	Public              null.NullBool         `gorm:"default:true;column:public" json:"public" yaml:"public"`
+	ShowGraph           null.NullBool         `gorm:"default:true;column:show_graph" json:"show_graph" yaml:"show_graph"`
 	GroupId             int                   `gorm:"default:0;column:group_id" json:"group_id" yaml:"group_id"`
 	TLSCert             null.NullString       `gorm:"column:tls_cert" json:"tls_cert" scope:"user,admin" yaml:"tls_cert"`
 	TLSCertKey          null.NullString       `gorm:"column:tls_cert_key" json:"tls_cert_key" scope:"user,admin" yaml:"tls_cert_key"`

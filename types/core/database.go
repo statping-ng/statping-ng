@@ -57,6 +57,12 @@ func Select() (*Core, error) {
 	if utils.Params.GetString("API_SECRET") != "" {
 		App.ApiSecret = utils.Params.GetString("API_SECRET")
 	}
+	if utils.Params.GetInt64("NUMBER_OF_DAYS_FOR_SERVICE") != 90 {
+		App.NumberOfDaysForService = null.NewNullInt64(utils.Params.GetInt64("NUMBER_OF_DAYS_FOR_SERVICE"))
+	}
+	if utils.Params.GetBool("SHOW_GRAPHS") {
+		App.ShowGraphs = null.NewNullBool(true)
+	}
 	App.Version = utils.Params.GetString("VERSION")
 	App.Commit = utils.Params.GetString("COMMIT")
 	return App, q.Error()
