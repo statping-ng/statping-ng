@@ -32,7 +32,9 @@ func customOAuth(r *http.Request) (*oAuth, error) {
 		return nil, errors.New("oauth token is not valid")
 	}
 
+	// TODO: Authenticated users are false by default, need to add some logic to check if the user is an admin
 	return &oAuth{
 		Token: gg,
+		Admin: false,
 	}, nil
 }

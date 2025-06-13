@@ -34,6 +34,13 @@ func Save() error {
 		MaxOpenConnections: p.GetInt("MAX_OPEN_CONN"),
 		MaxIdleConnections: p.GetInt("MAX_IDLE_CONN"),
 		MaxLifeConnections: int(p.GetDuration("MAX_LIFE_CONN").Seconds()),
+		KeycloakClientID:     	   p.GetString("KEYCLOAK_CLIENT_ID"),
+		KeycloakClientSecret: 	   p.GetString("KEYCLOAK_CLIENT_SECRET"),
+		KeycloakEndpointAuth:      p.GetString("KEYCLOAK_ENDPOINT_AUTH"),
+		KeycloakEndpointToken:     p.GetString("KEYCLOAK_ENDPOINT_TOKEN"),
+		KeycloakEndpointUserinfo:  p.GetString("KEYCLOAK_ENDPOINT_USERINFO"),
+		KeycloakScopes:       	   p.GetString("KEYCLOAK_SCOPES"),
+		KeycloakIsOpenID:          p.GetBool("KEYCLOAK_IS_OPEN_ID"),
 	}
 	return configs.Save(utils.Directory)
 }
@@ -102,6 +109,27 @@ func LoadConfigs(cfgFile string) (*DbConfig, error) {
 	if db.LetsEncryptEnable {
 		p.Set("LETSENCRYPT_ENABLE", db.LetsEncryptEnable)
 	}
+	if db.KeycloakClientID != "" {
+		p.Set("KEYCLOAK_CLIENT_ID", db.KeycloakClientID)
+	}
+	if db.KeycloakClientSecret != "" {
+		p.Set("KEYCLOAK_CLIENT_SECRET", db.KeycloakClientSecret)
+	}
+	if db.KeycloakEndpointAuth != "" {
+		p.Set("KEYCLOAK_ENDPOINT_AUTH", db.KeycloakEndpointAuth)
+	}
+	if db.KeycloakEndpointToken != "" {
+		p.Set("KEYCLOAK_ENDPOINT_TOKEN", db.KeycloakEndpointToken)
+	}
+	if db.KeycloakEndpointUserinfo != "" {
+		p.Set("KEYCLOAK_ENDPOINT_USERINFO", db.KeycloakEndpointUserinfo)
+	}
+	if db.KeycloakScopes != "" {
+		p.Set("KEYCLOAK_SCOPES", db.KeycloakScopes)
+	}
+	if db.KeycloakIsOpenID {
+		p.Set("KEYCLOAK_IS_OPEN_ID", db.KeycloakIsOpenID)
+	}
 
 	configs := &DbConfig{
 		DbConn:            p.GetString("DB_CONN"),
@@ -125,6 +153,13 @@ func LoadConfigs(cfgFile string) (*DbConfig, error) {
 		LetsEncryptEmail:  p.GetString("LETSENCRYPT_EMAIL"),
 		ApiSecret:         p.GetString("API_SECRET"),
 		SampleData:        p.GetBool("SAMPLE_DATA"),
+		KeycloakClientID:          p.GetString("KEYCLOAK_CLIENT_ID"),
+		KeycloakClientSecret:      p.GetString("KEYCLOAK_CLIENT_SECRET"),
+		KeycloakEndpointAuth:      p.GetString("KEYCLOAK_ENDPOINT_AUTH"),
+		KeycloakEndpointToken:     p.GetString("KEYCLOAK_ENDPOINT_TOKEN"),
+		KeycloakEndpointUserinfo:  p.GetString("KEYCLOAK_ENDPOINT_USERINFO"),
+		KeycloakScopes:            p.GetString("KEYCLOAK_SCOPES"),
+		KeycloakIsOpenID:          p.GetBool("KEYCLOAK_IS_OPEN_ID"),
 	}
 	log.WithFields(utils.ToFields(configs)).Debugln("read config file: " + cfgFile)
 

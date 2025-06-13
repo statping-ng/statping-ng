@@ -37,6 +37,10 @@
             <font-awesome-icon :icon="['fab', 'google']" /> Login with Google
         </a>
 
+        <a v-if="oauth && oauth.keycloak_client_id" @click.prevent="Keycloaklogin" href="#" class="btn btn-block btn-outline-dark">
+            <font-awesome-icon :icon="['fas', 'address-card']" /> Login with Keycloak
+        </a>
+        
         <a v-if="oauth && oauth.custom_client_id" @click.prevent="Customlogin" href="#" class="btn btn-block btn-outline-dark">
             <font-awesome-icon :icon="['fas', 'address-card']" /> Login with {{oauth.custom_name}}
         </a>
@@ -69,9 +73,23 @@
             slack_scope: "identity.email,identity.basic"
           }
       },
-    mounted() {
-      this.$cookies.remove("statping_auth")
-    },
+      async mounted() {
+        this.$cookies.remove("statping_auth")
+        // Ensure oauth data is loaded
+        try {
+          await Api.core()
+          const oauthData = await Api.oauth()
+          
+          if (!oauthData) {
+            console.error("OAuth data is null or undefined")
+          }
+
+          this.oauth = oauthData
+
+        } catch (error) {
+          console.error("Error loading OAuth data: ", error)
+        }
+      },
     methods: {
           checkForm() {
               if (!this.username || !this.password) {
@@ -109,6 +127,27 @@
         }
         return ""
       },
+      keycloak_scopes() {
+        let scopes = [];
+
+        // Add openid scope if needed
+        if (this.oauth.keycloak_is_open_id && !scopes.includes("openid")) {
+            scopes.push("openid");
+        }
+
+        // Add other scopes
+        if (this.oauth.keycloak_scopes) {
+          this.oauth.keycloak_scopes.split(",").forEach(scope => {
+            const trimmedScope = scope.trim();
+            if (trimmedScope && !scopes.includes(trimmedScope)) {
+              scopes.push(trimmedScope);
+            }
+          });
+        }
+
+        // Return the scopes as a query string
+        return scopes.length > 0 ? `&scope=${scopes.join(" ")}` : "";
+      },
         GHlogin() {
             window.location = `https://github.com/login/oauth/authorize?client_id=${this.oauth.gh_client_id}&redirect_uri=${this.encode(this.core.domain+"/oauth/github")}&scope=read:user,read:org`
         },
@@ -120,6 +159,9 @@
         },
         Customlogin() {
           window.location = `${this.oauth.custom_endpoint_auth}?client_id=${this.oauth.custom_client_id}&redirect_uri=${this.encode(this.core.domain+"/oauth/custom")}&response_type=code${this.custom_scopes()}`
+        },
+        Keycloaklogin() {
+          window.location = `${this.oauth.keycloak_endpoint_auth}?client_id=${this.oauth.keycloak_client_id}&redirect_uri=${this.encode(this.core.domain+"/oauth/keycloak")}&response_type=code${this.keycloak_scopes()}`
         }
       }
   }

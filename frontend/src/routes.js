@@ -61,7 +61,7 @@ const routes = [
           try {
             const jwt = await Api.check_token(token)
             store.commit('setAdmin', jwt.admin)
-            if (jwt.admin) {
+            if (jwt.admin || jwt.oauth) {
               store.commit('setLoggedIn', true)
               store.commit('setUser', true)
             } else {

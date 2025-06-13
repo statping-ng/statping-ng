@@ -14,6 +14,7 @@ import (
 type oAuth struct {
 	Email    string
 	Username string
+	Admin    bool
 	*oauth2.Token
 }
 
@@ -32,6 +33,8 @@ func oauthHandler(w http.ResponseWriter, r *http.Request) {
 		oauth, err = slackOAuth(r)
 	case "custom":
 		oauth, err = customOAuth(r)
+	case "keycloak":
+		oauth, err = keycloakOAuth(r)
 	default:
 		err = errors.New("unknown oauth provider")
 	}
@@ -50,7 +53,8 @@ func oauthLogin(oauth *oAuth, w http.ResponseWriter, r *http.Request) {
 		Id:       0,
 		Username: oauth.Username,
 		Email:    oauth.Email,
-		Admin:    null.NewNullBool(true),
+		Admin:    null.NewNullBool(oauth.Admin),
+		OAuth:    null.NewNullBool(true),
 	}
 	log.Infoln(fmt.Sprintf("OAuth %s User %s logged in from IP %s", oauth.Type(), oauth.Email, r.RemoteAddr))
 	setJwtToken(user, w)

@@ -46,10 +46,12 @@ func githubOAuth(r *http.Request) (*oAuth, error) {
 		return nil, errors.New("github user is not allowed to login")
 	}
 
+	// TODO: Authenticated users are false by default, need to add some logic to check if the user is an admin
 	return &oAuth{
 		Token:    gg,
 		Username: strings.ToLower(user.Name),
 		Email:    strings.ToLower(user.Email),
+		Admin:	  false,
 	}, nil
 }
 

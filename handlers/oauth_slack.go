@@ -47,10 +47,12 @@ func slackOAuth(r *http.Request) (*oAuth, error) {
 		return nil, errors.New("slack user is not whitelisted")
 	}
 
+	// TODO: Authenticated users are false by default, need to add some logic to check if the user is an admin
 	return &oAuth{
 		Token:    gg,
 		Username: strings.ToLower(identity.User.Name),
 		Email:    strings.ToLower(identity.User.Email),
+		Admin:	  false,
 	}, nil
 }
 
