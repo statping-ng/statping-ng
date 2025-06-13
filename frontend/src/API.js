@@ -92,8 +92,17 @@ class Api {
     return axios.get('api/checkins').then(response => (response.data))
   }
 
+  // Fix issue #312 Loading spinner displayed forever when no services/groups visible to public
+  // https://github.com/statping-ng/statping-ng/issues/312
   async groups() {
-    return axios.get('api/groups').then(response => (response.data))
+    const groups = await axios.get('api/groups').then(response => (response.data));
+    const hasPublicGroups = groups.some(group => group.public);
+    if (!hasPublicGroups) {
+      // No public groups, return empty array or handle the spinner differently
+      return []; 
+    } else {
+      return groups;
+    }
   }
 
   async groups_reorder(data) {
