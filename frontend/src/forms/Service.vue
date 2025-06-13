@@ -14,6 +14,7 @@
             <label for="service_type" class="col-sm-4 col-form-label">{{ $t('service_type') }}</label>
             <div class="col-sm-8">
                 <select v-model="service.type" @change="updateDefaultValues()" class="form-control" id="service_type">
+                    <option value="cmd">Command</option>
                     <option value="http">HTTP {{ $t('service') }}</option>
                     <option value="tcp">TCP {{ $t('service') }}</option>
                     <option value="udp">UDP {{ $t('service') }}</option>
@@ -74,7 +75,7 @@
             <div class="card-header">Request Details</div>
             <div class="card-body">
 
-            <div class="form-group row">
+            <div v-if="service.type !== 'cmd'" class="form-group row">
                 <label for="service_url" class="col-sm-4 col-form-label">
                   {{ $t('service_endpoint') }} {{service.type === 'http' ? "(URL)" : "(Domain)"}}
                 </label>
@@ -117,7 +118,7 @@
             <div class="col-sm-6">
                 <span v-if="service.timeout >= 0" class="slider-info">{{secondsHumanize(service.timeout)}}</span>
                 <input v-model.number="service.timeout" type="range" id="timeout" name="timeout" class="slider" min="1" max="180">
-                <small class="form-text text-muted">If the endpoint does not respond within this time it will be considered to be offline</small>
+                <small class="form-text text-muted">If the {{service.type === 'cmd' ? 'command' : 'endpoint'}} does not {{service.type === 'cmd' ? 'exit' : 'respond'}} within this time it will be considered to be offline</small>
             </div>
 
             <div class="col-sm-2">
@@ -126,11 +127,11 @@
 
         </div>
 
-        <div v-if="service.type.match(/^(http)$/) && service.method.match(/^(POST|PATCH|DELETE|PUT)$/)" class="form-group row">
-            <label class="col-sm-4 col-form-label">Optional Post Data (JSON)</label>
+        <div v-if="service.type === 'cmd' || service.type.match(/^(http)$/) && service.method.match(/^(POST|PATCH|DELETE|PUT)$/)" class="form-group row">
+            <label class="col-sm-4 col-form-label">{{service.type === 'cmd' ? "Command Config (JSON)" : "Optional Post Data (JSON)"}}</label>
             <div class="col-sm-8">
-                <textarea v-model="service.post_data" class="form-control" rows="3" autocapitalize="none" spellcheck="false" placeholder='{"data": { "method": "success", "id": 148923 } }'></textarea>
-                <small class="form-text text-muted">Insert a JSON string to send data to the endpoint.</small>
+                <textarea v-model="service.post_data" class="form-control" :rows="service.type === 'cmd' && !service.post_data ? '21' : service.type === 'cmd' ? '5' : '3'" autocapitalize="none" spellcheck="false" :placeholder="service.type === 'cmd' ? '# Format:\n{\n  &quot;Cmd&quot;: &quot;_CMD_PATH_(required)&quot;,\n  &quot;Args&quot;: [_ARGS_LIST_(optional)],\n  &quot;Dir&quot;: &quot;_DIR_PATH_(optional)&quot;,\n  &quot;Env&quot;: {_ENV_VARS_MAP_(optional)},\n  &quot;Stdin&quot;: &quot;_STDIN_STR_(optional)&quot;,\n  &quot;Stdout&quot;: &quot;_STDOUT_REGEX_(optional)&quot;,\n  &quot;Stderr&quot;: &quot;_STDERR_REGEX_(optional)&quot;\n}\n# Example:\n{\n  &quot;Cmd&quot;: &quot;/usr/bin/ping&quot;,\n  &quot;Args&quot;: [&quot;-c&quot;, &quot;1&quot;, &quot;-W&quot;, &quot;1&quot;, &quot;example.com&quot;],\n  &quot;Stdout&quot;: &quot;.+1 received.+&quot;\n}\n# Example:\n{\n  &quot;Cmd&quot;: &quot;/bin/bash&quot;,\n  &quot;Args&quot;: [&quot;-c&quot;, &quot;/usr/bin/ping -c 1 -W 1 example.com&quot;]\n}' : '{&quot;data&quot;: { &quot;method&quot;: &quot;success&quot;, &quot;id&quot;: 148923 } }'"></textarea>
+                <small class="form-text text-muted">{{service.type === 'cmd' ? 'Configure the command to run.' : 'Insert a JSON string to send data to the endpoint.'}}</small>
             </div>
         </div>
         <div v-if="service.type.match(/^(http)$/)" class="form-group row">
@@ -154,11 +155,12 @@
                 <small class="form-text text-muted">You can use plain text or insert <a target="_blank" href="https://regex101.com/r/I5bbj9/1">Regex</a> to validate the response</small>
             </div>
         </div>
-        <div v-if="service.type.match(/^(http)$/)" class="form-group row">
+        <div v-if="service.type.match(/^(cmd|http)$/)" class="form-group row">
             <label for="service_response_code" class="col-sm-4 col-form-label">{{ $t('expected_code') }}</label>
             <div class="col-sm-8">
-                <input v-model="service.expected_status" type="number" name="expected_status" class="form-control" placeholder="200" id="service_response_code">
-                <small class="form-text text-muted">A status code of 200 is success, or view all the <a target="_blank" href="https://www.restapitutorial.com/httpstatuscodes.html">HTTP Status Codes</a></small>
+                <input v-model="service.expected_status" type="number" name="expected_status" class="form-control" :placeholder="service.type === 'cmd' ? '0' : '200'" id="service_response_code">
+                <small v-if="service.type === 'cmd'" class="form-text text-muted">An exit code of 0 is success</small>
+                <small v-if="service.type === 'http'" class="form-text text-muted">A status code of 200 is success, or view all the <a target="_blank" href="https://www.restapitutorial.com/httpstatuscodes.html">HTTP Status Codes</a></small>
             </div>
         </div>
 
@@ -304,14 +306,14 @@
               loading: false,
               service: {
                   name: "",
-                  type: "http",
+                  type: "cmd",
                   domain: "",
                   group_id: 0,
                   method: "GET",
                   post_data: "",
                   headers: "",
                   expected: "",
-                  expected_status: 200,
+                  expected_status: 0,
                   port: 80,
                   check_interval: 60,
                   timeout: 15,
@@ -361,7 +363,14 @@
           this.use_tls = this.service.tls_cert !== ""
         },
         updateDefaultValues() {
-            if (this.service.type === "grpc") {
+            if (this.service.type === "cmd") {
+                this.service.expected_status = 0
+                this.service.expected = ""
+                this.service.port = 0
+                this.service.verify_ssl = false
+                this.service.method = ""
+            }
+            else if (this.service.type === "grpc") {
                 this.service.expected_status = 1
                 this.service.expected = "status:SERVING"
                 this.service.port = 50051

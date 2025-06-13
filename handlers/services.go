@@ -9,6 +9,7 @@ import (
 	"github.com/statping-ng/statping-ng/types/hits"
 	"github.com/statping-ng/statping-ng/types/services"
 	"github.com/statping-ng/statping-ng/utils"
+	"math"
 	"net/http"
 )
 
@@ -56,6 +57,11 @@ func apiServiceHandler(r *http.Request) interface{} {
 		return err
 	}
 	srv = srv.UpdateStats()
+	// ExpectedStatus 0 is stored in database as MinInt32,
+	// to circumvent the problem of gorm not updating zero value.
+	if srv.Type == "cmd" && srv.ExpectedStatus == math.MinInt32 {
+		srv.ExpectedStatus = 0
+	}
 	return *srv
 }
 
@@ -65,7 +71,10 @@ func apiCreateServiceHandler(w http.ResponseWriter, r *http.Request) {
 		sendErrorJson(err, w, r)
 		return
 	}
-
+	if err := service.Validate(); err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
 	if err := service.Create(); err != nil {
 		sendErrorJson(err, w, r)
 		return
@@ -122,6 +131,10 @@ func apiServiceUpdateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := DecodeJSON(r, &service); err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+	if err := service.Validate(); err != nil {
 		sendErrorJson(err, w, r)
 		return
 	}
@@ -284,6 +297,11 @@ func apiAllServicesHandler(r *http.Request) interface{} {
 	for _, v := range services.AllInOrder() {
 		if !v.Public.Bool && !IsUser(r) {
 			continue
+		}
+		// ExpectedStatus 0 is stored in database as MinInt32,
+		// to circumvent the problem of gorm not updating zero value.
+		if v.Type == "cmd" && v.ExpectedStatus == math.MinInt32 {
+			v.ExpectedStatus = 0
 		}
 		srvs = append(srvs, v)
 	}
