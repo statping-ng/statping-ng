@@ -83,7 +83,7 @@
 
 <p>View the <a href="https://github.com/statping-ng/statping-ng/wiki/Docker" target="_blank">Docker Wiki</a> for more information and advanced usage.</p>
 
-<pre><code class="language-sh">docker run -it -p 8080:8080 statping/statping
+<pre><code class="language-sh">docker run -it -p 8080:8080 adamboutcher/statping-ng
 </code></pre>
 
 <h1>MacOSX</h1>
@@ -98,7 +98,7 @@ brew install statping
 
 <p>View the <a href="https://github.com/statping-ng/statping-ng/wiki/Linux" target="_blank">Linux Wiki</a> for more information and other methods.</p>
 
-<pre><code class="language-sh">curl -o- -L https://statping.com/install.sh | bash
+<pre><code class="language-sh">curl -o- -L https://raw.githubusercontent.com/statping-ng/statping-ng/stable/install.sh | bash
 </code></pre>
 
 <p><a href="https://snapcraft.io/statping-ng" target="_blank"><img src="https://snapcraft.io/static/images/badges/en/snap-store-white.svg" alt="Get it from the Snap Store" /></a></p>
@@ -2308,14 +2308,14 @@ OluFxewsEO0QNDrfFb+0gnjYlnGqOFcZjUMXbDdY5oLSPtXohynuTK1qyQ==
 <div class="col-12 shadow-md mt-5">
 	<div class="text-dim" v-pre>
 		<p align="center">
-<a href="https://statping.com">Statping.com</a> | <a href="https://demo.statping.com">Demo</a> | <a href="https://hub.docker.com/r/statping/statping">Docker</a> | <a href="https://github.com/statping-ng/statping-ng/wiki/Notifiers">Notifiers</a> | <a href="https://documenter.getpostman.com/view/1898229/RzfiJUd6">API</a>
+<a href="https://statping-ng.github.io/">Statping-ng @ Github</a> | <a href="https://hub.docker.com/r/adamboutcher/statping-ng">Docker</a> | <a href="https://github.com/statping-ng/statping-ng/wiki/Notifiers">Notifiers</a> | <a href="https://documenter.getpostman.com/view/1898229/RzfiJUd6">API</a>
 </p>
 
 	</div>
 </div>
 
 <div class="text-center small text-dim" v-pre>
-Automatically generated from Statping's Wiki on 2020-12-20 10:21:49.484474 &#43;0000 UTC
+Automatically generated from Statping's Wiki on 2020-12-20 10:21:49.484474 &#43;0000 UTC - With Manual Changes in 2023.
 </div>
 
 </div>

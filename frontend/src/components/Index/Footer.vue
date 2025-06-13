@@ -7,7 +7,7 @@
           </div>
             <span class="font-1 mt-3">
             <a href="https://github.com/statping-ng/statping-ng" class="statping" target="_blank">
-              Statping {{core.version}} made with <font-awesome-icon icon="heart" class="hlight font-1"/></a>
+              Statping-ng {{core.version}} made with <font-awesome-icon icon="heart" class="hlight font-1"/></a>
             </span>
           </div>
         </div>

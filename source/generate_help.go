@@ -53,7 +53,7 @@ var vue = `<template>
 </div>
 
 <div class="text-center small text-dim" v-pre>
-Automatically generated from Statping's Wiki on {{.CreatedAt}}
+Automatically generated from Statping-ng's Wiki on {{.CreatedAt}}
 </div>
 
 </div>
