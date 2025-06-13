@@ -30,3 +30,4 @@ Dockerfile.base
 !dev/prometheus.yml
 docker
 statping.db
+statup

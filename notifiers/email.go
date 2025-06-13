@@ -3,6 +3,7 @@ package notifiers
 import (
 	"crypto/tls"
 	"fmt"
+	"strings"
 
 	"github.com/go-mail/mail"
 	"github.com/statping-ng/emails"
@@ -163,7 +164,9 @@ func (e *emailer) dialSend(email *emailOutgoing) error {
 	}
 
 	m.SetAddressHeader("From", email.From, "Statping")
-	m.SetHeader("To", email.To)
+	//For sending emails to multiple recipients that are comma separated
+	addresses := strings.Split(email.To, ",")
+	m.SetHeader("To", addresses...)
 	m.SetHeader("Subject", email.Subject)
 	m.SetBody("text/html", email.Template)
 
