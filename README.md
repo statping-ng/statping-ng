@@ -117,7 +117,9 @@ Having a straight forward dashboard makes Statping-ng that much better. Quickly 
 
 <h2 align="center" style="text-align:center">Quick Start</h2>
 <p>Here's a few quick start guides to get you going, fast.</p>
-
+<h3>Deploy on Zeabur</h3>
+<p>Click the button below to deploy statping to Zeabur with one click.</p>
+<a href="https://zeabur.com/templates/M6NYGO?referralCode=bestony"><img src="https://zeabur.com/button.svg" alt="Deploy on Zeabur"/></a>
 <h3>Docker</h3>
 <p>Use the <a href="https://hub.docker.com/r/adamboutcher/statping-ng">Statping Docker Image</a> to create a status page in seconds. Checkout the <a href="https://github.com/statping-ng/statping-ng/wiki/Docker">Docker Wiki</a> to view more details on how to get started using Docker.
 </p>
