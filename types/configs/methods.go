@@ -69,7 +69,7 @@ func (d *DbConfig) ConnectionString() string {
 		return d.SqlFile
 	case "mysql":
 		host := fmt.Sprintf("%v:%v", d.DbHost, d.DbPort)
-		conn = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8&parseTime=True&loc=UTC&time_zone=%%27UTC%%27", d.DbUser, d.DbPass, host, d.DbData)
+		conn = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8&parseTime=True&loc=UTC&time_zone=%%27%%2B00%%3A00%%27", d.DbUser, d.DbPass, host, d.DbData)
 		return conn
 	case "postgres":
 		conn = fmt.Sprintf("host=%v port=%v user=%v dbname=%v password=%v timezone=UTC sslmode=%v", d.DbHost, d.DbPort, d.DbUser, d.DbData, d.DbPass, postgresSSL)
