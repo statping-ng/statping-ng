@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/statping-ng/statping-ng/types"
+	"github.com/statping-ng/statping-ng/types/checkins"
 	"github.com/statping-ng/statping-ng/types/errors"
 	"github.com/statping-ng/statping-ng/types/failures"
 	"github.com/statping-ng/statping-ng/types/hits"
@@ -85,8 +86,8 @@ func (s Service) Duration() time.Duration {
 }
 
 // Start will create a channel for the service checking go routine
-func (s Service) UptimeData(hits []*hits.Hit, fails []*failures.Failure) (*UptimeSeries, error) {
-	if len(hits) == 0 {
+func (s Service) UptimeData(hits []*hits.Hit, checkinHits []*checkins.CheckinHit, fails []*failures.Failure) (*UptimeSeries, error) {
+	if len(hits) == 0 && len(checkinHits) == 0 {
 		return nil, errors.New("service does not have any successful hits")
 	}
 	// if theres no failures, then its been online 100%,
@@ -115,6 +116,9 @@ func (s Service) UptimeData(hits []*hits.Hit, fails []*failures.Failure) (*Uptim
 	tMap := make(map[time.Time]bool)
 
 	for _, v := range hits {
+		tMap[v.CreatedAt] = true
+	}
+	for _, v := range checkinHits {
 		tMap[v.CreatedAt] = true
 	}
 	for _, v := range fails {
@@ -212,13 +216,6 @@ func (s *Service) Close() {
 	}
 }
 
-func humanMicro(val int64) string {
-	if val < 10000 {
-		return fmt.Sprintf("%d μs", val)
-	}
-	return fmt.Sprintf("%0.0f ms", float64(val)*0.001)
-}
-
 // IsRunning returns true if the service go routine is running
 func (s *Service) IsRunning() bool {
 	if s.Running == nil {
@@ -272,10 +269,15 @@ func (s *Service) UpdateStats() *Service {
 		}
 	}
 
+	firstHit := s.FirstHit().CreatedAt
+	if checkinHit := s.FirstCheckinHit(); checkinHit != nil && checkinHit.CreatedAt.After(firstHit) {
+		firstHit = checkinHit.CreatedAt
+	}
+
 	s.Stats = &Stats{
 		Failures: allFails.Count(),
-		Hits:     s.AllHits().Count(),
-		FirstHit: s.FirstHit().CreatedAt,
+		Hits:     s.AllHits().Count() + s.AllCheckinHits().Count(),
+		FirstHit: firstHit,
 	}
 	return s
 }
@@ -293,20 +295,21 @@ func (s Service) OnlineDaysPercent(days int) float32 {
 
 // OnlineSince accepts a time since parameter to return the percent of a service's uptime.
 func (s *Service) OnlineSince(ago time.Time) float32 {
-	failsList := s.FailuresSince(ago).Count()
-	hitsList := s.HitsSince(ago).Count()
+	failsCount := s.FailuresSince(ago).Count()
+	hitsCount := s.HitsSince(ago).Count()
+	checkinHitsCount := s.AllCheckinHits().Since(ago).Count()
 
-	if failsList == 0 {
+	if failsCount == 0 {
 		s.Online24Hours = 100.00
 		return s.Online24Hours
 	}
 
-	if hitsList == 0 {
+	if hitsCount == 0 && checkinHitsCount == 0 {
 		s.Online24Hours = 0
 		return s.Online24Hours
 	}
 
-	avg := (float64(failsList) / float64(hitsList)) * 100
+	avg := (float64(failsCount) / float64(hitsCount+checkinHitsCount)) * 100
 	avg = 100 - avg
 	if avg < 0 {
 		avg = 0

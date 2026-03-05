@@ -186,6 +186,10 @@ func ParseRequest(r *http.Request) (*GroupQuery, error) {
 }
 
 func ParseQueries(r *http.Request, o isObject) (*GroupQuery, error) {
+	return ParseQueriesForTable(r, o, "")
+}
+
+func ParseQueriesForTable(r *http.Request, o isObject, whereTable string) (*GroupQuery, error) {
 	fields := parseGet(r)
 	grouping := fields.Get("group")
 	startField := utils.ToInt(fields.Get("start"))
@@ -240,7 +244,11 @@ func ParseQueries(r *http.Request, o isObject) (*GroupQuery, error) {
 		q = q.Offset(query.Offset)
 	}
 
-	q = q.Where("created_at BETWEEN ? AND ?", q.FormatTime(query.Start), q.FormatTime(query.End))
+	if len(whereTable) > 0 {
+		whereTable = fmt.Sprintf("%s.", whereTable)
+	}
+
+	q = q.Where(fmt.Sprintf("%screated_at BETWEEN ? AND ?", whereTable), q.FormatTime(query.Start), q.FormatTime(query.End))
 
 	if query.Order != "" {
 		q = q.Order(query.Order)

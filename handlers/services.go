@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/gorilla/mux"
 	"github.com/statping-ng/statping-ng/database"
+	"github.com/statping-ng/statping-ng/types/checkins"
 	"github.com/statping-ng/statping-ng/types/errors"
 	"github.com/statping-ng/statping-ng/types/failures"
 	"github.com/statping-ng/statping-ng/types/hits"
@@ -210,6 +211,12 @@ func apiServiceTimeDataHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	groupCheckinHits, err := database.ParseQueriesForTable(r, service.AllCheckinHits(), "checkin_hits")
+	if err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+
 	groupFailures, err := database.ParseQueries(r, service.AllFailures())
 	if err != nil {
 		sendErrorJson(err, w, r)
@@ -218,8 +225,14 @@ func apiServiceTimeDataHandler(w http.ResponseWriter, r *http.Request) {
 
 	var allFailures []*failures.Failure
 	var allHits []*hits.Hit
+	var allCheckinHits []*checkins.CheckinHit
 
 	if err := groupHits.Find(&allHits); err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
+
+	if err := groupCheckinHits.Find(&allCheckinHits); err != nil {
 		sendErrorJson(err, w, r)
 		return
 	}
@@ -229,7 +242,7 @@ func apiServiceTimeDataHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uptimeData, err := service.UptimeData(allHits, allFailures)
+	uptimeData, err := service.UptimeData(allHits, allCheckinHits, allFailures)
 	if err != nil {
 		sendErrorJson(err, w, r)
 		return

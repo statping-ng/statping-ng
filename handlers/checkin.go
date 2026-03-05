@@ -3,6 +3,7 @@ package handlers
 import (
 	"net"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/statping-ng/statping-ng/types/checkins"
@@ -63,12 +64,18 @@ func checkinHitHandler(w http.ResponseWriter, r *http.Request) {
 		sendErrorJson(err, w, r)
 		return
 	}
-	log.Infof("Checking %s was requested", checkin.Name)
+
+	service, err := services.Find(checkin.ServiceId)
+	if err != nil {
+		sendErrorJson(err, w, r)
+		return
+	}
 
 	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
 
-	if last := checkin.LastHit(); last == nil {
-		checkin.Start()
+	lastHit := checkin.LastHit()
+	if lastHit == nil {
+		checkin.Start(&service.Timeout)
 	}
 
 	hit := &checkins.CheckinHit{
@@ -82,7 +89,22 @@ func checkinHitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	checkin.Failing = false
-	checkin.LastHitTime = utils.Now()
+	checkin.LastHitTime = hit.CreatedAt
+
+	var latency int64 = 0
+	if lastHit != nil {
+		latency = hit.CreatedAt.Sub(lastHit.CreatedAt.Add(checkin.Period())).Microseconds()
+		if latency > (checkin.Period() + (time.Duration(latency) * time.Second)).Microseconds() {
+			latency = 0
+		}
+	}
+
+	service.PingTime = latency
+	service.Latency = latency
+	service.LastResponse = ""
+	service.Online = true
+
+	services.RecordCheckinSuccess(service, checkin, hit, latency)
 
 	sendJsonAction(hit.Id, "update", w, r)
 }

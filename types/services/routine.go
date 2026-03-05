@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/statping-ng/statping-ng/types/checkins"
 	"github.com/statping-ng/statping-ng/types/metrics"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -635,9 +636,22 @@ func RecordSuccess(s *Service) {
 		log.Error(err)
 	}
 	log.WithFields(utils.ToFields(hit, s)).Infoln(
-		fmt.Sprintf("Service #%d '%v' Successful Response: %s | Lookup in: %s | Online: %v | Interval: %d seconds", s.Id, s.Name, humanMicro(hit.Latency), humanMicro(hit.PingTime), s.Online, s.Interval))
+		fmt.Sprintf("Service #%d '%v' Successful Response: %s | Lookup in: %s | Online: %v | Interval: %d seconds", s.Id, s.Name, utils.HumanMicro(hit.Latency), utils.HumanMicro(hit.PingTime), s.Online, s.Interval))
 	s.LastLookupTime = hit.PingTime
 	s.LastLatency = hit.Latency
+	metrics.Gauge("online", 1., s.Name, s.Type)
+	metrics.Inc("success", s.Name)
+	sendSuccess(s)
+}
+
+// RecordCheckinSuccess will notify for a 'checkin hit'
+func RecordCheckinSuccess(s *Service, checkin *checkins.Checkin, hit *checkins.CheckinHit, latency int64) {
+	s.LastOnline = hit.CreatedAt
+	s.Online = true
+	log.WithFields(utils.ToFields(hit, s)).Infoln(
+		fmt.Sprintf("Service #%d '%v' Successful Checkin: Difference to expected checkin: %s | Interval: %d seconds", s.Id, s.Name, utils.HumanMicro(latency), s.Interval))
+	s.LastLookupTime = latency
+	s.LastLatency = latency
 	metrics.Gauge("online", 1., s.Name, s.Type)
 	metrics.Inc("success", s.Name)
 	sendSuccess(s)
@@ -656,7 +670,7 @@ func RecordFailure(s *Service, issue, reason string) {
 		Reason:    reason,
 	}
 	log.WithFields(utils.ToFields(fail, s)).
-		Warnln(fmt.Sprintf("Service %v Failing: %v | Lookup in: %v", s.Name, issue, humanMicro(fail.PingTime)))
+		Warnln(fmt.Sprintf("Service %v Failing: %v | Lookup in: %v", s.Name, issue, utils.HumanMicro(fail.PingTime)))
 
 	if err := fail.Create(); err != nil {
 		log.Error(err)

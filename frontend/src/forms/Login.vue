@@ -105,7 +105,7 @@
         }
         scopes.push(this.oauth.custom_scopes.split(","))
         if (scopes.length !== 0) {
-          return "&scopes="+scopes.join(",")
+          return "&scope="+scopes.join(" ")
         }
         return ""
       },
