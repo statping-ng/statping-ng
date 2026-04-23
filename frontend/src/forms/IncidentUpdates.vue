@@ -23,13 +23,16 @@
             </div>
 
             <div class="col-12 col-md-2">
-                <button @click.prevent="createIncidentUpdate"
-                        :disabled="!incident_update.message"
+                <button :disabled="submitting || !canSubmit"
                         type="submit" class="btn btn-block btn-primary">
-                    Add
+                    {{ submitting ? "Adding..." : "Add" }}
                 </button>
             </div>
         </form>
+
+        <div v-if="errorMessage" class="alert alert-danger mt-3 mb-0" role="alert">
+            {{ errorMessage }}
+        </div>
 
     </div>
 </template>
@@ -50,11 +53,18 @@
         data () {
             return {
                 updates: [],
+                submitting: false,
+                errorMessage: "",
                 incident_update: {
                     incident: this.incident.id,
                     message: "",
-                    type: "Investigating" // TODO: default to something.. theres is no error checking for blank submission...
+                    type: "Investigating"
                 }
+            }
+        },
+        computed: {
+            canSubmit() {
+                return this.incident_update.message.trim().length > 0
             }
         },
 
@@ -63,20 +73,61 @@
         },
 
         methods: {
+            extractErrorMessage(error, fallback) {
+                const responseData = error?.response?.data || error
+                if (typeof responseData === "string" && responseData.trim()) {
+                    return responseData.trim()
+                }
+                if (typeof responseData?.error === "string" && responseData.error.trim()) {
+                    return responseData.error
+                }
+                if (responseData?.error?.message) {
+                    return responseData.error.message
+                }
+                if (responseData?.message) {
+                    return responseData.message
+                }
+                if (error?.message) {
+                    return error.message
+                }
+                return fallback
+            },
             async createIncidentUpdate() {
-                this.res = await Api.incident_update_create(this.incident_update)
-                if (this.res.status === "success") {
-                    this.updates.push(this.res.output) // this is better in terms of not having to querry the db to get a fresh copy of all updates
-                    //await this.loadUpdates()
-                } // TODO: further error checking here... maybe alert user it failed with modal or so
-
-                // reset the form data
-                this.incident_update = {
-                    incident: this.incident.id,
-                    message: "",
-                    type: "Investigating"
+                if (this.submitting) {
+                    return
                 }
 
+                const message = this.incident_update.message.trim()
+                if (!message) {
+                    this.errorMessage = "Incident update message is required."
+                    return
+                }
+
+                this.submitting = true
+                this.errorMessage = ""
+
+                try {
+                    const response = await Api.incident_update_create({
+                        ...this.incident_update,
+                        message,
+                    })
+
+                    if (response?.status === "success" && response.output) {
+                        this.updates.push(response.output)
+                        this.incident_update = {
+                            incident: this.incident.id,
+                            message: "",
+                            type: "Investigating"
+                        }
+                        return
+                    }
+
+                    this.errorMessage = this.extractErrorMessage(response, "Unable to add the incident update right now.")
+                } catch (error) {
+                    this.errorMessage = this.extractErrorMessage(error, "Unable to add the incident update right now.")
+                } finally {
+                    this.submitting = false
+                }
             },
 
             async loadUpdates() {

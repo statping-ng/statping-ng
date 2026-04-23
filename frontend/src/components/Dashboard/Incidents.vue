@@ -34,14 +34,13 @@
 
                     <div class="form-group row">
                         <div class="col-sm-12">
-                            <button @click.prevent="createIncident"
-                                    :disabled="!incident.title || !incident.description"
+                            <button :disabled="submitting || !canCreateIncident"
                                     type="submit" class="btn btn-block btn-primary">
-                                Create Incident
+                                {{ submitting ? "Creating Incident..." : "Create Incident" }}
                             </button>
                         </div>
                     </div>
-                    <div class="alert alert-danger d-none" id="alerter" role="alert"></div>
+                    <div v-if="errorMessage" class="alert alert-danger" role="alert">{{ errorMessage }}</div>
                 </form>
             </div>
         </div>
@@ -60,6 +59,8 @@ const FormIncidentUpdates = () => import(/* webpackChunkName: "dashboard" */ '@/
         data() {
             return {
                 serviceID: 0,
+                submitting: false,
+                errorMessage: "",
                 incidents: [],
                 incident: {
                     title: "",
@@ -68,6 +69,11 @@ const FormIncidentUpdates = () => import(/* webpackChunkName: "dashboard" */ '@/
                   }
               }
           },
+    computed: {
+        canCreateIncident() {
+            return this.incident.title.trim().length > 0 && this.incident.description.trim().length > 0
+        }
+    },
 
     created() {
         this.serviceID = Number(this.$route.params.id);
@@ -79,6 +85,25 @@ const FormIncidentUpdates = () => import(/* webpackChunkName: "dashboard" */ '@/
     },
 
     methods: {
+      extractErrorMessage(error, fallback) {
+        const responseData = error?.response?.data || error
+        if (typeof responseData === "string" && responseData.trim()) {
+          return responseData.trim()
+        }
+        if (typeof responseData?.error === "string" && responseData.error.trim()) {
+          return responseData.error
+        }
+        if (responseData?.error?.message) {
+          return responseData.error.message
+        }
+        if (responseData?.message) {
+          return responseData.message
+        }
+        if (error?.message) {
+          return error.message
+        }
+        return fallback
+      },
 
       async delete(i) {
         this.res = await Api.incident_delete(i)
@@ -100,17 +125,44 @@ const FormIncidentUpdates = () => import(/* webpackChunkName: "dashboard" */ '@/
         },
 
         async createIncident() {
-            this.res = await Api.incident_create(this.serviceID, this.incident)
-            if (this.res.status === "success") {
-                this.incidents.push(this.res.output) // this is better in terms of not having to querry the db to get a fresh copy of all updates
-                //await this.loadIncidents()
-            } // TODO: further error checking here... maybe alert user it failed with modal or so
+            if (this.submitting) {
+                return
+            }
 
-            // reset the form data
-            this.incident = {
-                title: "",
-                description: "",
-                service: this.serviceID,
+            const title = this.incident.title.trim()
+            const description = this.incident.description.trim()
+
+            if (!title || !description) {
+                this.errorMessage = "Incident title and description are required."
+                return
+            }
+
+            this.submitting = true
+            this.errorMessage = ""
+
+            try {
+                const response = await Api.incident_create(this.serviceID, {
+                    ...this.incident,
+                    title,
+                    description,
+                    service: this.serviceID,
+                })
+
+                if (response?.status === "success" && response.output) {
+                    this.incidents.push(response.output)
+                    this.incident = {
+                        title: "",
+                        description: "",
+                        service: this.serviceID,
+                    }
+                    return
+                }
+
+                this.errorMessage = this.extractErrorMessage(response, "Unable to create the incident right now.")
+            } catch (error) {
+                this.errorMessage = this.extractErrorMessage(error, "Unable to create the incident right now.")
+            } finally {
+                this.submitting = false
             }
         },
 
